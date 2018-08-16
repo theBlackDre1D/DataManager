@@ -29,7 +29,9 @@ import javax.inject.Singleton
 
 
 @Singleton
-class Navigator {
+class Navigator
+//@Inject constructor(private val authenticator: Authenticator)
+{
 
 //    fun showMain(context: Context) {
 //        when (authenticator.userLoggedIn()) {

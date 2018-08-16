@@ -15,10 +15,14 @@
  */
 package com.fernandocejas.sample.core.platform
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.widget.Toast
+import butterknife.ButterKnife
 import com.example.seremtinameno.datamanager.core.extension.inTransaction
 import com.example.seremtinameno.datamanager.core.platform.BaseFragment
+import org.jetbrains.anko.toast
 
 /**
  * Base Activity class with helper methods for handling fragment transactions and back button
@@ -43,5 +47,18 @@ abstract class BaseActivity : AppCompatActivity() {
 //            savedInstanceState ?: supportFragmentManager.inTransaction { add(
 //                    id.fragmentContainer, fragment()) }
 
+    fun showMessage(context: Context, message: String) {
+//        toast(message).show()
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+
+    fun butterKnifeInject(activity: BaseActivity) {
+        ButterKnife.bind(activity)
+    }
+
+
+
     abstract fun fragment(): BaseFragment
+    abstract fun showLoading()
+    abstract fun hideLoading()
 }

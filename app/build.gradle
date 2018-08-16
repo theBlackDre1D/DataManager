@@ -136,6 +136,7 @@ dependencies {
     implementation applicationDependencies.okhttpLoggingInterceptor
     implementation applicationDependencies.prefs
     implementation applicationDependencies.butterKnife
+    implementation applicationDependencies.anko_snackBar
 
     //Unit/Integration tests dependencies
     testImplementation unitTestDependencies.kotlin

@@ -1,12 +1,10 @@
 package com.example.seremtinameno.datamanager
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
-import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_main.*
@@ -25,20 +23,28 @@ import android.os.Process
 import android.provider.Settings
 import android.support.annotation.RequiresApi
 import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.ActionBarDrawerToggle
 import android.widget.TextView
 import butterknife.BindView
 import android.telephony.TelephonyManager
+import android.view.View
+import android.widget.ScrollView
+import com.example.seremtinameno.datamanager.core.permissions.PermissionProvider
 import com.example.seremtinameno.datamanager.core.platform.BaseFragment
 import com.fernandocejas.sample.core.di.ApplicationComponent
 import com.fernandocejas.sample.core.platform.BaseActivity
 import com.pixplicity.easyprefs.library.Prefs
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
 import java.util.*
+import javax.inject.Inject
 
 
-class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener,
-                                            ActivityCompat.OnRequestPermissionsResultCallback {
+class MainActivity : BaseActivity(),        NavigationView.OnNavigationItemSelectedListener,
+                                            ActivityCompat.OnRequestPermissionsResultCallback,
+                                            PermissionProvider.Delegate
+{
 
     private val appComponent: ApplicationComponent by lazy(mode = LazyThreadSafetyMode.NONE) {
         (application as AndroidApplication).appComponent
@@ -46,6 +52,12 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     @BindView(R.id.usage)
     lateinit var usage: TextView
+
+    @BindView(R.id.wrapper)
+    lateinit var wrapper: ScrollView
+
+    @BindView(R.id.loading)
+    lateinit var loading: View
 
     private lateinit var networkStatsManager: NetworkStatsManager
 
@@ -56,6 +68,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private var startTime: Long? = null
 
     private var endTime: Long? = null
+
+    @Inject
+    lateinit var delegate: PermissionProvider
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,15 +83,19 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 //        toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
+        butterKnifeInject(this)
         appComponent.inject(this)
-        checkPermission()
+
         initPrefs()
-        initDataInfo()
+
+        delegate.setDelegate(this)
+        delegate.checkPermissionReadPhoneState(PERMISSION_READ_STATE)
+//        checkPermission()
     }
 
     companion object {
-        val SUBSCRIBER_ID = "SUBSCRIBER_ID"
-        val REQUEST_READ_PHONE_STATE = 1
+        const val SUBSCRIBER_ID = "SUBSCRIBER_ID"
+        const val PERMISSION_READ_STATE = 1
     }
 
     override fun onBackPressed() {
@@ -155,9 +174,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         calendar.set(Calendar.DAY_OF_MONTH, 1)
         startTime = calendar.timeInMillis
 
-
         data = networkStatsManager.querySummary(ConnectivityManager.TYPE_WIFI, subscriberID, startTime!!, endTime!!)
 
+        hideLoading()
     }
 
     private fun initPrefs() {
@@ -177,22 +196,39 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         return mode == MODE_ALLOWED
     }
 
-    private fun checkPermission() {
-        val permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
-
-        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_PHONE_STATE), REQUEST_READ_PHONE_STATE)
-        } else {
-            //TODO
-        }
-    }
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            PERMISSION_READ_STATE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission granted!
+                    // you may now do the action that requires this permission
+                    initDataInfo()
+                } else {
+                    // permission denied
+                    showMessage(this, "Permission denied")
+                }
+            }
+        }
     }
 
     override fun fragment(): BaseFragment {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun showLoading() {
+        loading.visibility = View.VISIBLE
+    }
+
+    override fun hideLoading() {
+        loading.visibility = View.GONE
+    }
+
+    override fun getActivity(): BaseActivity {
+        return this
+    }
+
+    override fun permissionGranted() {
+        initDataInfo()
     }
 }
 
