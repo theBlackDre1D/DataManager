@@ -26,15 +26,23 @@ import android.provider.Settings
 import android.support.annotation.RequiresApi
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.ActionBarDrawerToggle
 import android.widget.TextView
 import butterknife.BindView
 import android.telephony.TelephonyManager
+import com.example.seremtinameno.datamanager.core.platform.BaseFragment
+import com.fernandocejas.sample.core.di.ApplicationComponent
+import com.fernandocejas.sample.core.platform.BaseActivity
 import com.pixplicity.easyprefs.library.Prefs
 import java.util.*
 
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
+class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener,
                                             ActivityCompat.OnRequestPermissionsResultCallback {
+
+    private val appComponent: ApplicationComponent by lazy(mode = LazyThreadSafetyMode.NONE) {
+        (application as AndroidApplication).appComponent
+    }
 
     @BindView(R.id.usage)
     lateinit var usage: TextView
@@ -53,19 +61,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-//        setSupportActionBar(toolbar)
-
-//        fab.setOnClickListener { view ->
-//            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                    .setAction("Action", null).show()
-//        }
 
 //        val toggle = ActionBarDrawerToggle(
 //                this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
 //        drawer_layout.addDrawerListener(toggle)
 //        toggle.syncState()
-//
-//        nav_view.setNavigationItemSelectedListener(this)
+
+        nav_view.setNavigationItemSelectedListener(this)
+        appComponent.inject(this)
         checkPermission()
         initPrefs()
         initDataInfo()
@@ -186,6 +189,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    override fun fragment(): BaseFragment {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
 
