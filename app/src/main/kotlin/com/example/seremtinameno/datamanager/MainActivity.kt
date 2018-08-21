@@ -13,12 +13,10 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Process
 import android.provider.Settings
 import android.support.annotation.RequiresApi
-import android.support.constraint.solver.widgets.ConstraintAnchor
 import android.support.v4.app.ActivityCompat
 import android.widget.TextView
 import android.view.View
@@ -33,6 +31,7 @@ import com.example.seremtinameno.datamanager.core.extension.observe
 import com.example.seremtinameno.datamanager.core.platform.BaseActivity
 import com.example.seremtinameno.datamanager.features.datausage.DataUsageViewModel
 import com.example.seremtinameno.datamanager.features.datausage.GetDataUsage
+import com.github.mikephil.charting.charts.LineChart
 import com.pixplicity.easyprefs.library.Prefs
 import kotlinx.android.synthetic.main.loading.*
 import timber.log.Timber
@@ -48,32 +47,45 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         (application as AndroidApplication).appComponent
     }
 
-    private lateinit var usageWidget: TextView
+    private lateinit var dataUsageWidget:           TextView
 
-    private lateinit var loadingWidget: View
+    private lateinit var loadingWidget:             View
 
-    private lateinit var wrapperWidget: ScrollView
+    private lateinit var wrapperWidget:             ScrollView
 
-    private lateinit var progressWidget: ProgressBar
+    private lateinit var progressWidget:            ProgressBar
 
-    private lateinit var textProgressWidget: TextView
+    private lateinit var textProgressWidget:        TextView
 
-    private lateinit var networkStatsManager: NetworkStatsManager
+    private lateinit var graphWidget:               LineChart
 
-    private lateinit var wifiData: NetworkStats.Bucket
+    private lateinit var wifiUsageWidget:           TextView
 
-    private lateinit var mobileData: NetworkStats.Bucket
+    private lateinit var wifiUnitsWidget:           TextView
 
-    private var subscriberID: String? = null
+    private lateinit var dataUnitsWidget:           TextView
 
-    private var startTime: Long? = null
+//    private lateinit var networkStatsManager:       NetworkStatsManager
 
-    private var endTime: Long? = null
+    private lateinit var wifiData:                  NetworkStats.Bucket
 
-    private var mobilePlanInMB: Int = 2000
+    private lateinit var mobileData:                NetworkStats.Bucket
+
+    private var startTime:                          Long? = null
+
+    private var endTime:                            Long? = null
+
+    private var mobilePlanInMB:                     Int = 2000
+
+    private var todayUsedMB:                        Int = 0
+
+    private var calculated = false
+    private var rendered = false
 
 //    @Inject
-    private lateinit var dataUsage: DataUsageViewModel
+    private lateinit var totalDataUsage: DataUsageViewModel
+
+    private lateinit var todayDataUsage: DataUsageViewModel
 
     @Inject
     lateinit var delegate: PermissionProvider
@@ -84,6 +96,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         setContentView(R.layout.activity_main)
 
         initUI()
+        showLoading()
         appComponent.inject(this)
 
         initPrefs()
@@ -99,24 +112,59 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         const val REQUEST_CODE = 1
     }
 
-    private fun loadDataUsage() {
-        dataUsage = viewModel(viewModelFactory) {
-            observe(dataUsage, ::renderDataUsage)
+    private fun loadTotalDataUsage() {
+        totalDataUsage = viewModel(viewModelFactory) {
+            observe(dataUsage, ::renderTotalDataUsage)
             failure(failure, ::handleFailure)
         }
 
         val params = buildParams()
-        dataUsage.loadDataUsage(params)
+        totalDataUsage.loadDataUsage(params)
+
+        loadTodayDataUsage()
     }
 
-    private fun buildParams(): GetDataUsage.Params {
+    private fun loadTodayDataUsage() {
+        todayDataUsage = viewModel(viewModelFactory) {
+            observe(dataUsage, ::renderTodayData)
+            failure(failure, ::handleFailure)
+        }
 
-        return GetDataUsage.Params(this, startTime!!, endTime!!, ConnectivityManager.TYPE_MOBILE)
+        val params = GetDataUsage.Params(this, endTime!!, endTime!!)
+        todayDataUsage.loadDataUsage(params)
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    private fun renderDataUsage(data: NetworkStats.Bucket?) {
-        mobileData = data!!
+    private fun renderTodayData(todayData: HashMap<String, NetworkStats.Bucket>?) {
+        if (!rendered) {
+            val todayDataUsage = todayData!!["data"]
+            val todayWifiUsage = todayData["wifi"]
+
+            todayUsedMB = (todayDataUsage!!.rxBytes / 1000000).toInt()
+            var todayWifiUsed = (todayWifiUsage!!.rxBytes / 1000000)
+
+//            if (todayWifiUsed >= 1024.toLong()) {
+//                todayWifiUsed /= 1024
+//                wifiUnitsWidget.text = "GB"
+//            } else {
+//                wifiUnitsWidget.text = "MB"
+//            }
+
+            dataUsageWidget.text = todayUsedMB.toString()
+            wifiUsageWidget.text = todayWifiUsed.toString()
+
+            rendered = true
+        }
+
+    }
+
+    private fun buildParams(): GetDataUsage.Params {
+        return GetDataUsage.Params(this, startTime!!, endTime!!)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun renderTotalDataUsage(data: HashMap<String, NetworkStats.Bucket>?) {
+        mobileData = (data!!["data"])!!
 
         calculateDataUsage()
     }
@@ -143,7 +191,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
             Timber.d("Asking for permission")
             delegate.askForReadPhoneState(PERMISSION_READ_STATE)
         } else {
-            loadDataUsage()
+            loadTotalDataUsage()
         }
     }
 
@@ -154,22 +202,15 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     }
 
     override fun initUI() {
-        usageWidget = usage
-        loadingWidget = loading
-        wrapperWidget = wrapper
-        progressWidget = progressBar
-        textProgressWidget = textProgres
-    }
-
-    @SuppressLint("NewApi", "HardwareIds")
-    @RequiresApi(Build.VERSION_CODES.KITKAT)
-    private fun initDataInfo() {
-        initDates()
-
-        wifiData = networkStatsManager.querySummaryForDevice(ConnectivityManager.TYPE_WIFI, subscriberID, startTime!!, endTime!!)
-        mobileData = networkStatsManager.querySummaryForDevice(ConnectivityManager.TYPE_MOBILE, subscriberID, startTime!!, endTime!!)
-
-        hideLoading()
+        dataUsageWidget =           dataUsage
+        wifiUsageWidget =           wifiUsage
+        loadingWidget =             loading
+        wrapperWidget =             wrapper
+        progressWidget =            progressBar
+        textProgressWidget =        textProgres
+        graphWidget =               graph
+        wifiUnitsWidget =           wifiUnits
+        dataUnitsWidget =           dataUnits
     }
 
     private fun initDates() {
@@ -182,10 +223,11 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     @SuppressLint("SetTextI18n")
     @RequiresApi(Build.VERSION_CODES.M)
     private fun calculateDataUsage() {
-        val usedMB = mobileData.rxBytes / 1000000.0
-        usageWidget.text = "$usedMB MB"
-
-        progressWidget.progress = calculatePercentage(usedMB)
+        if (!calculated) {
+            val usedMB = mobileData.rxBytes / 1000000.0
+            progressWidget.progress = calculatePercentage(usedMB)
+            calculated = true
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -217,11 +259,9 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         when (requestCode) {
             PERMISSION_READ_STATE -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission granted!
                     Timber.d("Permission to read phone stats granted")
-                    loadDataUsage()
+                    loadTotalDataUsage()
                 } else {
-                    // permission denied
                     Timber.d("Permission to read phone stats denied")
                     showMessage(this, "Permission denied")
                     hideLoading()
@@ -245,11 +285,4 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     override fun getActivity(): BaseActivity {
         return this
     }
-
-//    override fun permissionGranted() {
-//        initDataInfo()
-//    }
 }
-
-
-

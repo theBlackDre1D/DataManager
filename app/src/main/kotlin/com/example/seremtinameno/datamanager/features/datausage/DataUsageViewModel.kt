@@ -8,11 +8,11 @@ import javax.inject.Inject
 class DataUsageViewModel
 @Inject constructor(private val getDataUsage: GetDataUsage): BaseViewModel() {
 
-    var dataUsage: MutableLiveData<NetworkStats.Bucket> = MutableLiveData()
+    var dataUsage: MutableLiveData<HashMap<String, NetworkStats.Bucket>> = MutableLiveData()
 
     fun loadDataUsage(params: GetDataUsage.Params) = getDataUsage(params) { it.either(::handleFailure, ::handleData) }
 
-    private fun handleData(data: NetworkStats.Bucket) {
+    private fun handleData(data: HashMap<String, NetworkStats.Bucket>) {
         dataUsage.value = data
     }
 }

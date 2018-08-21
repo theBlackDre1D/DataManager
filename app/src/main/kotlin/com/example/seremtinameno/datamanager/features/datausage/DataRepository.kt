@@ -16,34 +16,35 @@ import com.pixplicity.easyprefs.library.Prefs
 import javax.inject.Inject
 
 interface DataRepository {
-    fun getData(applicationContext: Context, startTime: Long, endTime: Long, connectionType: Int): Either<Failure, NetworkStats.Bucket>
+    fun getData(applicationContext: Context, startTime: Long, endTime: Long): Either<Failure, HashMap<String, NetworkStats.Bucket>>
 
     class Data
     @Inject constructor(private val permissions: PermissionProvider): DataRepository {
         @RequiresApi(Build.VERSION_CODES.M)
-        override fun getData(applicationContext: Context, startTime: Long, endTime: Long, connectionType: Int): Either<Failure, NetworkStats.Bucket> {
+        override fun getData(applicationContext: Context, startTime: Long, endTime: Long): Either<Failure, HashMap<String, NetworkStats.Bucket>> {
             return when(permissions.checkPermissionReadPhoneState()) {
-                true -> Either.Right(obtainData(applicationContext, startTime, endTime, connectionType))
+                true -> Either.Right(obtainData(applicationContext, startTime, endTime))
                 false -> Either.Left(Failure.PermissionError())
             }
         }
 
         @RequiresApi(Build.VERSION_CODES.M)
         @SuppressLint("MissingPermission", "HardwareIds")
-        private fun obtainData(applicationContext: Context, startTime: Long, endTime: Long, connectionType: Int): NetworkStats.Bucket {
+        private fun obtainData(applicationContext: Context, startTime: Long, endTime: Long): HashMap<String, NetworkStats.Bucket> {
             val networkStatsManager = applicationContext.getSystemService(Context.NETWORK_STATS_SERVICE) as NetworkStatsManager
-            var subscriberID: String? = null
+            var subscriberID: String? = Prefs.getString(MainActivity.SUBSCRIBER_ID, null)
 
             if (subscriberID == null) {
                 val manager = applicationContext.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
                 subscriberID = manager.subscriberId
 
                 Prefs.putString(MainActivity.SUBSCRIBER_ID, subscriberID)
-            } else {
-                subscriberID = Prefs.getString(MainActivity.SUBSCRIBER_ID, null)
             }
 
-            return networkStatsManager.querySummaryForDevice(connectionType, subscriberID, startTime, endTime)
+            val data = networkStatsManager.querySummaryForDevice(ConnectivityManager.TYPE_MOBILE, subscriberID, startTime, endTime)
+            val wifi = networkStatsManager.querySummaryForDevice(ConnectivityManager.TYPE_WIFI, subscriberID, startTime, endTime)
+
+            return hashMapOf("data" to data, "wifi" to wifi)
         }
     }
 }

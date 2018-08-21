@@ -138,6 +138,8 @@ dependencies {
     implementation applicationDependencies.butterKnife
     implementation applicationDependencies.anko_snackBar
     implementation applicationDependencies.timber
+    implementation applicationDependencies.progressBar
+    implementation applicationDependencies.charts
 
     //Unit/Integration tests dependencies
     testImplementation unitTestDependencies.kotlin
