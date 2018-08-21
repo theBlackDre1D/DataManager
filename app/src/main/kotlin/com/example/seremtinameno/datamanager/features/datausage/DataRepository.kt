@@ -16,21 +16,21 @@ import com.pixplicity.easyprefs.library.Prefs
 import javax.inject.Inject
 
 interface DataRepository {
-    fun getData(applicationContext: Context, startTime: Long, endTime: Long): Either<Failure, NetworkStats.Bucket>
+    fun getData(applicationContext: Context, startTime: Long, endTime: Long, connectionType: Int): Either<Failure, NetworkStats.Bucket>
 
     class Data
     @Inject constructor(private val permissions: PermissionProvider): DataRepository {
         @RequiresApi(Build.VERSION_CODES.M)
-        override fun getData(applicationContext: Context, startTime: Long, endTime: Long): Either<Failure, NetworkStats.Bucket> {
+        override fun getData(applicationContext: Context, startTime: Long, endTime: Long, connectionType: Int): Either<Failure, NetworkStats.Bucket> {
             return when(permissions.checkPermissionReadPhoneState()) {
-                true -> Either.Right(obtainData(applicationContext, startTime, endTime))
+                true -> Either.Right(obtainData(applicationContext, startTime, endTime, connectionType))
                 false -> Either.Left(Failure.PermissionError())
             }
         }
 
         @RequiresApi(Build.VERSION_CODES.M)
         @SuppressLint("MissingPermission", "HardwareIds")
-        private fun obtainData(applicationContext: Context, startTime: Long, endTime: Long): NetworkStats.Bucket {
+        private fun obtainData(applicationContext: Context, startTime: Long, endTime: Long, connectionType: Int): NetworkStats.Bucket {
             val networkStatsManager = applicationContext.getSystemService(Context.NETWORK_STATS_SERVICE) as NetworkStatsManager
             var subscriberID: String? = null
 
@@ -43,7 +43,7 @@ interface DataRepository {
                 subscriberID = Prefs.getString(MainActivity.SUBSCRIBER_ID, null)
             }
 
-            return networkStatsManager.querySummaryForDevice(ConnectivityManager.TYPE_WIFI, subscriberID, startTime, endTime)
+            return networkStatsManager.querySummaryForDevice(connectionType, subscriberID, startTime, endTime)
         }
     }
 }

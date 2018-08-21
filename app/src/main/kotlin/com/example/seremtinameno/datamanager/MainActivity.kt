@@ -18,9 +18,11 @@ import android.os.Build
 import android.os.Process
 import android.provider.Settings
 import android.support.annotation.RequiresApi
+import android.support.constraint.solver.widgets.ConstraintAnchor
 import android.support.v4.app.ActivityCompat
 import android.widget.TextView
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.ScrollView
 import com.example.seremtinameno.datamanager.core.permissions.PermissionProvider
 import com.example.seremtinameno.datamanager.core.platform.BaseFragment
@@ -52,6 +54,10 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     private lateinit var wrapperWidget: ScrollView
 
+    private lateinit var progressWidget: ProgressBar
+
+    private lateinit var textProgressWidget: TextView
+
     private lateinit var networkStatsManager: NetworkStatsManager
 
     private lateinit var wifiData: NetworkStats.Bucket
@@ -63,6 +69,8 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     private var startTime: Long? = null
 
     private var endTime: Long? = null
+
+    private var mobilePlanInMB: Int = 2000
 
 //    @Inject
     private lateinit var dataUsage: DataUsageViewModel
@@ -103,7 +111,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     private fun buildParams(): GetDataUsage.Params {
 
-        return GetDataUsage.Params(this, startTime!!, endTime!!)
+        return GetDataUsage.Params(this, startTime!!, endTime!!, ConnectivityManager.TYPE_MOBILE)
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -124,18 +132,24 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     private fun permissionCheck() {
         if (!checkForPermission(this)) {
             startActivityForResult(Intent((Settings.ACTION_USAGE_ACCESS_SETTINGS)), REQUEST_CODE)
+        } else {
+            obtainUserData()
+        }
+    }
+
+    private fun obtainUserData() {
+        val permission = delegate.checkPermissionReadPhoneState()
+        if (!permission) {
+            Timber.d("Asking for permission")
+            delegate.askForReadPhoneState(PERMISSION_READ_STATE)
+        } else {
+            loadDataUsage()
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE) {
-            val permission = delegate.checkPermissionReadPhoneState()
-            if (!permission) {
-                Timber.d("Asking for permission")
-                delegate.askForReadPhoneState(PERMISSION_READ_STATE)
-            } else {
-                loadDataUsage()
-            }
+            obtainUserData()
         }
     }
 
@@ -143,6 +157,8 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         usageWidget = usage
         loadingWidget = loading
         wrapperWidget = wrapper
+        progressWidget = progressBar
+        textProgressWidget = textProgres
     }
 
     @SuppressLint("NewApi", "HardwareIds")
@@ -166,7 +182,18 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     @SuppressLint("SetTextI18n")
     @RequiresApi(Build.VERSION_CODES.M)
     private fun calculateDataUsage() {
-       usageWidget.text = "${mobileData.rxBytes / 1000000.0} MB"
+        val usedMB = mobileData.rxBytes / 1000000.0
+        usageWidget.text = "$usedMB MB"
+
+        progressWidget.progress = calculatePercentage(usedMB)
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun calculatePercentage(used: Double): Int {
+        val percentage = (used/mobilePlanInMB) * 100
+        textProgressWidget.text = "$used / $mobilePlanInMB ($percentage)%"
+
+        return percentage.toInt()
     }
 
     private fun initPrefs() {
