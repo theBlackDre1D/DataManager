@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fernandocejas.sample.core.platform
+package com.example.seremtinameno.datamanager.core.platform
 
 import android.content.Context
-import com.fernandocejas.sample.core.extension.networkInfo
+import com.example.seremtinameno.datamanager.core.extension.networkInfo
 import javax.inject.Inject
 import javax.inject.Singleton
 

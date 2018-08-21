@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fernandocejas.sample.core.exception
+package com.example.seremtinameno.datamanager.core.exception
 
 /**
  * Base Class for handling errors/failures/exceptions.
@@ -22,6 +22,7 @@ package com.fernandocejas.sample.core.exception
 sealed class Failure {
     class NetworkConnection: Failure()
     class ServerError: Failure()
+    class PermissionError: Failure()
 
     /** * Extend this class for feature specific failures.*/
     abstract class FeatureFailure: Failure()

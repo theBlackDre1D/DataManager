@@ -8,8 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.seremtinameno.datamanager.AndroidApplication
-import com.fernandocejas.sample.core.di.ApplicationComponent
-import com.fernandocejas.sample.core.platform.BaseActivity
+import com.example.seremtinameno.datamanager.core.di.ApplicationComponent
 //import com.example.seremtinameno.datamanager.core.extension.viewContainer
 import kotlinx.android.synthetic.main.progress.*
 //import kotlinx.android.synthetic.main.toolbar.progress

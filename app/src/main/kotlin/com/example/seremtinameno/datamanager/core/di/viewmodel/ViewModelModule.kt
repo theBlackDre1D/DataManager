@@ -15,11 +15,12 @@
  */
 package com.example.seremtinameno.datamanager.core.di.viewmodel
 
+import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-//import com.fernandocejas.sample.features.movies.MovieDetailsViewModel
-//import com.fernandocejas.sample.features.movies.MoviesViewModel
+import com.example.seremtinameno.datamanager.features.datausage.DataUsageViewModel
 import dagger.Binds
 import dagger.Module
+import dagger.multibindings.IntoMap
 
 @Module
 abstract class ViewModelModule {
@@ -35,4 +36,9 @@ abstract class ViewModelModule {
 //    @IntoMap
 //    @ViewModelKey(MovieDetailsViewModel::class)
 //    abstract fun bindsMovieDetailsViewModel(movieDetailsViewModel: MovieDetailsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(DataUsageViewModel::class)
+    abstract fun bindsDataUsage(dataUsage: DataUsageViewModel): ViewModel
 }

@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fernandocejas.sample.core.di
+package com.example.seremtinameno.datamanager.core.di
 
 import android.content.Context
 import com.example.seremtinameno.datamanager.AndroidApplication
 import com.example.seremtinameno.datamanager.BuildConfig
+import com.example.seremtinameno.datamanager.features.datausage.DataRepository
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -49,4 +50,7 @@ class ApplicationModule(private val application: AndroidApplication) {
     }
 
 //    @Provides @Singleton fun provideMoviesRepository(dataSource: MoviesRepository.Network): MoviesRepository = dataSource
+    @Provides
+    @Singleton
+    fun provideDataRepository(data: DataRepository.Data): DataRepository = data
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fernandocejas.sample.core.extension
+package com.example.seremtinameno.datamanager.core.extension
 
 import android.graphics.drawable.Drawable
 import android.support.annotation.LayoutRes

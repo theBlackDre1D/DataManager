@@ -43,8 +43,8 @@
 //}
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     def config = rootProject.extensions.getByName("ext")
@@ -137,6 +137,7 @@ dependencies {
     implementation applicationDependencies.prefs
     implementation applicationDependencies.butterKnife
     implementation applicationDependencies.anko_snackBar
+    implementation applicationDependencies.timber
 
     //Unit/Integration tests dependencies
     testImplementation unitTestDependencies.kotlin

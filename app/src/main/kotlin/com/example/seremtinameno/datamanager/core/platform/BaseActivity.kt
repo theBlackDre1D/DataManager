@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.fernandocejas.sample.core.platform
+package com.example.seremtinameno.datamanager.core.platform
 
+import android.arch.lifecycle.ViewModel
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
 import butterknife.ButterKnife
-import com.example.seremtinameno.datamanager.core.extension.inTransaction
-import com.example.seremtinameno.datamanager.core.platform.BaseFragment
-import org.jetbrains.anko.toast
+import javax.inject.Inject
 
 /**
  * Base Activity class with helper methods for handling fragment transactions and back button
@@ -31,6 +33,10 @@ import org.jetbrains.anko.toast
  * @see AppCompatActivity
  */
 abstract class BaseActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +54,6 @@ abstract class BaseActivity : AppCompatActivity() {
 //                    id.fragmentContainer, fragment()) }
 
     fun showMessage(context: Context, message: String) {
-//        toast(message).show()
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
@@ -56,8 +61,14 @@ abstract class BaseActivity : AppCompatActivity() {
         ButterKnife.bind(activity)
     }
 
+    inline fun <reified T : ViewModel> viewModel(factory: ViewModelProvider.Factory, body: T.() -> Unit): T {
+        val vm = ViewModelProviders.of(this, factory)[T::class.java]
+        vm.body()
+        return vm
+    }
 
 
+    abstract fun initUI()
     abstract fun fragment(): BaseFragment
     abstract fun showLoading()
     abstract fun hideLoading()

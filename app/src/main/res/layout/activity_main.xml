@@ -1,26 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:openDrawer="start">
+    tools:context=".MainActivity">
 
-    <include
-        layout="@layout/app_bar_main"
+    <include layout="@layout/loading"/>
+
+    <ScrollView
+        android:id="@+id/wrapper"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <android.support.design.widget.NavigationView
-        android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/activity_main_drawer" />
+        android:background="@color/darb_blue"
+        >
 
-</android.support.v4.widget.DrawerLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/today"
+                android:textSize="15sp"
+                android:textColor="@color/white"
+                android:layout_marginStart="@dimen/marginSide"
+                android:layout_marginTop="20dp"
+                />
+
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:orientation="horizontal"-->
+                <!--android:layout_marginEnd="@dimen/marginSide"-->
+                <!--android:layout_marginStart="@dimen/marginSide"-->
+                <!--&gt;-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_marginTop="8dp"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:orientation="vertical"-->
+                    <!--&gt;-->
+
+                    <!--<TextView-->
+                        <!--android:text="@string/data"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content" />-->
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/dataUsage"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:text="320 MB"-->
+                        <!--android:textColor="@color/white"-->
+                        <!--android:textSize="30"-->
+                        <!--/>-->
+                <!--</LinearLayout>-->
+
+
+
+            <!--</LinearLayout>-->
+
+            <TextView
+                android:id="@+id/usage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="532MB"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:textSize="60sp"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/marginSide"
+                android:layout_marginEnd="@dimen/marginSide"
+                android:layout_marginTop="8dp"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:text="@string/total_usage"
+                android:layout_marginLeft="@dimen/marginSide"
+                android:layout_marginTop="15sp"
+                />
+
+            <!--graph here-->
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:progress="50"
+                android:layout_marginStart="@dimen/marginSide"
+                android:layout_marginEnd="@dimen/marginSide"
+                android:layout_marginTop="8dp"
+                style="?android:attr/progressBarStyleHorizontal"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="238/500 (48%)"
+                android:textSize="15sp"
+                android:textColor="@color/white"
+                android:gravity="center"
+                />
+
+
+        </LinearLayout>
+    </ScrollView>
+
+
+</RelativeLayout>

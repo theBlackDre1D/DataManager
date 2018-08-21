@@ -16,10 +16,9 @@
 package com.example.seremtinameno.datamanager
 
 import android.app.Application
-import com.fernandocejas.sample.core.di.ApplicationComponent
-import com.fernandocejas.sample.core.di.ApplicationModule
-import com.fernandocejas.sample.core.di.DaggerApplicationComponent
-import com.squareup.leakcanary.BuildConfig
+import com.example.seremtinameno.datamanager.core.di.ApplicationComponent
+import com.example.seremtinameno.datamanager.core.di.ApplicationModule
+import com.example.seremtinameno.datamanager.core.di.DaggerApplicationComponent
 import com.squareup.leakcanary.LeakCanary
 
 
