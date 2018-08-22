@@ -13,11 +13,14 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Process
 import android.provider.Settings
 import android.support.annotation.RequiresApi
 import android.support.v4.app.ActivityCompat
+import android.telephony.TelephonyManager
+import android.util.Log
 import android.widget.TextView
 import android.view.View
 import android.widget.ProgressBar
@@ -35,6 +38,7 @@ import com.github.mikephil.charting.charts.LineChart
 import com.pixplicity.easyprefs.library.Prefs
 import kotlinx.android.synthetic.main.loading.*
 import timber.log.Timber
+import java.text.DecimalFormat
 import java.util.*
 import javax.inject.Inject
 
@@ -77,10 +81,12 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     private var mobilePlanInMB:                     Int = 2000
 
-    private var todayUsedMB:                        Int = 0
+    private var todayUsedMB:                        Double = 0.0
 
     private var calculated = false
     private var rendered = false
+
+    private var precision = DecimalFormat("0.00")
 
 //    @Inject
     private lateinit var totalDataUsage: DataUsageViewModel
@@ -104,6 +110,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
         delegate.setDelegate(this)
         permissionCheck()
+        testQuery()
     }
 
     companion object {
@@ -129,8 +136,11 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
             observe(dataUsage, ::renderTodayData)
             failure(failure, ::handleFailure)
         }
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.DATE, -1)
+        val secondStartDate = calendar.timeInMillis
 
-        val params = GetDataUsage.Params(this, endTime!!, endTime!!)
+        val params = GetDataUsage.Params(this, secondStartDate, endTime!!)
         todayDataUsage.loadDataUsage(params)
     }
 
@@ -140,22 +150,21 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
             val todayDataUsage = todayData!!["data"]
             val todayWifiUsage = todayData["wifi"]
 
-            todayUsedMB = (todayDataUsage!!.rxBytes / 1000000).toInt()
-            var todayWifiUsed = (todayWifiUsage!!.rxBytes / 1000000)
+            todayUsedMB = todayDataUsage!!.rxBytes / (1024.0 * 1024.0)
+            var todayWifiUsed = todayWifiUsage!!.rxBytes / (1024.0 * 1024.0)
 
-//            if (todayWifiUsed >= 1024.toLong()) {
-//                todayWifiUsed /= 1024
-//                wifiUnitsWidget.text = "GB"
-//            } else {
-//                wifiUnitsWidget.text = "MB"
-//            }
+            if (todayWifiUsed >= 1024L) {
+                todayWifiUsed /= 1024L
+                wifiUnitsWidget.text = "GB"
+            } else {
+                wifiUnitsWidget.text = "MB"
+            }
 
-            dataUsageWidget.text = todayUsedMB.toString()
-            wifiUsageWidget.text = todayWifiUsed.toString()
+            dataUsageWidget.text = precision.format(todayUsedMB)
+            wifiUsageWidget.text = precision.format(todayWifiUsed)
 
             rendered = true
         }
-
     }
 
     private fun buildParams(): GetDataUsage.Params {
@@ -165,6 +174,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     @RequiresApi(Build.VERSION_CODES.M)
     private fun renderTotalDataUsage(data: HashMap<String, NetworkStats.Bucket>?) {
         mobileData = (data!!["data"])!!
+        wifiData = (data["wifi"])!!
 
         calculateDataUsage()
     }
@@ -224,7 +234,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     @RequiresApi(Build.VERSION_CODES.M)
     private fun calculateDataUsage() {
         if (!calculated) {
-            val usedMB = mobileData.rxBytes / 1000000.0
+            val usedMB = mobileData.rxBytes / (1024.0 * 1024.0)
             progressWidget.progress = calculatePercentage(usedMB)
             calculated = true
         }
@@ -233,9 +243,38 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     @SuppressLint("SetTextI18n")
     private fun calculatePercentage(used: Double): Int {
         val percentage = (used/mobilePlanInMB) * 100
-        textProgressWidget.text = "$used / $mobilePlanInMB ($percentage)%"
+        textProgressWidget.text = "${precision.format(used)} / $mobilePlanInMB (${precision.format(percentage)})%"
 
         return percentage.toInt()
+    }
+
+    @SuppressLint("MissingPermission", "HardwareIds")
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun testQuery() {
+        val networkStatsManager = applicationContext.getSystemService(Context.NETWORK_STATS_SERVICE) as NetworkStatsManager
+        var subscriberID: String? = Prefs.getString(MainActivity.SUBSCRIBER_ID, null)
+
+        if (subscriberID == null) {
+            val manager = applicationContext.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+            subscriberID = manager.subscriberId
+
+            Prefs.putString(MainActivity.SUBSCRIBER_ID, subscriberID)
+        }
+
+        val query = networkStatsManager.queryDetails(ConnectivityManager.TYPE_MOBILE, subscriberID, 0, System.currentTimeMillis())
+
+        var totalUsage = 0L
+        var count = 0
+
+        while (query.hasNextBucket()) {
+            val bucket = NetworkStats.Bucket()
+            query.getNextBucket(bucket)
+
+            totalUsage += bucket.rxBytes
+            count++
+        }
+
+        Timber.i(totalUsage.toString())
     }
 
     private fun initPrefs() {
