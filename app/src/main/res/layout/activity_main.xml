@@ -71,35 +71,35 @@
                 <TextView
                     android:id="@+id/dataUsage"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="532"
+                    android:layout_height="match_parent"
+                    android:text="532.23"
                     android:textStyle="bold"
                     android:textColor="@color/white"
-                    android:textSize="50sp"
+                    android:textSize="30sp"
                     android:layout_gravity="center"
                     android:layout_marginTop="8dp"
                     />
 
                 <TextView
                     android:id="@+id/dataUnits"
-                    android:gravity="bottom"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_marginBottom="7dp"
+                    android:layout_marginStart="5dp"
+                    android:gravity="bottom"
                     android:text="MB"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginBottom="7dp"
+                    android:textSize="12sp"
                     />
 
                 <TextView
                     android:id="@+id/wifiUsage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="532"
+                    android:text="532.23"
                     android:textStyle="bold"
                     android:textColor="@color/white"
-                    android:textSize="50sp"
+                    android:textSize="30sp"
                     android:layout_gravity="center"
                     android:layout_marginTop="8dp"
                     android:layout_marginStart="50dp"
@@ -113,14 +113,11 @@
                     android:layout_height="match_parent"
                     android:text="MB"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
+                    android:textSize="12sp"
                     android:layout_marginStart="5dp"
                     android:layout_marginBottom="7dp"
                     />
             </LinearLayout>
-
-
-            <!--graph here-->
 
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/graph"

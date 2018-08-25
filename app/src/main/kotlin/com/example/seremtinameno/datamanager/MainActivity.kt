@@ -20,7 +20,6 @@ import android.provider.Settings
 import android.support.annotation.RequiresApi
 import android.support.v4.app.ActivityCompat
 import android.telephony.TelephonyManager
-import android.util.Log
 import android.widget.TextView
 import android.view.View
 import android.widget.ProgressBar
@@ -35,12 +34,21 @@ import com.example.seremtinameno.datamanager.core.platform.BaseActivity
 import com.example.seremtinameno.datamanager.features.datausage.DataUsageViewModel
 import com.example.seremtinameno.datamanager.features.datausage.GetDataUsage
 import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.YAxis
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.interfaces.datasets.IDataSet
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.pixplicity.easyprefs.library.Prefs
 import kotlinx.android.synthetic.main.loading.*
 import timber.log.Timber
+import java.text.DateFormat
 import java.text.DecimalFormat
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 
 class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsResultCallback,
@@ -83,18 +91,20 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     private var todayUsedMB:                        Double = 0.0
 
+    private var dataPerDay =                        HashMap<String, Long>()
+
     private var calculated = false
     private var rendered = false
 
     private var precision = DecimalFormat("0.00")
 
 //    @Inject
-    private lateinit var totalDataUsage: DataUsageViewModel
+    private lateinit var totalDataUsage:            DataUsageViewModel
 
-    private lateinit var todayDataUsage: DataUsageViewModel
+    private lateinit var todayDataUsage:            DataUsageViewModel
 
     @Inject
-    lateinit var delegate: PermissionProvider
+    lateinit var delegate:                          PermissionProvider
 
     @TargetApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -111,6 +121,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         delegate.setDelegate(this)
         permissionCheck()
         testQuery()
+        fakeEntrees()
     }
 
     companion object {
@@ -128,7 +139,6 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         val params = buildParams()
         totalDataUsage.loadDataUsage(params)
 
-        loadTodayDataUsage()
     }
 
     private fun loadTodayDataUsage() {
@@ -195,13 +205,18 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         }
     }
 
+    private fun loadData() {
+            loadTodayDataUsage()
+            loadTotalDataUsage()
+    }
+
     private fun obtainUserData() {
         val permission = delegate.checkPermissionReadPhoneState()
         if (!permission) {
             Timber.d("Asking for permission")
             delegate.askForReadPhoneState(PERMISSION_READ_STATE)
         } else {
-            loadTotalDataUsage()
+            loadData()
         }
     }
 
@@ -248,6 +263,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         return percentage.toInt()
     }
 
+    @TargetApi(Build.VERSION_CODES.N)
     @SuppressLint("MissingPermission", "HardwareIds")
     @RequiresApi(Build.VERSION_CODES.M)
     private fun testQuery() {
@@ -263,18 +279,52 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
         val query = networkStatsManager.queryDetails(ConnectivityManager.TYPE_MOBILE, subscriberID, 0, System.currentTimeMillis())
 
-        var totalUsage = 0L
-        var count = 0
+//        var totalUsage = 0L
+//        var count = 0
+        var previousDate = ""
 
         while (query.hasNextBucket()) {
             val bucket = NetworkStats.Bucket()
             query.getNextBucket(bucket)
+            val currentBucketDate = DateFormat.getDateInstance().format(bucket.startTimeStamp)
 
-            totalUsage += bucket.rxBytes
-            count++
+            if (previousDate == "" || previousDate != currentBucketDate) {
+                dataPerDay[currentBucketDate] = bucket.rxBytes
+            } else if (dataPerDay.containsKey(currentBucketDate)) {
+                val currentValue = dataPerDay[currentBucketDate]
+                if (currentValue != null) {
+                    dataPerDay.replace(currentBucketDate, currentValue + bucket.rxBytes)
+                }
+            }
+//            totalUsage += bucket.rxBytes
+//            count++
+            previousDate = currentBucketDate
+        }
+    }
+
+    private fun fakeEntrees() {
+        val list = ArrayList<Entry>()
+
+//        for (i in 1..20) {
+//            val newEntry = Entry(i.toFloat(), 100000f + i * 200)
+//            list.add(newEntry)
+//        }
+        var position = 0f
+        for (i in dataPerDay) {
+            val newEntry = Entry(position, i.value.toFloat())
+            list.add(newEntry)
+            position++
         }
 
-        Timber.i(totalUsage.toString())
+        val company = LineDataSet(list, "Company")
+        company.axisDependency = YAxis.AxisDependency.LEFT
+
+        val dataSet = ArrayList<ILineDataSet>()
+        dataSet.add(company)
+
+        val lineData = LineData(dataSet)
+        graphWidget.data = lineData
+        graphWidget.invalidate()
     }
 
     private fun initPrefs() {
@@ -299,7 +349,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
             PERMISSION_READ_STATE -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Timber.d("Permission to read phone stats granted")
-                    loadTotalDataUsage()
+                    loadData()
                 } else {
                     Timber.d("Permission to read phone stats denied")
                     showMessage(this, "Permission denied")
