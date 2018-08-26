@@ -23,7 +23,10 @@ import android.telephony.TelephonyManager
 import android.widget.TextView
 import android.view.View
 import android.widget.ProgressBar
+import android.widget.RelativeLayout
 import android.widget.ScrollView
+import butterknife.BindView
+import butterknife.ButterKnife
 import com.example.seremtinameno.datamanager.core.permissions.PermissionProvider
 import com.example.seremtinameno.datamanager.core.platform.BaseFragment
 import com.example.seremtinameno.datamanager.core.di.ApplicationComponent
@@ -33,15 +36,12 @@ import com.example.seremtinameno.datamanager.core.extension.observe
 import com.example.seremtinameno.datamanager.core.platform.BaseActivity
 import com.example.seremtinameno.datamanager.features.datausage.DataUsageViewModel
 import com.example.seremtinameno.datamanager.features.datausage.GetDataUsage
-import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.YAxis
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.interfaces.datasets.IDataSet
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import com.github.mikephil.charting.data.*
 import com.pixplicity.easyprefs.library.Prefs
 import kotlinx.android.synthetic.main.loading.*
+import kotlinx.android.synthetic.main.loading.view.*
 import timber.log.Timber
 import java.text.DateFormat
 import java.text.DecimalFormat
@@ -69,15 +69,13 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     private lateinit var textProgressWidget:        TextView
 
-    private lateinit var graphWidget:               LineChart
+    private lateinit var graphWidget:               BarChart
 
     private lateinit var wifiUsageWidget:           TextView
 
     private lateinit var wifiUnitsWidget:           TextView
 
     private lateinit var dataUnitsWidget:           TextView
-
-//    private lateinit var networkStatsManager:       NetworkStatsManager
 
     private lateinit var wifiData:                  NetworkStats.Bucket
 
@@ -112,7 +110,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         setContentView(R.layout.activity_main)
 
         initUI()
-        showLoading()
+//        showLoading()
         appComponent.inject(this)
 
         initPrefs()
@@ -208,6 +206,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     private fun loadData() {
             loadTodayDataUsage()
             loadTotalDataUsage()
+            hideLoading()
     }
 
     private fun obtainUserData() {
@@ -229,7 +228,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     override fun initUI() {
         dataUsageWidget =           dataUsage
         wifiUsageWidget =           wifiUsage
-        loadingWidget =             loading
+//        loadingWidget =             loading
         wrapperWidget =             wrapper
         progressWidget =            progressBar
         textProgressWidget =        textProgres
@@ -276,16 +275,19 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
             Prefs.putString(MainActivity.SUBSCRIBER_ID, subscriberID)
         }
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DATE, 1)
+        val nextDay = calendar.timeInMillis
 
-        val query = networkStatsManager.queryDetails(ConnectivityManager.TYPE_MOBILE, subscriberID, 0, System.currentTimeMillis())
+        val networkStats = networkStatsManager.queryDetails(ConnectivityManager.TYPE_MOBILE, subscriberID, 0, nextDay)
 
 //        var totalUsage = 0L
 //        var count = 0
         var previousDate = ""
 
-        while (query.hasNextBucket()) {
+        while (networkStats.hasNextBucket()) {
             val bucket = NetworkStats.Bucket()
-            query.getNextBucket(bucket)
+            networkStats.getNextBucket(bucket)
             val currentBucketDate = DateFormat.getDateInstance().format(bucket.startTimeStamp)
 
             if (previousDate == "" || previousDate != currentBucketDate) {
@@ -296,14 +298,14 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
                     dataPerDay.replace(currentBucketDate, currentValue + bucket.rxBytes)
                 }
             }
-//            totalUsage += bucket.rxBytes
-//            count++
             previousDate = currentBucketDate
         }
+
+        print("")
     }
 
     private fun fakeEntrees() {
-        val list = ArrayList<Entry>()
+        val list = ArrayList<BarEntry>()
 
 //        for (i in 1..20) {
 //            val newEntry = Entry(i.toFloat(), 100000f + i * 200)
@@ -311,19 +313,18 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 //        }
         var position = 0f
         for (i in dataPerDay) {
-            val newEntry = Entry(position, i.value.toFloat())
+            val newEntry = BarEntry(position, i.value.toFloat() * (1024f * 1024f))
             list.add(newEntry)
             position++
         }
 
-        val company = LineDataSet(list, "Company")
+        val company = BarDataSet(list, "Company")
         company.axisDependency = YAxis.AxisDependency.LEFT
 
-        val dataSet = ArrayList<ILineDataSet>()
-        dataSet.add(company)
+        val data = BarData(company)
+        data.barWidth = 0.9f
 
-        val lineData = LineData(dataSet)
-        graphWidget.data = lineData
+        graphWidget.data = data
         graphWidget.invalidate()
     }
 
@@ -364,11 +365,11 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     }
 
     override fun showLoading() {
-        loadingWidget.visibility = View.VISIBLE
+//        loadingWidget.visibility = View.VISIBLE
     }
 
     override fun hideLoading() {
-        loadingWidget.visibility = View.GONE
+//        loadingWidget.visibility = View.GONE
     }
 
     override fun getActivity(): BaseActivity {
