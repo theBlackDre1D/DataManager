@@ -16,7 +16,7 @@
 package com.example.seremtinameno.datamanager.core.di
 
 import com.example.seremtinameno.datamanager.AndroidApplication
-import com.example.seremtinameno.datamanager.MainActivity
+import com.example.seremtinameno.datamanager.features.datausage.MainActivity
 import com.example.seremtinameno.datamanager.core.di.viewmodel.ViewModelModule
 //import com.fernandocejas.sample.features.movies.MovieDetailsFragment
 //import com.fernandocejas.sample.features.movies.MoviesFragment

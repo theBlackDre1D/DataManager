@@ -8,7 +8,6 @@ import android.net.ConnectivityManager
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.telephony.TelephonyManager
-import com.example.seremtinameno.datamanager.MainActivity
 import com.example.seremtinameno.datamanager.core.exception.Failure
 import com.example.seremtinameno.datamanager.core.functional.Either
 import com.example.seremtinameno.datamanager.core.permissions.PermissionProvider

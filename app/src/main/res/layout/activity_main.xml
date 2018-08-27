@@ -3,9 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
-
-    <include layout="@layout/loading" />
+    tools:context=".features.datausage.MainActivity">
 
     <ScrollView
         android:id="@+id/wrapper"
@@ -125,12 +123,6 @@
                 android:layout_height="200dp"
                 />
 
-            <!--<com.anychart.anychart.AnyChartView-->
-                <!--android:id="@+id/anyChart"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="200dp"-->
-                <!--/>-->
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -164,7 +156,9 @@
 
 
         </LinearLayout>
+
     </ScrollView>
 
+    <include layout="@layout/loading" />
 
 </RelativeLayout>

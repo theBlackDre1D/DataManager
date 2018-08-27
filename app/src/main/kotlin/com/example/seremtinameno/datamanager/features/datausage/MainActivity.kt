@@ -1,4 +1,4 @@
-package com.example.seremtinameno.datamanager
+package com.example.seremtinameno.datamanager.features.datausage
 
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
@@ -26,6 +26,8 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.ScrollView
 import com.anychart.anychart.*
+import com.example.seremtinameno.datamanager.AndroidApplication
+import com.example.seremtinameno.datamanager.R
 import com.example.seremtinameno.datamanager.core.permissions.PermissionProvider
 import com.example.seremtinameno.datamanager.core.platform.BaseFragment
 import com.example.seremtinameno.datamanager.core.di.ApplicationComponent
@@ -33,16 +35,14 @@ import com.example.seremtinameno.datamanager.core.exception.Failure
 import com.example.seremtinameno.datamanager.core.extension.failure
 import com.example.seremtinameno.datamanager.core.extension.observe
 import com.example.seremtinameno.datamanager.core.platform.BaseActivity
-import com.example.seremtinameno.datamanager.features.datausage.DataUsageViewModel
-import com.example.seremtinameno.datamanager.features.datausage.GetDataUsage
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.pixplicity.easyprefs.library.Prefs
+import kotlinx.android.synthetic.main.loading.*
 import timber.log.Timber
 import java.text.DateFormat
 import java.text.DecimalFormat
-import java.util.*
 import java.util.Calendar
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -68,8 +68,6 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     private lateinit var textProgressWidget:        TextView
 
     private lateinit var graphWidget:               BarChart
-
-    private lateinit var anyGraph:                  AnyChartView
 
     private lateinit var wifiUsageWidget:           TextView
 
@@ -110,7 +108,6 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         setContentView(R.layout.activity_main)
 
         initUI()
-//        showLoading()
         appComponent.inject(this)
 
         initPrefs()
@@ -119,7 +116,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         delegate.setDelegate(this)
         permissionCheck()
         testQuery()
-        fakeEntrees()
+        showInGraph()
     }
 
     companion object {
@@ -136,7 +133,6 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
         val params = buildParams()
         totalDataUsage.loadDataUsage(params)
-
     }
 
     private fun loadTodayDataUsage() {
@@ -204,9 +200,12 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     }
 
     private fun loadData() {
-            loadTodayDataUsage()
-            loadTotalDataUsage()
-            hideLoading()
+        showLoading()
+
+        loadTodayDataUsage()
+        loadTotalDataUsage()
+
+        hideLoading()
     }
 
     private fun obtainUserData() {
@@ -228,14 +227,13 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     override fun initUI() {
         dataUsageWidget =           dataUsage
         wifiUsageWidget =           wifiUsage
-//        loadingWidget =             loading
+        loadingWidget =             loading
         wrapperWidget =             wrapper
         progressWidget =            progressBar
         textProgressWidget =        textProgres
         graphWidget =               graph
         wifiUnitsWidget =           wifiUnits
         dataUnitsWidget =           dataUnits
-//        anyGraph =                  anyChart
     }
 
     private fun initDates() {
@@ -268,20 +266,20 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     @RequiresApi(Build.VERSION_CODES.M)
     private fun testQuery() {
         val networkStatsManager = applicationContext.getSystemService(Context.NETWORK_STATS_SERVICE) as NetworkStatsManager
-        var subscriberID: String? = Prefs.getString(MainActivity.SUBSCRIBER_ID, null)
+        var subscriberID: String? = Prefs.getString(SUBSCRIBER_ID, null)
 
         if (subscriberID == null) {
             val manager = applicationContext.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
             subscriberID = manager.subscriberId
 
-            Prefs.putString(MainActivity.SUBSCRIBER_ID, subscriberID)
+            Prefs.putString(SUBSCRIBER_ID, subscriberID)
         }
 
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.DATE, 1)
         val tomorrow = calendar.timeInMillis
 
-        val networkStats = networkStatsManager.queryDetails(ConnectivityManager.TYPE_WIFI, subscriberID, 0, tomorrow)
+        val networkStats = networkStatsManager.queryDetails(ConnectivityManager.TYPE_WIFI, subscriberID, startTime!!, tomorrow)
 
         var previousDate = ""
 
@@ -302,9 +300,9 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         }
     }
 
-    private fun fakeEntrees() {
+    private fun showInGraph() {
         val list = ArrayList<BarEntry>()
-        
+
         var position = 0f
         for (i in dataPerDay) {
             val newEntry = BarEntry(position, i.value.toFloat() / (1024f * 1024f))
@@ -312,8 +310,9 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
             position++
         }
 
-        val company = BarDataSet(list, "Company")
+        val company = BarDataSet(list, "Monthly usage")
         company.axisDependency = YAxis.AxisDependency.LEFT
+//        company.color = Color.GREEN
 
         val data = BarData(company)
         data.barWidth = 0.9f
@@ -322,6 +321,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         graphWidget.axisLeft.textColor = Color.WHITE
         graphWidget.axisRight.textColor = Color.WHITE
         graphWidget.legend.textColor = Color.WHITE
+        graphWidget.description.text = ""
         graphWidget.invalidate()
     }
 
@@ -376,11 +376,11 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     }
 
     override fun showLoading() {
-//        loadingWidget.visibility = View.VISIBLE
+        loadingWidget.visibility = View.VISIBLE
     }
 
     override fun hideLoading() {
-//        loadingWidget.visibility = View.GONE
+        loadingWidget.visibility = View.GONE
     }
 
     override fun getActivity(): BaseActivity {
