@@ -23,10 +23,8 @@ import android.telephony.TelephonyManager
 import android.widget.TextView
 import android.view.View
 import android.widget.ProgressBar
-import android.widget.RelativeLayout
 import android.widget.ScrollView
-import butterknife.BindView
-import butterknife.ButterKnife
+import com.anychart.anychart.*
 import com.example.seremtinameno.datamanager.core.permissions.PermissionProvider
 import com.example.seremtinameno.datamanager.core.platform.BaseFragment
 import com.example.seremtinameno.datamanager.core.di.ApplicationComponent
@@ -40,12 +38,11 @@ import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.pixplicity.easyprefs.library.Prefs
-import kotlinx.android.synthetic.main.loading.*
-import kotlinx.android.synthetic.main.loading.view.*
 import timber.log.Timber
 import java.text.DateFormat
 import java.text.DecimalFormat
 import java.util.*
+import java.util.Calendar
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -69,7 +66,9 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     private lateinit var textProgressWidget:        TextView
 
-    private lateinit var graphWidget:               BarChart
+//    private lateinit var graphWidget:               BarChart
+
+    private lateinit var anyGraph:                  AnyChartView
 
     private lateinit var wifiUsageWidget:           TextView
 
@@ -119,7 +118,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         delegate.setDelegate(this)
         permissionCheck()
         testQuery()
-        fakeEntrees()
+        fakeEntrees2()
     }
 
     companion object {
@@ -232,9 +231,10 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         wrapperWidget =             wrapper
         progressWidget =            progressBar
         textProgressWidget =        textProgres
-        graphWidget =               graph
+//        graphWidget =               graph
         wifiUnitsWidget =           wifiUnits
         dataUnitsWidget =           dataUnits
+        anyGraph =                  anyChart
     }
 
     private fun initDates() {
@@ -275,14 +275,13 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
             Prefs.putString(MainActivity.SUBSCRIBER_ID, subscriberID)
         }
+
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.DATE, 1)
-        val nextDay = calendar.timeInMillis
+        val tomorrow = calendar.timeInMillis
 
-        val networkStats = networkStatsManager.queryDetails(ConnectivityManager.TYPE_MOBILE, subscriberID, 0, nextDay)
+        val networkStats = networkStatsManager.queryDetails(ConnectivityManager.TYPE_MOBILE, subscriberID, 0, tomorrow)
 
-//        var totalUsage = 0L
-//        var count = 0
         var previousDate = ""
 
         while (networkStats.hasNextBucket()) {
@@ -300,32 +299,44 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
             }
             previousDate = currentBucketDate
         }
-
-        print("")
     }
 
-    private fun fakeEntrees() {
-        val list = ArrayList<BarEntry>()
-
-//        for (i in 1..20) {
-//            val newEntry = Entry(i.toFloat(), 100000f + i * 200)
+//    private fun fakeEntrees() {
+//        val list = ArrayList<BarEntry>()
+//
+////        for (i in 1..20) {
+////            val newEntry = Entry(i.toFloat(), 100000f + i * 200)
+////            list.add(newEntry)
+////        }
+//        var position = 0f
+//        for (i in dataPerDay) {
+//            val newEntry = BarEntry(position, i.value.toFloat() / (1024f * 1024f))
 //            list.add(newEntry)
+//            position++
 //        }
-        var position = 0f
+//
+//        val company = BarDataSet(list, "Company")
+//        company.axisDependency = YAxis.AxisDependency.LEFT
+//
+//        val data = BarData(company)
+//        data.barWidth = 0.9f
+//
+//        graphWidget.data = data
+//        graphWidget.invalidate()
+//    }
+
+    private fun fakeEntrees2() {
+        val data = ArrayList<DataEntry>()
+        val chart = AnyChart.column()
+//        var position = 0f
         for (i in dataPerDay) {
-            val newEntry = BarEntry(position, i.value.toFloat() * (1024f * 1024f))
-            list.add(newEntry)
-            position++
+            val newEntry = ValueDataEntry(i.key, i.value)
+            data.add(newEntry)
+//            position++
         }
 
-        val company = BarDataSet(list, "Company")
-        company.axisDependency = YAxis.AxisDependency.LEFT
-
-        val data = BarData(company)
-        data.barWidth = 0.9f
-
-        graphWidget.data = data
-        graphWidget.invalidate()
+        chart.setData(data)
+        anyGraph.setChart(chart)
     }
 
     private fun initPrefs() {

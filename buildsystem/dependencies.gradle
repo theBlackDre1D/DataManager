@@ -25,6 +25,7 @@ ext {
   timber_version = '4.7.1'
   avLibrary_version = '2.1.3'
   charts_version = 'v3.0.3'
+  anyChart_version = '0.3.0'
 
   //Unit Testing
   robolectric_version = '3.8'
@@ -63,7 +64,8 @@ ext {
       anko_snackBar:              "org.jetbrains.anko:anko-design:$anko_version",
       timber:                     "com.jakewharton.timber:timber:$timber_version",
       progressBar:                "com.wang.avi:library:$avLibrary_version",
-      charts:                     "com.github.PhilJay:MPAndroidChart:$charts_version"
+      charts:                     "com.github.PhilJay:MPAndroidChart:$charts_version",
+      anyChart:                   "com.github.AnyChart:AnyChart-Android:$anyChart_version"
   ]
 
   unitTesting = [

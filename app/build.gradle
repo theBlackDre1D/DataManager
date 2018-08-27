@@ -140,6 +140,7 @@ dependencies {
     implementation applicationDependencies.timber
     implementation applicationDependencies.progressBar
     implementation applicationDependencies.charts
+    implementation applicationDependencies.anyChart
 
     //Unit/Integration tests dependencies
     testImplementation unitTestDependencies.kotlin
