@@ -119,16 +119,17 @@
                     />
             </LinearLayout>
 
-            <!--<com.github.mikephil.charting.charts.BarChart-->
-                <!--android:id="@+id/graph"-->
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/graph"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                />
+
+            <!--<com.anychart.anychart.AnyChartView-->
+                <!--android:id="@+id/anyChart"-->
                 <!--android:layout_width="match_parent"-->
                 <!--android:layout_height="200dp"-->
                 <!--/>-->
-
-            <com.anychart.anychart.AnyChartView
-                android:id="@+id/anyChart"
-                android:layout_width="match_parent"
-                android:layout_height="200dp" />
 
             <TextView
                 android:layout_width="match_parent"

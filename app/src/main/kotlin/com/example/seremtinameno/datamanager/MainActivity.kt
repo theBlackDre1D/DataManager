@@ -13,6 +13,7 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Process
@@ -66,7 +67,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     private lateinit var textProgressWidget:        TextView
 
-//    private lateinit var graphWidget:               BarChart
+    private lateinit var graphWidget:               BarChart
 
     private lateinit var anyGraph:                  AnyChartView
 
@@ -118,7 +119,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         delegate.setDelegate(this)
         permissionCheck()
         testQuery()
-        fakeEntrees2()
+        fakeEntrees()
     }
 
     companion object {
@@ -231,10 +232,10 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         wrapperWidget =             wrapper
         progressWidget =            progressBar
         textProgressWidget =        textProgres
-//        graphWidget =               graph
+        graphWidget =               graph
         wifiUnitsWidget =           wifiUnits
         dataUnitsWidget =           dataUnits
-        anyGraph =                  anyChart
+//        anyGraph =                  anyChart
     }
 
     private fun initDates() {
@@ -280,7 +281,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         calendar.add(Calendar.DATE, 1)
         val tomorrow = calendar.timeInMillis
 
-        val networkStats = networkStatsManager.queryDetails(ConnectivityManager.TYPE_MOBILE, subscriberID, 0, tomorrow)
+        val networkStats = networkStatsManager.queryDetails(ConnectivityManager.TYPE_WIFI, subscriberID, 0, tomorrow)
 
         var previousDate = ""
 
@@ -301,43 +302,42 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         }
     }
 
-//    private fun fakeEntrees() {
-//        val list = ArrayList<BarEntry>()
-//
-////        for (i in 1..20) {
-////            val newEntry = Entry(i.toFloat(), 100000f + i * 200)
-////            list.add(newEntry)
-////        }
-//        var position = 0f
-//        for (i in dataPerDay) {
-//            val newEntry = BarEntry(position, i.value.toFloat() / (1024f * 1024f))
-//            list.add(newEntry)
-//            position++
-//        }
-//
-//        val company = BarDataSet(list, "Company")
-//        company.axisDependency = YAxis.AxisDependency.LEFT
-//
-//        val data = BarData(company)
-//        data.barWidth = 0.9f
-//
-//        graphWidget.data = data
-//        graphWidget.invalidate()
-//    }
-
-    private fun fakeEntrees2() {
-        val data = ArrayList<DataEntry>()
-        val chart = AnyChart.column()
-//        var position = 0f
+    private fun fakeEntrees() {
+        val list = ArrayList<BarEntry>()
+        
+        var position = 0f
         for (i in dataPerDay) {
-            val newEntry = ValueDataEntry(i.key, i.value)
-            data.add(newEntry)
-//            position++
+            val newEntry = BarEntry(position, i.value.toFloat() / (1024f * 1024f))
+            list.add(newEntry)
+            position++
         }
 
-        chart.setData(data)
-        anyGraph.setChart(chart)
+        val company = BarDataSet(list, "Company")
+        company.axisDependency = YAxis.AxisDependency.LEFT
+
+        val data = BarData(company)
+        data.barWidth = 0.9f
+
+        graphWidget.data = data
+        graphWidget.axisLeft.textColor = Color.WHITE
+        graphWidget.axisRight.textColor = Color.WHITE
+        graphWidget.legend.textColor = Color.WHITE
+        graphWidget.invalidate()
     }
+
+//    private fun fakeEntrees2() {
+//        val data = ArrayList<DataEntry>()
+//        val chart = AnyChart.column()
+//
+//        for (i in dataPerDay) {
+//            val newEntry = ValueDataEntry(i.key, i.value / (1024f * 1024f))
+//            data.add(newEntry)
+//        }
+//
+//        chart.setData(data)
+//        anyGraph.setBackgroundColor(resources.getColor(R.color.darb_blue))
+//        anyGraph.setChart(chart)
+//    }
 
     private fun initPrefs() {
         Prefs.Builder()
