@@ -57,7 +57,7 @@ abstract class BaseActivity : AppCompatActivity() {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
-    fun butterKnifeInject(activity: BaseActivity) {
+    fun injectUI(activity: BaseActivity) {
         ButterKnife.bind(activity)
     }
 
@@ -68,7 +68,7 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
 
-    abstract fun initUI()
+//    abstract fun initUI()
     abstract fun fragment(): BaseFragment
     abstract fun showLoading()
     abstract fun hideLoading()

@@ -3,7 +3,10 @@ package com.example.seremtinameno.datamanager.features.datausage.daily
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
+import android.support.v4.view.ViewPager
+import butterknife.BindView
 import com.example.seremtinameno.datamanager.AndroidApplication
 import com.example.seremtinameno.datamanager.R
 import com.example.seremtinameno.datamanager.core.di.ApplicationComponent
@@ -11,21 +14,13 @@ import com.example.seremtinameno.datamanager.core.platform.BaseActivity
 import com.example.seremtinameno.datamanager.core.platform.BaseFragment
 import com.ncapdevi.fragnav.FragNavController
 
-const val INDEX_RECENTS = FragNavController.TAB1
-const val INDEX_FAVORITES = FragNavController.TAB2
-const val INDEX_NEARBY = FragNavController.TAB3
-const val INDEX_FRIENDS = FragNavController.TAB4
-const val INDEX_FOOD = FragNavController.TAB5
-const val INDEX_RECENTS2 = FragNavController.TAB6
-const val INDEX_FAVORITES2 = FragNavController.TAB7
-const val INDEX_NEARBY2 = FragNavController.TAB8
-const val INDEX_FRIENDS2 = FragNavController.TAB9
-const val INDEX_FOOD2 = FragNavController.TAB10
-const val INDEX_RECENTS3 = FragNavController.TAB11
-const val INDEX_FAVORITES3 = FragNavController.TAB12
-
 class TestActivity : BaseActivity(), FragNavController.RootFragmentListener
 {
+    @BindView(R.id.viewPager)
+    lateinit var viewPager: ViewPager
+
+    @BindView(R.id.tabs)
+    lateinit var tabLayout: TabLayout
 
     private val appComponent: ApplicationComponent by lazy(mode = LazyThreadSafetyMode.NONE) {
         (application as AndroidApplication).appComponent
@@ -35,9 +30,23 @@ class TestActivity : BaseActivity(), FragNavController.RootFragmentListener
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_test)
 
+        injectUI(this)
         appComponent.inject(this)
+//        initBottomBar(savedInstanceState)
+        initFragments()
+    }
 
-        initBottomBar(savedInstanceState)
+    private fun initFragments() {
+        setupViewPager(viewPager)
+        tabLayout.setupWithViewPager(viewPager)
+    }
+
+    private fun setupViewPager(viewPager: ViewPager) {
+        val adapter = ViewPagerAdapater(supportFragmentManager)
+        adapter.addFragment(DailyUsageFragment.newInstance(0), "Daily usage")
+        adapter.addFragment(TestFragment1.newInstance(0), "Test1")
+        adapter.addFragment(TestFragment2.newInstance(0), "Test2")
+        viewPager.adapter = adapter
     }
 
     private fun initBottomBar(savedInstanceState: Bundle?) {
@@ -60,10 +69,6 @@ class TestActivity : BaseActivity(), FragNavController.RootFragmentListener
     }
 
     override fun getRootFragment(index: Int): Fragment {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun initUI() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

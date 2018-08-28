@@ -145,7 +145,7 @@
                 />
 
             <TextView
-                android:id="@+id/textProgres"
+                android:id="@+id/textProgress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="238/500 (48%)"

@@ -3,7 +3,6 @@ package com.example.seremtinameno.datamanager.features.datausage
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.os.Bundle
-import kotlinx.android.synthetic.main.activity_main.*
 import android.app.AppOpsManager.OPSTR_GET_USAGE_STATS
 import android.app.AppOpsManager
 import android.app.AppOpsManager.MODE_ALLOWED
@@ -20,15 +19,13 @@ import android.os.Process
 import android.provider.Settings
 import android.support.annotation.RequiresApi
 import android.support.v4.app.ActivityCompat
-import android.support.v4.app.Fragment
 import android.telephony.TelephonyManager
 import android.widget.TextView
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.ScrollView
-import butterknife.ButterKnife
+import butterknife.BindView
 import butterknife.OnClick
-import com.anychart.anychart.*
 import com.example.seremtinameno.datamanager.AndroidApplication
 import com.example.seremtinameno.datamanager.R
 import com.example.seremtinameno.datamanager.core.permissions.PermissionProvider
@@ -38,16 +35,11 @@ import com.example.seremtinameno.datamanager.core.exception.Failure
 import com.example.seremtinameno.datamanager.core.extension.failure
 import com.example.seremtinameno.datamanager.core.extension.observe
 import com.example.seremtinameno.datamanager.core.platform.BaseActivity
-import com.example.seremtinameno.datamanager.features.datausage.daily.DailyUsageFragment
 import com.example.seremtinameno.datamanager.features.datausage.daily.TestActivity
-import com.example.seremtinameno.datamanager.features.datausage.daily.TestFragment1
-import com.example.seremtinameno.datamanager.features.datausage.daily.TestFragment2
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
-import com.ncapdevi.fragnav.FragNavController
 import com.pixplicity.easyprefs.library.Prefs
-import kotlinx.android.synthetic.main.loading.*
 import timber.log.Timber
 import java.text.DateFormat
 import java.text.DecimalFormat
@@ -66,23 +58,32 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         (application as AndroidApplication).appComponent
     }
 
-    private lateinit var dataUsageWidget:           TextView
+    @BindView(R.id.dataUsage)
+    lateinit var dataUsageWidget:           TextView
 
-    private lateinit var loadingWidget:             View
+    @BindView(R.id.loading)
+    lateinit var loadingWidget:             View
 
-    private lateinit var wrapperWidget:             ScrollView
+    @BindView(R.id.wrapper)
+    lateinit var wrapperWidget:             ScrollView
 
-    private lateinit var progressWidget:            ProgressBar
+    @BindView(R.id.progressBar)
+    lateinit var progressWidget:            ProgressBar
 
-    private lateinit var textProgressWidget:        TextView
+    @BindView(R.id.textProgress)
+    lateinit var textProgressWidget:        TextView
 
-    private lateinit var graphWidget:               BarChart
+    @BindView(R.id.graph)
+    lateinit var graphWidget:               BarChart
 
-    private lateinit var wifiUsageWidget:           TextView
+    @BindView(R.id.wifiUsage)
+    lateinit var wifiUsageWidget:           TextView
 
-    private lateinit var wifiUnitsWidget:           TextView
+    @BindView(R.id.wifiUnits)
+    lateinit var wifiUnitsWidget:           TextView
 
-    private lateinit var dataUnitsWidget:           TextView
+    @BindView(R.id.dataUnits)
+    lateinit var dataUnitsWidget:           TextView
 
     private lateinit var wifiData:                  NetworkStats.Bucket
 
@@ -98,10 +99,10 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     private var dataPerDay =                        HashMap<String, Long>()
 
-    private var calculated = false
-    private var rendered = false
+    private var calculated =                        false
+    private var rendered =                          false
 
-    private var precision = DecimalFormat("0.00")
+    private var precision =                         DecimalFormat("0.00")
 
 //    @Inject
     private lateinit var totalDataUsage:            DataUsageViewModel
@@ -116,8 +117,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        initUI()
-        butterKnifeInject(this)
+        injectUI(this)
         appComponent.inject(this)
 
         initPrefs()
@@ -180,7 +180,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
                 wifiUnitsWidget.text = "MB"
             }
 
-            dataUsageWidget.text = precision.format(todayUsedMB)
+//            dataUsageWidget.text = precision.format(todayUsedMB)
             wifiUsageWidget.text = precision.format(todayWifiUsed)
 
             rendered = true
@@ -240,17 +240,17 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         }
     }
 
-    override fun initUI() {
-        dataUsageWidget =           dataUsage
-        wifiUsageWidget =           wifiUsage
-        loadingWidget =             loading
-        wrapperWidget =             wrapper
-        progressWidget =            progressBar
-        textProgressWidget =        textProgres
-        graphWidget =               graph
-        wifiUnitsWidget =           wifiUnits
-        dataUnitsWidget =           dataUnits
-    }
+//    override fun initUI() {
+//        dataUsageWidget =           dataUsage
+//        wifiUsageWidget =           wifiUsage
+//        loadingWidget =             loading
+//        wrapperWidget =             wrapper
+//        progressWidget =            progressBar
+//        textProgressWidget =        textProgress
+//        graphWidget =               graph
+//        wifiUnitsWidget =           wifiUnits
+//        dataUnitsWidget =           dataUnits
+//    }
 
     private fun initDates() {
         val calendar = Calendar.getInstance()
@@ -313,6 +313,13 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
                 }
             }
             previousDate = currentBucketDate
+        }
+
+        val today = dataPerDay[DateFormat.getDateInstance().format(endTime)]
+        today?.let {
+            todayUsedMB = today.toDouble()
+            val formatted = precision.format(today / (1024L * 1024L))
+            dataUsageWidget.text = formatted
         }
     }
 

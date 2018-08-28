@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import butterknife.ButterKnife
 import com.example.seremtinameno.datamanager.AndroidApplication
 import com.example.seremtinameno.datamanager.core.di.ApplicationComponent
 //import com.example.seremtinameno.datamanager.core.extension.viewContainer
@@ -27,7 +28,8 @@ abstract class BaseFragment : Fragment() {
         (activity?.application as AndroidApplication).appComponent
     }
 
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
             inflater.inflate(layoutId(), container, false)
@@ -42,6 +44,10 @@ abstract class BaseFragment : Fragment() {
 
     private fun progressStatus(viewStatus: Int) =
             with(activity) { if (this is BaseActivity) this.progress.visibility = viewStatus }
+
+//    fun butterKnifeInject(fragment: BaseFragment) {
+//        ButterKnife.bind(fragment)
+//    }
 
 //    internal fun notify(@StringRes message: Int) =
 //            Snackbar.make(viewContainer, message, Snackbar.LENGTH_SHORT).show()
