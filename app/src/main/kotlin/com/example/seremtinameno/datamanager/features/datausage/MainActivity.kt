@@ -20,11 +20,14 @@ import android.os.Process
 import android.provider.Settings
 import android.support.annotation.RequiresApi
 import android.support.v4.app.ActivityCompat
+import android.support.v4.app.Fragment
 import android.telephony.TelephonyManager
 import android.widget.TextView
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.ScrollView
+import butterknife.ButterKnife
+import butterknife.OnClick
 import com.anychart.anychart.*
 import com.example.seremtinameno.datamanager.AndroidApplication
 import com.example.seremtinameno.datamanager.R
@@ -35,9 +38,14 @@ import com.example.seremtinameno.datamanager.core.exception.Failure
 import com.example.seremtinameno.datamanager.core.extension.failure
 import com.example.seremtinameno.datamanager.core.extension.observe
 import com.example.seremtinameno.datamanager.core.platform.BaseActivity
+import com.example.seremtinameno.datamanager.features.datausage.daily.DailyUsageFragment
+import com.example.seremtinameno.datamanager.features.datausage.daily.TestActivity
+import com.example.seremtinameno.datamanager.features.datausage.daily.TestFragment1
+import com.example.seremtinameno.datamanager.features.datausage.daily.TestFragment2
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
+import com.ncapdevi.fragnav.FragNavController
 import com.pixplicity.easyprefs.library.Prefs
 import kotlinx.android.synthetic.main.loading.*
 import timber.log.Timber
@@ -51,6 +59,7 @@ import kotlin.collections.HashMap
 
 class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsResultCallback,
                                             PermissionProvider.Delegate
+//                                            FragNavController.RootFragmentListener
 {
 
     private val appComponent: ApplicationComponent by lazy(mode = LazyThreadSafetyMode.NONE) {
@@ -108,6 +117,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         setContentView(R.layout.activity_main)
 
         initUI()
+        butterKnifeInject(this)
         appComponent.inject(this)
 
         initPrefs()
@@ -117,6 +127,12 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         permissionCheck()
         testQuery()
         showInGraph()
+//        initBottomBar(savedInstanceState)
+    }
+
+    @OnClick(R.id.testButton)
+    fun goToTest() {
+        startActivity(TestActivity.getCallingIntent(this))
     }
 
     companion object {
@@ -279,7 +295,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         calendar.add(Calendar.DATE, 1)
         val tomorrow = calendar.timeInMillis
 
-        val networkStats = networkStatsManager.queryDetails(ConnectivityManager.TYPE_WIFI, subscriberID, startTime!!, tomorrow)
+        val networkStats = networkStatsManager.queryDetails(ConnectivityManager.TYPE_MOBILE, subscriberID, startTime!!, tomorrow)
 
         var previousDate = ""
 
@@ -312,7 +328,6 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
         val company = BarDataSet(list, "Monthly usage")
         company.axisDependency = YAxis.AxisDependency.LEFT
-//        company.color = Color.GREEN
 
         val data = BarData(company)
         data.barWidth = 0.9f
@@ -338,6 +353,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 //        anyGraph.setBackgroundColor(resources.getColor(R.color.darb_blue))
 //        anyGraph.setChart(chart)
 //    }
+
 
     private fun initPrefs() {
         Prefs.Builder()

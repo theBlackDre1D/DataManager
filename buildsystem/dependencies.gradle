@@ -26,6 +26,7 @@ ext {
   avLibrary_version = '2.1.3'
   charts_version = 'v3.0.3'
   anyChart_version = '0.3.0'
+  fragNav_version = '2.4.0'
 
   //Unit Testing
   robolectric_version = '3.8'
@@ -61,11 +62,13 @@ ext {
       okhttpLoggingInterceptor:   "com.squareup.okhttp3:logging-interceptor:$okhttp_logging_interceptor_version",
       prefs:                      "com.pixplicity.easyprefs:library:$prefs_version",
       butterKnife:                "com.jakewharton:butterknife:$butterKnife_version",
+      butterKnifeProcessor:       "com.jakewharton:butterknife-compiler:$butterKnife_version",
       anko_snackBar:              "org.jetbrains.anko:anko-design:$anko_version",
       timber:                     "com.jakewharton.timber:timber:$timber_version",
       progressBar:                "com.wang.avi:library:$avLibrary_version",
       charts:                     "com.github.PhilJay:MPAndroidChart:$charts_version",
-      anyChart:                   "com.github.AnyChart:AnyChart-Android:$anyChart_version"
+      anyChart:                   "com.github.AnyChart:AnyChart-Android:$anyChart_version",
+      fragNav:                    "com.ncapdevi:frag-nav:$fragNav_version"
   ]
 
   unitTesting = [

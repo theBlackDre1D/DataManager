@@ -54,6 +54,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:3.1.4'
         //noinspection DifferentKotlinGradleVersion
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
     }
 }
 

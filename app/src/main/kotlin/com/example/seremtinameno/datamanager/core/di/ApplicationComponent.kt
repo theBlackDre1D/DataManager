@@ -18,6 +18,7 @@ package com.example.seremtinameno.datamanager.core.di
 import com.example.seremtinameno.datamanager.AndroidApplication
 import com.example.seremtinameno.datamanager.features.datausage.MainActivity
 import com.example.seremtinameno.datamanager.core.di.viewmodel.ViewModelModule
+import com.example.seremtinameno.datamanager.features.datausage.daily.TestActivity
 //import com.fernandocejas.sample.features.movies.MovieDetailsFragment
 //import com.fernandocejas.sample.features.movies.MoviesFragment
 //import com.fernandocejas.sample.core.navigation.RouteActivity
@@ -30,6 +31,7 @@ interface ApplicationComponent {
     fun inject(application: AndroidApplication)
 //    fun inject(routeActivity: RouteActivity)
     fun inject(activity: MainActivity)
+    fun inject(activity: TestActivity)
 
 //    fun inject(moviesFragment: MoviesFragment)
 //    fun inject(movieDetailsFragment: MovieDetailsFragment)

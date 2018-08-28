@@ -154,6 +154,13 @@
                 android:gravity="center"
                 />
 
+            <Button
+                android:id="@+id/testButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="test"
+                />
+
 
         </LinearLayout>
 
