@@ -85,32 +85,36 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     @BindView(R.id.dataUnits)
     lateinit var dataUnitsWidget:           TextView
 
-    private lateinit var wifiData:                  NetworkStats.Bucket
+    private lateinit var wifiData:          NetworkStats
 
-    private lateinit var mobileData:                NetworkStats.Bucket
+    private lateinit var mobileData:        NetworkStats
 
-    private var startTime:                          Long? = null
+    private var startTime:                  Long? = null
 
-    private var endTime:                            Long? = null
+    private var endTime:                    Long? = null
 
-    private var mobilePlanInMB:                     Int = 2000
+    private var mobilePlanInMB:             Int = 2000
 
-    private var todayUsedMB:                        Double = 0.0
+    private var todayUsedMB:                Double = 0.0
 
-    private var dataPerDay =                        HashMap<String, Long>()
+    private var totalData:                  Long = 0L
 
-    private var calculated =                        false
-    private var rendered =                          false
+    private var totalWifi:                  Long = 0L
 
-    private var precision =                         DecimalFormat("0.00")
+    private var mobileDataPerDay =          HashMap<String, Long>()
+
+    private var wifiDataPerDay =            HashMap<String, Long>()
+
+    private var calculated =                false
+    private var rendered =                  false
+
+    private var precision =                 DecimalFormat("0.00")
 
 //    @Inject
-    private lateinit var totalDataUsage:            DataUsageViewModel
-
-    private lateinit var todayDataUsage:            DataUsageViewModel
+    private lateinit var monthlyDataUsage:  DataUsageViewModel
 
     @Inject
-    lateinit var delegate:                          PermissionProvider
+    lateinit var delegate:                  PermissionProvider
 
     @TargetApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -125,9 +129,6 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
         delegate.setDelegate(this)
         permissionCheck()
-        testQuery()
-        showInGraph()
-//        initBottomBar(savedInstanceState)
     }
 
     @OnClick(R.id.testButton)
@@ -141,62 +142,93 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         const val REQUEST_CODE = 1
     }
 
-    private fun loadTotalDataUsage() {
-        totalDataUsage = viewModel(viewModelFactory) {
-            observe(dataUsage, ::renderTotalDataUsage)
+    private fun loadData() {
+        showLoading()
+
+        monthlyDataUsage = viewModel(viewModelFactory) {
+            observe(dataUsage, ::renderData)
             failure(failure, ::handleFailure)
         }
 
-        val params = buildParams()
-        totalDataUsage.loadDataUsage(params)
+        val params = GetDataUsage.Params(this)
+        monthlyDataUsage.loadDataUsage(params)
+
+        hideLoading()
     }
 
-    private fun loadTodayDataUsage() {
-        todayDataUsage = viewModel(viewModelFactory) {
-            observe(dataUsage, ::renderTodayData)
-            failure(failure, ::handleFailure)
-        }
-        val calendar = Calendar.getInstance()
-        calendar.set(Calendar.DATE, -1)
-        val secondStartDate = calendar.timeInMillis
-
-        val params = GetDataUsage.Params(this, secondStartDate, endTime!!)
-        todayDataUsage.loadDataUsage(params)
-    }
-
+    @TargetApi(Build.VERSION_CODES.N)
     @RequiresApi(Build.VERSION_CODES.M)
-    private fun renderTodayData(todayData: HashMap<String, NetworkStats.Bucket>?) {
-        if (!rendered) {
-            val todayDataUsage = todayData!!["data"]
-            val todayWifiUsage = todayData["wifi"]
-
-            todayUsedMB = todayDataUsage!!.rxBytes / (1024.0 * 1024.0)
-            var todayWifiUsed = todayWifiUsage!!.rxBytes / (1024.0 * 1024.0)
-
-            if (todayWifiUsed >= 1024L) {
-                todayWifiUsed /= 1024L
-                wifiUnitsWidget.text = "GB"
-            } else {
-                wifiUnitsWidget.text = "MB"
-            }
-
-//            dataUsageWidget.text = precision.format(todayUsedMB)
-            wifiUsageWidget.text = precision.format(todayWifiUsed)
-
-            rendered = true
-        }
-    }
-
-    private fun buildParams(): GetDataUsage.Params {
-        return GetDataUsage.Params(this, startTime!!, endTime!!)
-    }
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun renderTotalDataUsage(data: HashMap<String, NetworkStats.Bucket>?) {
+    private fun renderData(data: HashMap<String, NetworkStats>?) {
         mobileData = (data!!["data"])!!
         wifiData = (data["wifi"])!!
 
-        calculateDataUsage()
+        processMobileData()
+        processWifiData()
+
+        val todayDate = DateFormat.getDateInstance().format(endTime)
+        var todayData = 0L
+        var todayWifi = 0L
+
+        if (mobileDataPerDay.containsKey(todayDate)) {
+            todayData = (mobileDataPerDay[todayDate])!!
+        }
+
+        if (wifiDataPerDay.containsKey(todayDate)) {
+            todayWifi = (wifiDataPerDay[todayDate])!!
+        }
+
+        dataUsageWidget.text = precision.format(todayData / (1024L * 1024L))
+        wifiUsageWidget.text = precision.format(todayWifi / (1024L * 1024L))
+
+        showInGraph()
+    }
+
+    @TargetApi(Build.VERSION_CODES.N)
+    private fun processMobileData() {
+        var previousDate = ""
+        var totalUsage = 0L
+
+        while (mobileData.hasNextBucket()) {
+            val bucket = NetworkStats.Bucket()
+            mobileData.getNextBucket(bucket)
+            totalUsage += bucket.rxBytes
+            val currentBucketDate = DateFormat.getDateInstance().format(bucket.startTimeStamp)
+
+            if (previousDate == "" || previousDate != currentBucketDate) {
+                mobileDataPerDay[currentBucketDate] = bucket.rxBytes
+            } else if (mobileDataPerDay.containsKey(currentBucketDate)) {
+                val currentValue = mobileDataPerDay[currentBucketDate]
+                if (currentValue != null) {
+                    mobileDataPerDay.replace(currentBucketDate, currentValue + bucket.rxBytes)
+                }
+            }
+            previousDate = currentBucketDate
+        }
+
+        calculateDataUsage(totalUsage)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun processWifiData() {
+        var previousDate = ""
+        var totalUsage = 0L
+
+        while (wifiData.hasNextBucket()) {
+            val bucket = NetworkStats.Bucket()
+            wifiData.getNextBucket(bucket)
+            totalUsage += bucket.rxBytes
+            val currentBucketDate = DateFormat.getDateInstance().format(bucket.startTimeStamp)
+
+            if (previousDate == "" || previousDate != currentBucketDate) {
+                wifiDataPerDay[currentBucketDate] = bucket.rxBytes
+            } else if (wifiDataPerDay.containsKey(currentBucketDate)) {
+                val currentValue = wifiDataPerDay[currentBucketDate]
+                if (currentValue != null) {
+                    wifiDataPerDay.replace(currentBucketDate, currentValue + bucket.rxBytes)
+                }
+            }
+            previousDate = currentBucketDate
+        }
     }
 
     private fun handleFailure(failure: Failure?) {
@@ -215,15 +247,6 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         }
     }
 
-    private fun loadData() {
-        showLoading()
-
-        loadTodayDataUsage()
-        loadTotalDataUsage()
-
-        hideLoading()
-    }
-
     private fun obtainUserData() {
         val permission = delegate.checkPermissionReadPhoneState()
         if (!permission) {
@@ -240,18 +263,6 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         }
     }
 
-//    override fun initUI() {
-//        dataUsageWidget =           dataUsage
-//        wifiUsageWidget =           wifiUsage
-//        loadingWidget =             loading
-//        wrapperWidget =             wrapper
-//        progressWidget =            progressBar
-//        textProgressWidget =        textProgress
-//        graphWidget =               graph
-//        wifiUnitsWidget =           wifiUnits
-//        dataUnitsWidget =           dataUnits
-//    }
-
     private fun initDates() {
         val calendar = Calendar.getInstance()
         endTime = calendar.timeInMillis
@@ -261,9 +272,9 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     @SuppressLint("SetTextI18n")
     @RequiresApi(Build.VERSION_CODES.M)
-    private fun calculateDataUsage() {
+    private fun calculateDataUsage(totalUsage: Long) {
         if (!calculated) {
-            val usedMB = mobileData.rxBytes / (1024.0 * 1024.0)
+            val usedMB = totalUsage / (1024.0 * 1024.0)
             progressWidget.progress = calculatePercentage(usedMB)
             calculated = true
         }
@@ -277,57 +288,11 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         return percentage.toInt()
     }
 
-    @TargetApi(Build.VERSION_CODES.N)
-    @SuppressLint("MissingPermission", "HardwareIds")
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun testQuery() {
-        val networkStatsManager = applicationContext.getSystemService(Context.NETWORK_STATS_SERVICE) as NetworkStatsManager
-        var subscriberID: String? = Prefs.getString(SUBSCRIBER_ID, null)
-
-        if (subscriberID == null) {
-            val manager = applicationContext.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-            subscriberID = manager.subscriberId
-
-            Prefs.putString(SUBSCRIBER_ID, subscriberID)
-        }
-
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DATE, 1)
-        val tomorrow = calendar.timeInMillis
-
-        val networkStats = networkStatsManager.queryDetails(ConnectivityManager.TYPE_MOBILE, subscriberID, startTime!!, tomorrow)
-
-        var previousDate = ""
-
-        while (networkStats.hasNextBucket()) {
-            val bucket = NetworkStats.Bucket()
-            networkStats.getNextBucket(bucket)
-            val currentBucketDate = DateFormat.getDateInstance().format(bucket.startTimeStamp)
-
-            if (previousDate == "" || previousDate != currentBucketDate) {
-                dataPerDay[currentBucketDate] = bucket.rxBytes
-            } else if (dataPerDay.containsKey(currentBucketDate)) {
-                val currentValue = dataPerDay[currentBucketDate]
-                if (currentValue != null) {
-                    dataPerDay.replace(currentBucketDate, currentValue + bucket.rxBytes)
-                }
-            }
-            previousDate = currentBucketDate
-        }
-
-        val today = dataPerDay[DateFormat.getDateInstance().format(endTime)]
-        today?.let {
-            todayUsedMB = today.toDouble()
-            val formatted = precision.format(today / (1024L * 1024L))
-            dataUsageWidget.text = formatted
-        }
-    }
-
     private fun showInGraph() {
         val list = ArrayList<BarEntry>()
 
         var position = 0f
-        for (i in dataPerDay) {
+        for (i in mobileDataPerDay) {
             val newEntry = BarEntry(position, i.value.toFloat() / (1024f * 1024f))
             list.add(newEntry)
             position++
@@ -346,21 +311,6 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         graphWidget.description.text = ""
         graphWidget.invalidate()
     }
-
-//    private fun fakeEntrees2() {
-//        val data = ArrayList<DataEntry>()
-//        val chart = AnyChart.column()
-//
-//        for (i in dataPerDay) {
-//            val newEntry = ValueDataEntry(i.key, i.value / (1024f * 1024f))
-//            data.add(newEntry)
-//        }
-//
-//        chart.setData(data)
-//        anyGraph.setBackgroundColor(resources.getColor(R.color.darb_blue))
-//        anyGraph.setChart(chart)
-//    }
-
 
     private fun initPrefs() {
         Prefs.Builder()

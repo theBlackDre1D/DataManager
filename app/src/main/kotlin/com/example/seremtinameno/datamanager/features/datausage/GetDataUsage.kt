@@ -7,12 +7,10 @@ import javax.inject.Inject
 
 class GetDataUsage
 @Inject constructor(private val dataRepository: DataRepository
-) : UseCase<HashMap<String, NetworkStats.Bucket>, GetDataUsage.Params>()
+) : UseCase<HashMap<String, NetworkStats>, GetDataUsage.Params>()
 {
     override suspend fun run(params: Params) =
-            dataRepository.getData(params.context, params.startTime, params.endTime)
+            dataRepository.getData(params.context)
 
-    data class Params(val context: Context,
-                      val startTime: Long,
-                      val endTime: Long)
+    data class Params(val context: Context)
 }

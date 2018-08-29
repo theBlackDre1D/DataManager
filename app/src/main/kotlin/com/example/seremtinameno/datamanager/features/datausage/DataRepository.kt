@@ -16,22 +16,22 @@ import java.util.*
 import javax.inject.Inject
 
 interface DataRepository {
-    fun getData(applicationContext: Context, startTime: Long, endTime: Long): Either<Failure, HashMap<String, NetworkStats.Bucket>>
+    fun getData(applicationContext: Context): Either<Failure, HashMap<String, NetworkStats>>
 //    fun getNetworkStats(applicationContext: Context, startTime: Long, endTime: Long, networkType: Int): Either<Failure, HashMap<String, NetworkStats>>
 
     class Data
     @Inject constructor(private val permissions: PermissionProvider): DataRepository {
         @RequiresApi(Build.VERSION_CODES.M)
-        override fun getData(applicationContext: Context, startTime: Long, endTime: Long): Either<Failure, HashMap<String, NetworkStats.Bucket>> {
+        override fun getData(applicationContext: Context): Either<Failure, HashMap<String, NetworkStats>> {
             return when (permissions.checkPermissionReadPhoneState()) {
-                true -> Either.Right(obtainData(applicationContext, startTime, endTime))
+                true -> Either.Right(obtainMonthlyData(applicationContext))
                 false -> Either.Left(Failure.PermissionError())
             }
         }
 
         @RequiresApi(Build.VERSION_CODES.M)
         @SuppressLint("MissingPermission", "HardwareIds")
-        private fun obtainData(applicationContext: Context, startTime: Long, endTime: Long): HashMap<String, NetworkStats.Bucket> {
+        private fun obtainMonthlyData(applicationContext: Context): HashMap<String, NetworkStats> {
             val networkStatsManager = applicationContext.getSystemService(Context.NETWORK_STATS_SERVICE) as NetworkStatsManager
             var subscriberID: String? = Prefs.getString(MainActivity.SUBSCRIBER_ID, null)
 
@@ -41,9 +41,15 @@ interface DataRepository {
 
                 Prefs.putString(MainActivity.SUBSCRIBER_ID, subscriberID)
             }
+            val calendar = Calendar.getInstance()
+            calendar.add(Calendar.DATE, 1)
+            val tomorrow = calendar.timeInMillis
 
-            val data = networkStatsManager.querySummaryForDevice(ConnectivityManager.TYPE_MOBILE, subscriberID, startTime, endTime)
-            val wifi = networkStatsManager.querySummaryForDevice(ConnectivityManager.TYPE_WIFI, subscriberID, startTime, endTime)
+            calendar.set(Calendar.DAY_OF_MONTH, 1)
+            val firstDayInMonth = calendar.timeInMillis
+
+            val data = networkStatsManager.queryDetails(ConnectivityManager.TYPE_MOBILE, subscriberID, firstDayInMonth, tomorrow)
+            val wifi = networkStatsManager.queryDetails(ConnectivityManager.TYPE_WIFI, subscriberID, firstDayInMonth, tomorrow)
 
             return hashMapOf("data" to data, "wifi" to wifi)
         }
