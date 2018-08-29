@@ -27,6 +27,7 @@ ext {
   charts_version = 'v3.0.3'
   anyChart_version = '0.3.0'
   fragNav_version = '2.4.0'
+  circularProgress_version = '1.1.3'
 
   //Unit Testing
   robolectric_version = '3.8'
@@ -68,7 +69,8 @@ ext {
       progressBar:                "com.wang.avi:library:$avLibrary_version",
       charts:                     "com.github.PhilJay:MPAndroidChart:$charts_version",
       anyChart:                   "com.github.AnyChart:AnyChart-Android:$anyChart_version",
-      fragNav:                    "com.ncapdevi:frag-nav:$fragNav_version"
+      fragNav:                    "com.ncapdevi:frag-nav:$fragNav_version",
+      circularProgress:           "com.github.antonKozyriatskyi:CircularProgressIndicator:$circularProgress_version"
   ]
 
   unitTesting = [

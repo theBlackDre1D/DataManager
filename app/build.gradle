@@ -138,13 +138,14 @@ dependencies {
     implementation applicationDependencies.okhttpLoggingInterceptor
     implementation applicationDependencies.prefs
     implementation applicationDependencies.butterKnife
+    kapt applicationDependencies.butterKnifeProcessor
     implementation applicationDependencies.anko_snackBar
     implementation applicationDependencies.timber
     implementation applicationDependencies.progressBar
     implementation applicationDependencies.charts
     implementation applicationDependencies.anyChart
     implementation applicationDependencies.fragNav
-    kapt applicationDependencies.butterKnifeProcessor
+    implementation applicationDependencies.circularProgress
 
     //Unit/Integration tests dependencies
     testImplementation unitTestDependencies.kotlin

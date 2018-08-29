@@ -24,6 +24,7 @@ import android.widget.TextView
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.ScrollView
+import antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
 import butterknife.BindView
 import butterknife.OnClick
 import com.example.seremtinameno.datamanager.AndroidApplication
@@ -51,7 +52,6 @@ import kotlin.collections.HashMap
 
 class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsResultCallback,
                                             PermissionProvider.Delegate
-//                                            FragNavController.RootFragmentListener
 {
 
     private val appComponent: ApplicationComponent by lazy(mode = LazyThreadSafetyMode.NONE) {
@@ -67,11 +67,11 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     @BindView(R.id.wrapper)
     lateinit var wrapperWidget:             ScrollView
 
-    @BindView(R.id.progressBar)
-    lateinit var progressWidget:            ProgressBar
+    @BindView(R.id.userPlan)
+    lateinit var userPlan:                  TextView
 
-    @BindView(R.id.textProgress)
-    lateinit var textProgressWidget:        TextView
+    @BindView(R.id.used)
+    lateinit var used:                      TextView
 
     @BindView(R.id.graph)
     lateinit var graphWidget:               BarChart
@@ -85,6 +85,9 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     @BindView(R.id.dataUnits)
     lateinit var dataUnitsWidget:           TextView
 
+    @BindView(R.id.progressIndicator)
+    lateinit var progressIndicator:         CircularProgressIndicator
+
     private lateinit var wifiData:          NetworkStats
 
     private lateinit var mobileData:        NetworkStats
@@ -95,23 +98,14 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     private var mobilePlanInMB:             Int = 2000
 
-    private var todayUsedMB:                Double = 0.0
+    private var mobileDataPerDay =          HashMap<Long, Long>()
 
-    private var totalData:                  Long = 0L
-
-    private var totalWifi:                  Long = 0L
-
-    private var mobileDataPerDay =          HashMap<String, Long>()
-
-    private var wifiDataPerDay =            HashMap<String, Long>()
-
-    private var calculated =                false
-    private var rendered =                  false
+    private var wifiDataPerDay =            HashMap<Long, Long>()
 
     private var precision =                 DecimalFormat("0.00")
 
-//    @Inject
-    private lateinit var monthlyDataUsage:  DataUsageViewModel
+    @Inject
+    lateinit var monthlyDataUsage:          DataUsageViewModel
 
     @Inject
     lateinit var delegate:                  PermissionProvider
@@ -165,7 +159,9 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         processMobileData()
         processWifiData()
 
-        val todayDate = DateFormat.getDateInstance().format(endTime)
+//        val todayDate = DateFormat.getDateInstance().format(endTime)
+        val todayDate = endTime
+
         var todayData = 0L
         var todayWifi = 0L
 
@@ -176,25 +172,53 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         if (wifiDataPerDay.containsKey(todayDate)) {
             todayWifi = (wifiDataPerDay[todayDate])!!
         }
+        todayData /= (1024L * 1024L)
+        todayWifi /= (1024L * 1024L)
 
-        dataUsageWidget.text = precision.format(todayData / (1024L * 1024L))
-        wifiUsageWidget.text = precision.format(todayWifi / (1024L * 1024L))
+        if (todayData >= 1024L) {
+            todayData /= 1024L
+            dataUsageWidget.text = precision.format(todayData)
+            dataUnitsWidget.text = "GB"
+        } else {
+            dataUsageWidget.text = precision.format(todayData)
+            dataUnitsWidget.text = "MB"
+
+        }
+
+        if (todayWifi >= 1024L) {
+            todayWifi /= 1024L
+            wifiUsageWidget.text = precision.format(todayWifi)
+            wifiUnitsWidget.text = "GB"
+        } else {
+            wifiUsageWidget.text = precision.format(todayWifi)
+            wifiUnitsWidget.text = "GB"
+        }
+
+        sortData(mobileDataPerDay)
+        sortData(wifiDataPerDay)
 
         showInGraph()
     }
 
+    private fun sortData(map: HashMap<Long, Long>) {
+        map.toList().sortedBy { (key, _) -> key}.toMap()
+    }
+
     @TargetApi(Build.VERSION_CODES.N)
     private fun processMobileData() {
-        var previousDate = ""
+//        var previousDate = ""
+        var previousDate = 0L
+
         var totalUsage = 0L
 
         while (mobileData.hasNextBucket()) {
             val bucket = NetworkStats.Bucket()
             mobileData.getNextBucket(bucket)
             totalUsage += bucket.rxBytes
-            val currentBucketDate = DateFormat.getDateInstance().format(bucket.startTimeStamp)
+//            val currentBucketDate = DateFormat.getDateInstance().format(bucket.startTimeStamp)
+            val currentBucketDate = bucket.startTimeStamp
 
-            if (previousDate == "" || previousDate != currentBucketDate) {
+            if (previousDate == 0L || previousDate != currentBucketDate) {
                 mobileDataPerDay[currentBucketDate] = bucket.rxBytes
             } else if (mobileDataPerDay.containsKey(currentBucketDate)) {
                 val currentValue = mobileDataPerDay[currentBucketDate]
@@ -210,16 +234,19 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     @RequiresApi(Build.VERSION_CODES.N)
     private fun processWifiData() {
-        var previousDate = ""
+//        var previousDate = ""
+        var previousDate = 0L
+
         var totalUsage = 0L
 
         while (wifiData.hasNextBucket()) {
             val bucket = NetworkStats.Bucket()
             wifiData.getNextBucket(bucket)
             totalUsage += bucket.rxBytes
-            val currentBucketDate = DateFormat.getDateInstance().format(bucket.startTimeStamp)
+//            val currentBucketDate = DateFormat.getDateInstance().format(bucket.startTimeStamp)
+            val currentBucketDate = bucket.startTimeStamp
 
-            if (previousDate == "" || previousDate != currentBucketDate) {
+            if (previousDate == 0L || previousDate != currentBucketDate) {
                 wifiDataPerDay[currentBucketDate] = bucket.rxBytes
             } else if (wifiDataPerDay.containsKey(currentBucketDate)) {
                 val currentValue = wifiDataPerDay[currentBucketDate]
@@ -273,18 +300,17 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     @SuppressLint("SetTextI18n")
     @RequiresApi(Build.VERSION_CODES.M)
     private fun calculateDataUsage(totalUsage: Long) {
-        if (!calculated) {
-            val usedMB = totalUsage / (1024.0 * 1024.0)
-            progressWidget.progress = calculatePercentage(usedMB)
-            calculated = true
-        }
+        val usedMB = totalUsage / (1024.0 * 1024.0)
+//        progressWidget.progress = calculatePercentage(usedMB)
+        userPlan.text = mobilePlanInMB.toString()
+        used.text = precision.format(usedMB)
+        progressIndicator.setProgress(usedMB, mobilePlanInMB.toDouble())
     }
 
     @SuppressLint("SetTextI18n")
     private fun calculatePercentage(used: Double): Int {
         val percentage = (used/mobilePlanInMB) * 100
-        textProgressWidget.text = "${precision.format(used)} / $mobilePlanInMB (${precision.format(percentage)})%"
-
+//        textProgressWidget.text = "${precision.format(used)} / $mobilePlanInMB (${precision.format(percentage)})%"
         return percentage.toInt()
     }
 
@@ -298,8 +324,9 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
             position++
         }
 
-        val company = BarDataSet(list, "Monthly usage")
+        val company = BarDataSet(list, "Daily usage in this month")
         company.axisDependency = YAxis.AxisDependency.LEFT
+        company.valueTextColor = Color.WHITE
 
         val data = BarData(company)
         data.barWidth = 0.9f
