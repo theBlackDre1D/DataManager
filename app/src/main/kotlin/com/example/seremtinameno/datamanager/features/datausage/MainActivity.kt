@@ -7,22 +7,18 @@ import android.app.AppOpsManager.OPSTR_GET_USAGE_STATS
 import android.app.AppOpsManager
 import android.app.AppOpsManager.MODE_ALLOWED
 import android.app.usage.NetworkStats
-import android.app.usage.NetworkStatsManager
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Process
 import android.provider.Settings
 import android.support.annotation.RequiresApi
 import android.support.v4.app.ActivityCompat
-import android.telephony.TelephonyManager
 import android.widget.TextView
 import android.view.View
-import android.widget.ProgressBar
 import android.widget.ScrollView
 import antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
 import butterknife.BindView
@@ -42,7 +38,6 @@ import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.pixplicity.easyprefs.library.Prefs
 import timber.log.Timber
-import java.text.DateFormat
 import java.text.DecimalFormat
 import java.util.Calendar
 import javax.inject.Inject
@@ -105,7 +100,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     private var precision =                 DecimalFormat("0.00")
 
     @Inject
-    lateinit var monthlyDataUsage:          DataUsageViewModel
+    lateinit var monthlyDataUsage: DataUsageViewModel
 
     @Inject
     lateinit var delegate:                  PermissionProvider
@@ -117,6 +112,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
         injectUI(this)
         appComponent.inject(this)
+        showLoading()
 
         initPrefs()
         initDates()
@@ -134,10 +130,13 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         const val SUBSCRIBER_ID = "SUBSCRIBER_ID"
         const val PERMISSION_READ_STATE = 1
         const val REQUEST_CODE = 1
+
+        fun getCallingIntent(context: Context): Intent {
+            return Intent(context, MainActivity::class.java)
+        }
     }
 
     private fun loadData() {
-        showLoading()
 
         monthlyDataUsage = viewModel(viewModelFactory) {
             observe(dataUsage, ::renderData)
@@ -147,7 +146,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         val params = GetDataUsage.Params(this)
         monthlyDataUsage.loadDataUsage(params)
 
-        hideLoading()
+//        hideLoading()
     }
 
     @TargetApi(Build.VERSION_CODES.N)
@@ -198,6 +197,8 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         sortData(wifiDataPerDay)
 
         showInGraph()
+
+        hideLoading()
     }
 
     private fun sortData(map: HashMap<Long, Long>) {
@@ -259,6 +260,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     }
 
     private fun handleFailure(failure: Failure?) {
+        hideLoading()
         when (failure) {
             is Failure.NetworkConnection -> showMessage(this, "Network error")
             is Failure.ServerError -> showMessage(this, "Server error")
@@ -333,10 +335,14 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         data.barWidth = 0.9f
 
         graphWidget.data = data
+
         graphWidget.axisLeft.textColor = Color.WHITE
         graphWidget.axisRight.textColor = Color.WHITE
         graphWidget.legend.textColor = Color.WHITE
+        graphWidget.legend.textSize = 15f
         graphWidget.description.text = ""
+
+        graphWidget.animateXY(500, 1500)
         graphWidget.invalidate()
     }
 
