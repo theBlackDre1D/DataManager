@@ -19,7 +19,6 @@ import android.support.annotation.RequiresApi
 import android.support.v4.app.ActivityCompat
 import android.widget.TextView
 import android.view.View
-import android.widget.ScrollView
 import antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
 import butterknife.BindView
 import butterknife.OnClick
@@ -59,9 +58,6 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     @BindView(R.id.loading)
     lateinit var loadingWidget:             View
 
-    @BindView(R.id.wrapper)
-    lateinit var wrapperWidget:             ScrollView
-
     @BindView(R.id.userPlan)
     lateinit var userPlan:                  TextView
 
@@ -100,10 +96,10 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     private var precision =                 DecimalFormat("0.00")
 
     @Inject
-    lateinit var monthlyDataUsage: DataUsageViewModel
+    lateinit var monthlyDataUsage:          DataUsageViewModel
 
     @Inject
-    lateinit var delegate:                  PermissionProvider
+    lateinit var permissionProvider:        PermissionProvider
 
     @TargetApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -117,7 +113,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         initPrefs()
         initDates()
 
-        delegate.setDelegate(this)
+        permissionProvider.setDelegate(this)
         permissionCheck()
     }
 
@@ -146,7 +142,6 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         val params = GetDataUsage.Params(this)
         monthlyDataUsage.loadDataUsage(params)
 
-//        hideLoading()
     }
 
     @TargetApi(Build.VERSION_CODES.N)
@@ -277,10 +272,10 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     }
 
     private fun obtainUserData() {
-        val permission = delegate.checkPermissionReadPhoneState()
+        val permission = permissionProvider.checkPermissionReadPhoneState()
         if (!permission) {
             Timber.d("Asking for permission")
-            delegate.askForReadPhoneState(PERMISSION_READ_STATE)
+            permissionProvider.askForReadPhoneState(PERMISSION_READ_STATE)
         } else {
             loadData()
         }
@@ -310,12 +305,12 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         progressIndicator.setCurrentProgress(usedMB)
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun calculatePercentage(used: Double): Int {
-        val percentage = (used/mobilePlanInMB) * 100
-//        textProgressWidget.text = "${precision.format(used)} / $mobilePlanInMB (${precision.format(percentage)})%"
-        return percentage.toInt()
-    }
+//    @SuppressLint("SetTextI18n")
+//    private fun calculatePercentage(used: Double): Int {
+//        val percentage = (used/mobilePlanInMB) * 100
+////        textProgressWidget.text = "${precision.format(used)} / $mobilePlanInMB (${precision.format(percentage)})%"
+//        return percentage.toInt()
+//    }
 
     private fun showInGraph() {
         val list = ArrayList<BarEntry>()

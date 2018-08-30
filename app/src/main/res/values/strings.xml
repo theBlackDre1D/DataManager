@@ -9,4 +9,5 @@
     <string name="today">Today:</string>
     <string name="total_usage">Total:</string>
     <string name="data">Data</string>
+    <string name="wi_fi">Wi-Fi</string>
 </resources>

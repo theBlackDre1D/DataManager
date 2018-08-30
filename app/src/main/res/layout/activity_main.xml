@@ -23,7 +23,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/today"
-                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textSize="20sp"
                 android:textColor="@color/white"
                 android:layout_marginStart="@dimen/marginSide"
                 android:layout_marginTop="20dp"
@@ -42,7 +43,8 @@
                     android:id="@+id/right"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Data"
+                    android:text="@string/data"
+                    android:textStyle="bold"
                     android:textColor="@color/white"
 
                     />
@@ -50,7 +52,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Wi-Fi"
+                    android:text="@string/wi_fi"
+                    android:textStyle="bold"
                     android:textColor="@color/white"
                     android:layout_marginStart="200dp"
                     />
@@ -86,6 +89,7 @@
                     android:layout_marginStart="5dp"
                     android:gravity="bottom"
                     android:text="MB"
+                    android:textStyle="bold"
                     android:textColor="@color/white"
                     android:textSize="12sp"
                     />
@@ -111,6 +115,7 @@
                     android:text="MB"
                     android:textColor="@color/white"
                     android:textSize="12sp"
+                    android:textStyle="bold"
                     android:layout_marginStart="5dp"
                     android:layout_marginBottom="7dp"
                     />
@@ -122,8 +127,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
-                android:textSize="15sp"
+                android:textSize="20sp"
                 android:text="@string/total_usage"
+                android:textStyle="bold"
                 android:layout_marginLeft="@dimen/marginSide"
                 android:layout_marginTop="20sp"
                 />
@@ -152,6 +158,7 @@
                     android:layout_height="wrap_content"
                     android:text="Your plan (MB): "
                     android:textSize="15sp"
+                    android:textStyle="bold"
                     android:textColor="@color/white"
                     />
 
@@ -161,6 +168,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
                     android:textSize="15sp"
+                    android:textStyle="bold"
                     android:layout_marginStart="2dp"
                     android:text="2000"
                     />
@@ -179,6 +187,7 @@
                     android:layout_height="wrap_content"
                     android:text="Used (MB): "
                     android:textSize="15sp"
+                    android:textStyle="bold"
                     android:textColor="@color/white"
                     />
 
@@ -188,6 +197,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
                     android:textSize="15sp"
+                    android:textStyle="bold"
                     android:text="324"
                     android:layout_marginStart="2dp"
                     />

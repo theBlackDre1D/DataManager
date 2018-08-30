@@ -4,10 +4,19 @@
     <item
         android:drawable="@color/darb_blue"/>
 
-    <item>
+    <item android:top="-100dp">
         <bitmap
             android:gravity="center"
             android:src="@drawable/app_icon"
+            />
+    </item>
+
+    <item android:top="60dp"
+        android:left="-50dp">
+
+        <bitmap
+            android:gravity="bottom"
+            android:src="@drawable/splash_text_1"
             />
     </item>
 
