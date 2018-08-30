@@ -45,7 +45,8 @@ import kotlin.collections.HashMap
 
 
 class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsResultCallback,
-                                            PermissionProvider.Delegate
+                                            PermissionProvider.Delegate,
+                                            MyProgressTextAdapter.View
 {
 
     private val appComponent: ApplicationComponent by lazy(mode = LazyThreadSafetyMode.NONE) {
@@ -185,7 +186,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
             wifiUnitsWidget.text = "GB"
         } else {
             wifiUsageWidget.text = precision.format(todayWifi)
-            wifiUnitsWidget.text = "GB"
+            wifiUnitsWidget.text = "MB"
         }
 
         sortData(mobileDataPerDay)
@@ -299,9 +300,14 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     private fun calculateDataUsage(totalUsage: Long) {
         val usedMB = totalUsage / (1024.0 * 1024.0)
 //        progressWidget.progress = calculatePercentage(usedMB)
+
+        val textAdapter = MyProgressTextAdapter()
+        textAdapter.setView(this)
+
         userPlan.text = mobilePlanInMB.toString()
         used.text = precision.format(usedMB)
         progressIndicator.maxProgress = 2000.0
+        progressIndicator.setProgressTextAdapter(textAdapter)
         progressIndicator.setCurrentProgress(usedMB)
     }
 
@@ -387,5 +393,9 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     override fun getActivity(): BaseActivity {
         return this
+    }
+
+    override fun getDataLimit(): Double {
+        return mobilePlanInMB.toDouble()
     }
 }
