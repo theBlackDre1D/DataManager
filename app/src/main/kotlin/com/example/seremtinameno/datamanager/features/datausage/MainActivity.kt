@@ -258,9 +258,9 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     private fun handleFailure(failure: Failure?) {
         hideLoading()
         when (failure) {
-            is Failure.NetworkConnection -> showMessage(this, "Network error")
-            is Failure.ServerError -> showMessage(this, "Server error")
-            is Failure.PermissionError -> showMessage(this, "No permissions")
+            is Failure.NetworkConnection -> showErrorToast(this, "Network error")
+            is Failure.ServerError -> showErrorToast(this, "Server error")
+            is Failure.PermissionError -> showErrorToast(this, "No permissions")
         }
     }
 

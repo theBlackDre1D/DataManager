@@ -146,6 +146,7 @@ dependencies {
     implementation applicationDependencies.anyChart
     implementation applicationDependencies.fragNav
     implementation applicationDependencies.circularProgress
+    implementation applicationDependencies.toasty
 
     //Unit/Integration tests dependencies
     testImplementation unitTestDependencies.kotlin

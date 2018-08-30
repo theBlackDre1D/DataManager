@@ -24,6 +24,7 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
 import butterknife.ButterKnife
+import es.dmoral.toasty.Toasty
 import javax.inject.Inject
 
 /**
@@ -55,6 +56,10 @@ abstract class BaseActivity : AppCompatActivity() {
 
     fun showMessage(context: Context, message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+
+    fun showErrorToast(context: Context, message: String) {
+        Toasty.error(context, message, Toast.LENGTH_SHORT, true).show()
     }
 
     fun injectUI(activity: BaseActivity) {
