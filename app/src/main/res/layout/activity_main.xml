@@ -137,9 +137,9 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="8dp"
                 app:progressColor="@color/green"
-                app:progressBackgroundColor="@color/green"
+                app:progressBackgroundColor="@color/grey"
                 app:progressStrokeWidth="8dp"
-                app:drawDot="true"
+                app:direction="clockwise"
                 />
 
             <LinearLayout

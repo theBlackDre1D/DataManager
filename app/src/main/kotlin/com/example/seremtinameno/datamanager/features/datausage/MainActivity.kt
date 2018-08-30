@@ -304,7 +304,8 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 //        progressWidget.progress = calculatePercentage(usedMB)
         userPlan.text = mobilePlanInMB.toString()
         used.text = precision.format(usedMB)
-        progressIndicator.setProgress(usedMB, mobilePlanInMB.toDouble())
+        progressIndicator.maxProgress = 2000.0
+        progressIndicator.setCurrentProgress(usedMB)
     }
 
     @SuppressLint("SetTextI18n")

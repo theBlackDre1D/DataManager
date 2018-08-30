@@ -40,7 +40,7 @@ buildscript {
     ext.target_sdk = 27
     ext.min_sdk = 21
 
-    ext.application_id = 'com.fernandocejas.sample'
+    ext.application_id = 'com.example.seremtinameno.datamanager'
     ext.version_name = '1.0'
     ext.version_code = 1
     ext.test_runner = 'android.support.test.runner.AndroidJUnitRunner'
