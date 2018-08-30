@@ -1,2 +1,5 @@
 # DataManager
-Android open source Data manager
+Android open source Data manager  
+  
+  
+Latest code on **DEVEL branch**
