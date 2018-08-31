@@ -15,11 +15,11 @@ class SplashActivity : BaseActivity() {
 
         initCrashlytics()
 
-        val handler = Handler()
-        handler.postDelayed({
+//        val handler = Handler()
+//        handler.postDelayed({
             startActivity(MainActivity.getCallingIntent(this))
             finish()
-        }, 500)
+//        }, 500)
 
     }
 
