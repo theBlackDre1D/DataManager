@@ -122,87 +122,96 @@
             </LinearLayout>
 
 
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                android:text="@string/total_usage"
-                android:textStyle="bold"
-                android:layout_marginLeft="@dimen/marginSide"
-                android:layout_marginTop="20sp"
-                />
-
-            <antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
-                android:id="@+id/progressIndicator"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="8dp"
-                app:progressColor="@color/green"
-                app:progressBackgroundColor="@color/grey"
-                app:progressStrokeWidth="18dp"
-                app:direction="clockwise"
-                />
-
             <LinearLayout
+                android:id="@+id/dataViews"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="12dp"
+                android:orientation="vertical"
                 >
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Your plan (MB): "
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/white"
-                    />
 
                 <TextView
-                    android:id="@+id/userPlan"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
-                    android:textSize="15sp"
+                    android:textSize="20sp"
+                    android:text="@string/total_usage"
                     android:textStyle="bold"
-                    android:layout_marginStart="2dp"
-                    android:text="2000"
+                    android:layout_marginLeft="@dimen/marginSide"
+                    android:layout_marginTop="20sp"
                     />
+
+                <antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
+                    android:id="@+id/progressIndicator"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="8dp"
+                    app:progressColor="@color/green"
+                    app:progressBackgroundColor="@color/grey"
+                    app:progressStrokeWidth="18dp"
+                    app:direction="clockwise"
+                    />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginTop="12dp"
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Your plan (MB): "
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        />
+
+                    <TextView
+                        android:id="@+id/userPlan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:layout_marginStart="2dp"
+                        android:text="2000"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginStart="30dp"
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Used (MB): "
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        />
+
+                    <TextView
+                        android:id="@+id/used"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:text="324"
+                        android:layout_marginStart="2dp"
+                        />
+
+                </LinearLayout>
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_marginTop="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginStart="30dp"
-                >
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Used (MB): "
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/white"
-                    />
-
-                <TextView
-                    android:id="@+id/used"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    android:text="324"
-                    android:layout_marginStart="2dp"
-                    />
-
-            </LinearLayout>
 
 
 

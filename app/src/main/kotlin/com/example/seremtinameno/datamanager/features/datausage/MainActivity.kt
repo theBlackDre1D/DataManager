@@ -19,6 +19,7 @@ import android.support.annotation.RequiresApi
 import android.support.v4.app.ActivityCompat
 import android.widget.TextView
 import android.view.View
+import android.widget.LinearLayout
 import antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
 import butterknife.BindView
 import butterknife.OnClick
@@ -46,7 +47,8 @@ import kotlin.collections.HashMap
 
 class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsResultCallback,
                                             PermissionProvider.Delegate,
-                                            MyProgressTextAdapter.View
+                                            MyProgressTextAdapter.View,
+                                            SetDataLimitDialog.View
 {
 
     private val appComponent: ApplicationComponent by lazy(mode = LazyThreadSafetyMode.NONE) {
@@ -80,6 +82,9 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     @BindView(R.id.progressIndicator)
     lateinit var progressIndicator:         CircularProgressIndicator
 
+    @BindView(R.id.dataViews)
+    lateinit var dataViews:                 LinearLayout
+
     private lateinit var wifiData:          NetworkStats
 
     private lateinit var mobileData:        NetworkStats
@@ -88,13 +93,15 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     private var endTime:                    Long? = null
 
-    private var mobilePlanInMB:             Int = 2000
+    private var mobilePlanInMB:             Int = 2048
 
     private var mobileDataPerDay =          HashMap<Long, Long>()
 
     private var wifiDataPerDay =            HashMap<Long, Long>()
 
     private var precision =                 DecimalFormat("0.00")
+
+    private var mobilePlanSet =             false
 
     @Inject
     lateinit var monthlyDataUsage:          DataUsageViewModel
@@ -106,6 +113,8 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+//        checkIfLimitIsSet()
 
         injectUI(this)
         appComponent.inject(this)
@@ -127,6 +136,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         const val SUBSCRIBER_ID = "SUBSCRIBER_ID"
         const val PERMISSION_READ_STATE = 1
         const val REQUEST_CODE = 1
+        val DATA_LIMIT = "limit"
 
         fun getCallingIntent(context: Context): Intent {
             return Intent(context, MainActivity::class.java)
@@ -154,11 +164,17 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         processMobileData()
         processWifiData()
 
+        sortData(mobileDataPerDay)
+        sortData(wifiDataPerDay)
+
 //        val todayDate = DateFormat.getDateInstance().format(endTime)
-        val todayDate = endTime
 
         var todayData = 0L
         var todayWifi = 0L
+
+        val keys = mobileDataPerDay.keys
+        val todayDate = keys.last()
+
 
         if (mobileDataPerDay.containsKey(todayDate)) {
             todayData = (mobileDataPerDay[todayDate])!!
@@ -188,9 +204,6 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
             wifiUsageWidget.text = precision.format(todayWifi)
             wifiUnitsWidget.text = "MB"
         }
-
-        sortData(mobileDataPerDay)
-        sortData(wifiDataPerDay)
 
         showInGraph()
 
@@ -311,13 +324,6 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         progressIndicator.setCurrentProgress(usedMB)
     }
 
-//    @SuppressLint("SetTextI18n")
-//    private fun calculatePercentage(used: Double): Int {
-//        val percentage = (used/mobilePlanInMB) * 100
-////        textProgressWidget.text = "${precision.format(used)} / $mobilePlanInMB (${precision.format(percentage)})%"
-//        return percentage.toInt()
-//    }
-
     private fun showInGraph() {
         val list = ArrayList<BarEntry>()
 
@@ -379,6 +385,13 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         }
     }
 
+    private fun checkIfLimitIsSet() {
+        if (!mobilePlanSet) {
+            val dialog = SetDataLimitDialog(this, this)
+            dialog.show()
+        }
+    }
+
     override fun fragment(): BaseFragment {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
@@ -397,5 +410,15 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     override fun getDataLimit(): Double {
         return mobilePlanInMB.toDouble()
+    }
+
+    override fun setWithDataLimit() {
+        mobilePlanInMB = Prefs.getInt(DATA_LIMIT, 0)
+        mobilePlanSet = true
+    }
+
+    override fun setWithoutDataLimit() {
+        dataViews.visibility = View.GONE
+        mobilePlanSet = true
     }
 }

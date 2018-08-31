@@ -10,4 +10,6 @@
     <string name="total_usage">Total:</string>
     <string name="data">Data</string>
     <string name="wi_fi">Wi-Fi</string>
+    <string name="cancel">CANCEL</string>
+    <string name="confirm">CONFIRM</string>
 </resources>
