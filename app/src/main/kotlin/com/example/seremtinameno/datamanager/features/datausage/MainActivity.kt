@@ -167,43 +167,10 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         sortData(mobileDataPerDay)
         sortData(wifiDataPerDay)
 
+        showTodayData()
+        showTodayWifi()
+
 //        val todayDate = DateFormat.getDateInstance().format(endTime)
-
-        var todayData = 0L
-        var todayWifi = 0L
-
-        val keys = mobileDataPerDay.keys
-        val todayDate = keys.last()
-
-
-        if (mobileDataPerDay.containsKey(todayDate)) {
-            todayData = (mobileDataPerDay[todayDate])!!
-        }
-
-        if (wifiDataPerDay.containsKey(todayDate)) {
-            todayWifi = (wifiDataPerDay[todayDate])!!
-        }
-        todayData /= (1024L * 1024L)
-        todayWifi /= (1024L * 1024L)
-
-        if (todayData >= 1024L) {
-            todayData /= 1024L
-            dataUsageWidget.text = precision.format(todayData)
-            dataUnitsWidget.text = "GB"
-        } else {
-            dataUsageWidget.text = precision.format(todayData)
-            dataUnitsWidget.text = "MB"
-
-        }
-
-        if (todayWifi >= 1024L) {
-            todayWifi /= 1024L
-            wifiUsageWidget.text = precision.format(todayWifi)
-            wifiUnitsWidget.text = "GB"
-        } else {
-            wifiUsageWidget.text = precision.format(todayWifi)
-            wifiUnitsWidget.text = "MB"
-        }
 
         showInGraph()
 
@@ -212,6 +179,50 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     private fun sortData(map: HashMap<Long, Long>) {
         map.toList().sortedBy { (key, _) -> key}.toMap()
+    }
+
+    private fun showTodayData() {
+        var todayData = 0L
+
+        if (mobileDataPerDay.size > 0) {
+            val keys = mobileDataPerDay.keys
+            val todayDate = keys.last()
+
+            todayData = (mobileDataPerDay[todayDate])!!
+        }
+
+        var inDouble = todayData / (1024.0 * 1024.0)
+
+        if (inDouble >= 1024.0) {
+            inDouble /= 1024.0
+            dataUsageWidget.text = precision.format(inDouble)
+            dataUnitsWidget.text = "GB"
+        } else {
+            dataUsageWidget.text = precision.format(inDouble)
+            dataUnitsWidget.text = "MB"
+        }
+    }
+
+    private fun showTodayWifi() {
+        var todayWifi = 0L
+
+        if (wifiDataPerDay.size > 0) {
+            val keys = mobileDataPerDay.keys
+            val todayDate = keys.last()
+
+            todayWifi = (wifiDataPerDay[todayDate])!!
+        }
+        
+        var inDouble = todayWifi / (1024.0 * 1024.0)
+
+        if (inDouble >= 1024L) {
+            inDouble /= 1024L
+            wifiUsageWidget.text = precision.format(inDouble)
+            wifiUnitsWidget.text = "GB"
+        } else {
+            wifiUsageWidget.text = precision.format(inDouble)
+            wifiUnitsWidget.text = "MB"
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.N)

@@ -15,7 +15,7 @@ import com.example.seremtinameno.datamanager.R
 import com.pixplicity.easyprefs.library.Prefs
 import es.dmoral.toasty.Toasty
 
-class SetDataLimitDialog(context: Context, val delegate: View): Dialog(context, R.style.Dialog) {
+class SetDataLimitDialog(context: Context, private val delegate: View): Dialog(context, R.style.Dialog) {
 
     @BindView(R.id.dataLimit)
     lateinit var dataLimit: EditText

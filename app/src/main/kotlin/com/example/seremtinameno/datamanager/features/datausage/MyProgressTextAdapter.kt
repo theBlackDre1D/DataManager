@@ -3,7 +3,7 @@ package com.example.seremtinameno.datamanager.features.datausage
 import antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
 import java.text.DecimalFormat
 
-class MyProgressTextAdapter: CircularProgressIndicator.ProgressTextAdapter  {
+class MyProgressTextAdapter:            CircularProgressIndicator.ProgressTextAdapter  {
 
     private lateinit var view:      View
 
