@@ -38,6 +38,7 @@ import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.pixplicity.easyprefs.library.Prefs
 import timber.log.Timber
+import java.text.DateFormat
 import java.text.DecimalFormat
 import java.util.Calendar
 import javax.inject.Inject
@@ -102,6 +103,8 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     private var precision =                 DecimalFormat("0.00")
 
     private var mobilePlanSet =             false
+
+    private var todayDate =                 ""
 
     @Inject
     lateinit var monthlyDataUsage:          DataUsageViewModel
@@ -186,9 +189,12 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
         if (mobileDataPerDay.size > 0) {
             val keys = mobileDataPerDay.keys
-            val todayDate = keys.last()
+            val lastRecord = keys.last()
 
-            todayData = (mobileDataPerDay[todayDate])!!
+            val inString = DateFormat.getDateInstance().format(lastRecord)
+            if (inString == todayDate) {
+                todayData = (mobileDataPerDay[lastRecord])!!
+            }
         }
 
         var inDouble = todayData / (1024.0 * 1024.0)
@@ -208,11 +214,14 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
         if (wifiDataPerDay.size > 0) {
             val keys = mobileDataPerDay.keys
-            val todayDate = keys.last()
+            val lastRecord = keys.last()
 
-            todayWifi = (wifiDataPerDay[todayDate])!!
+            val inString = DateFormat.getDateInstance().format(lastRecord)
+            if (inString == todayDate) {
+                todayWifi = (wifiDataPerDay[lastRecord])!!
+            }
         }
-        
+
         var inDouble = todayWifi / (1024.0 * 1024.0)
 
         if (inDouble >= 1024L) {
@@ -317,6 +326,8 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         endTime = calendar.timeInMillis
         calendar.set(Calendar.DAY_OF_MONTH, 1)
         startTime = calendar.timeInMillis
+
+        todayDate = DateFormat.getDateInstance().format(endTime)
     }
 
     @SuppressLint("SetTextI18n")
