@@ -88,7 +88,7 @@ class SetDataLimitActivity : BaseActivity() {
             if (GB.isChecked) {
                 inNumber *= 1024
             }
-            
+
             Prefs.putInt(MainActivity.DATA_LIMIT, inNumber)
 
             Toasty.success(this, "Data limit set!", Toast.LENGTH_SHORT, true).show()
