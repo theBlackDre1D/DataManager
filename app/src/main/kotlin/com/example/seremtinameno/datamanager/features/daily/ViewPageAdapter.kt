@@ -1,4 +1,4 @@
-package com.example.seremtinameno.datamanager.features.datausage.daily
+package com.example.seremtinameno.datamanager.features.daily
 
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentPagerAdapter
 /*
 * Page adapter for fragments.
 * */
-class ViewPagerAdapater(manager: FragmentManager) : FragmentPagerAdapter(manager) {
+class ViewPagerAdapter(manager: FragmentManager) : FragmentPagerAdapter(manager) {
 
     private val mFragmentList: MutableList<Fragment> = mutableListOf()
     private val mFragmentTitleList: MutableList<String> = mutableListOf()

@@ -8,7 +8,6 @@ import android.app.AppOpsManager
 import android.app.AppOpsManager.MODE_ALLOWED
 import android.app.usage.NetworkStats
 import android.content.Context
-import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -31,8 +30,9 @@ import com.example.seremtinameno.datamanager.core.di.ApplicationComponent
 import com.example.seremtinameno.datamanager.core.exception.Failure
 import com.example.seremtinameno.datamanager.core.extension.failure
 import com.example.seremtinameno.datamanager.core.extension.observe
+import com.example.seremtinameno.datamanager.core.helpers.ColorParser
 import com.example.seremtinameno.datamanager.core.platform.BaseActivity
-import com.example.seremtinameno.datamanager.features.datausage.daily.TestActivity
+import com.example.seremtinameno.datamanager.features.intro.IntroActivity
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
@@ -40,7 +40,8 @@ import com.pixplicity.easyprefs.library.Prefs
 import timber.log.Timber
 import java.text.DateFormat
 import java.text.DecimalFormat
-import java.util.Calendar
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -48,8 +49,7 @@ import kotlin.collections.HashMap
 
 class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsResultCallback,
                                             PermissionProvider.Delegate,
-                                            MyProgressTextAdapter.View,
-                                            SetDataLimitDialog.View
+                                            MyProgressTextAdapter.View
 {
 
     private val appComponent: ApplicationComponent by lazy(mode = LazyThreadSafetyMode.NONE) {
@@ -94,17 +94,19 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     private var endTime:                    Long? = null
 
-    private var mobilePlanInMB:             Int = 2048
+    private var mobilePlanInMB:             Int = 0
 
-    private var mobileDataPerDay =          HashMap<Long, Long>()
+    private var mobileDataPerDay =          HashMap<String, Long>()
 
-    private var wifiDataPerDay =            HashMap<Long, Long>()
+    private var wifiDataPerDay =            HashMap<String, Long>()
 
     private var precision =                 DecimalFormat("0.00")
 
     private var mobilePlanSet =             false
 
     private var todayDate =                 ""
+
+    private val formatter = SimpleDateFormat(DATE_FORMAT)
 
     @Inject
     lateinit var monthlyDataUsage:          DataUsageViewModel
@@ -122,8 +124,9 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         injectUI(this)
         appComponent.inject(this)
         showLoading()
+        checkIfLimitIsSet()
+        prepareDataPlan()
 
-        initPrefs()
         initDates()
 
         permissionProvider.setDelegate(this)
@@ -132,14 +135,16 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     @OnClick(R.id.testButton)
     fun goToTest() {
-        startActivity(TestActivity.getCallingIntent(this))
+        startActivity(IntroActivity.getCallingIntent(this))
     }
 
     companion object {
         const val SUBSCRIBER_ID = "SUBSCRIBER_ID"
         const val PERMISSION_READ_STATE = 1
         const val REQUEST_CODE = 1
-        val DATA_LIMIT = "limit"
+        const val DATA_LIMIT = "data_limit"
+        const val DATE_FORMAT = "dd/MM/yyyy"
+        const val TEXT_SIZE = 15f
 
         fun getCallingIntent(context: Context): Intent {
             return Intent(context, MainActivity::class.java)
@@ -167,13 +172,11 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         processMobileData()
         processWifiData()
 
-        sortData(mobileDataPerDay)
-        sortData(wifiDataPerDay)
+//        sortData(mobileDataPerDay)
+//        sortData(wifiDataPerDay)
 
         showTodayData()
         showTodayWifi()
-
-//        val todayDate = DateFormat.getDateInstance().format(endTime)
 
         showInGraph()
 
@@ -182,18 +185,26 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     private fun sortData(map: HashMap<Long, Long>) {
         map.toList().sortedBy { (key, _) -> key}.toMap()
+//        map.toSortedMap(compareBy<Long> { it }.thenBy { it })
+//        map.toSortedMap()
     }
 
     private fun showTodayData() {
         var todayData = 0L
 
         if (mobileDataPerDay.size > 0) {
-            val keys = mobileDataPerDay.keys
-            val lastRecord = keys.last()
+//            val keys = mobileDataPerDay.keys
+//            var lastRecord = keys.last() // just need to be initialized
+//            keys.forEach { key ->
+//                val toDate = DateFormat.getDateInstance().format(key)
+//                if (toDate == todayDate) {
+//                    lastRecord = key
+//                }
+//            }
 
-            val inString = DateFormat.getDateInstance().format(lastRecord)
-            if (inString == todayDate) {
-                todayData = (mobileDataPerDay[lastRecord])!!
+//            todayData = (mobileDataPerDay[lastRecord])!!
+            if (mobileDataPerDay.containsKey(todayDate)) {
+                todayData = mobileDataPerDay[todayDate]!!
             }
         }
 
@@ -213,12 +224,18 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         var todayWifi = 0L
 
         if (wifiDataPerDay.size > 0) {
-            val keys = mobileDataPerDay.keys
-            val lastRecord = keys.last()
-
-            val inString = DateFormat.getDateInstance().format(lastRecord)
-            if (inString == todayDate) {
-                todayWifi = (wifiDataPerDay[lastRecord])!!
+//            val keys = wifiDataPerDay.keys
+//            var lastRecord = keys.last() // just need to be initialized
+//
+//            keys.forEach { key ->
+//                if (DateFormat.getDateInstance().format(key) == todayDate) {
+//                    lastRecord = key
+//                }
+//            }
+//
+//            todayWifi = (wifiDataPerDay[lastRecord])!!
+            if (wifiDataPerDay.containsKey(todayDate)) {
+                todayWifi = wifiDataPerDay[todayDate]!!
             }
         }
 
@@ -236,8 +253,8 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     @TargetApi(Build.VERSION_CODES.N)
     private fun processMobileData() {
-//        var previousDate = ""
-        var previousDate = 0L
+        var previousDate = ""
+//        var previousDate = 0L
 
         var totalUsage = 0L
 
@@ -246,9 +263,10 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
             mobileData.getNextBucket(bucket)
             totalUsage += bucket.rxBytes
 //            val currentBucketDate = DateFormat.getDateInstance().format(bucket.startTimeStamp)
-            val currentBucketDate = bucket.startTimeStamp
+            val currentBucketDate = formatter.format(bucket.startTimeStamp)
+//            val currentBucketDate = bucket.startTimeStamp
 
-            if (previousDate == 0L || previousDate != currentBucketDate) {
+            if (previousDate == "" || previousDate != currentBucketDate) {
                 mobileDataPerDay[currentBucketDate] = bucket.rxBytes
             } else if (mobileDataPerDay.containsKey(currentBucketDate)) {
                 val currentValue = mobileDataPerDay[currentBucketDate]
@@ -264,8 +282,8 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     @RequiresApi(Build.VERSION_CODES.N)
     private fun processWifiData() {
-//        var previousDate = ""
-        var previousDate = 0L
+        var previousDate = ""
+//        var previousDate = 0L
 
         var totalUsage = 0L
 
@@ -274,9 +292,10 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
             wifiData.getNextBucket(bucket)
             totalUsage += bucket.rxBytes
 //            val currentBucketDate = DateFormat.getDateInstance().format(bucket.startTimeStamp)
-            val currentBucketDate = bucket.startTimeStamp
+            val currentBucketDate = formatter.format(bucket.startTimeStamp)
+//            val currentBucketDate = bucket.startTimeStamp
 
-            if (previousDate == 0L || previousDate != currentBucketDate) {
+            if (previousDate == "" || previousDate != currentBucketDate) {
                 wifiDataPerDay[currentBucketDate] = bucket.rxBytes
             } else if (wifiDataPerDay.containsKey(currentBucketDate)) {
                 val currentValue = wifiDataPerDay[currentBucketDate]
@@ -327,7 +346,8 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         calendar.set(Calendar.DAY_OF_MONTH, 1)
         startTime = calendar.timeInMillis
 
-        todayDate = DateFormat.getDateInstance().format(endTime)
+//        todayDate = DateFormat.getDateInstance().format(endTime)
+        todayDate = formatter.format(endTime)
     }
 
     @SuppressLint("SetTextI18n")
@@ -359,29 +379,25 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         val company = BarDataSet(list, "Daily usage in this month")
         company.axisDependency = YAxis.AxisDependency.LEFT
         company.valueTextColor = Color.WHITE
+        company.valueTextSize = TEXT_SIZE
 
         val data = BarData(company)
         data.barWidth = 0.9f
 
         graphWidget.data = data
 
-        graphWidget.axisLeft.textColor = Color.WHITE
-        graphWidget.axisRight.textColor = Color.WHITE
-        graphWidget.legend.textColor = Color.WHITE
-        graphWidget.legend.textSize = 15f
+        graphWidget.axisLeft.textColor = ColorParser.parse(this, "white")
+        graphWidget.axisLeft.textSize = TEXT_SIZE
+
+        graphWidget.axisRight.textColor = ColorParser.parse(this, "white")
+        graphWidget.axisRight.textSize = TEXT_SIZE
+
+        graphWidget.legend.textColor = ColorParser.parse(this, "white")
+        graphWidget.legend.textSize = TEXT_SIZE
         graphWidget.description.text = ""
 
         graphWidget.animateXY(500, 1500)
         graphWidget.invalidate()
-    }
-
-    private fun initPrefs() {
-        Prefs.Builder()
-                .setContext(this)
-                .setMode(ContextWrapper.MODE_PRIVATE)
-                .setPrefsName(packageName)
-                .setUseDefaultSharedPreference(true)
-                .build()
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -390,6 +406,15 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
         val mode = appOps.checkOpNoThrow(OPSTR_GET_USAGE_STATS, Process.myUid(), context.packageName)
         return mode == MODE_ALLOWED
+    }
+
+    private fun prepareDataPlan() {
+        if (!mobilePlanSet) {
+            dataViews.visibility = View.GONE
+        } else {
+            val test = Prefs.getInt(DATA_LIMIT, 0)
+            mobilePlanInMB = test
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -407,11 +432,13 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         }
     }
 
+    override fun onBackPressed() {
+//        moveTaskToBack(true)
+        finish()
+    }
+
     private fun checkIfLimitIsSet() {
-        if (!mobilePlanSet) {
-            val dialog = SetDataLimitDialog(this, this)
-            dialog.show()
-        }
+        mobilePlanSet = Prefs.getBoolean(SetDataLimitActivity.LIMIT, false)
     }
 
     override fun fragment(): BaseFragment {
@@ -434,13 +461,13 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         return mobilePlanInMB.toDouble()
     }
 
-    override fun setWithDataLimit() {
-        mobilePlanInMB = Prefs.getInt(DATA_LIMIT, 0)
-        mobilePlanSet = true
-    }
-
-    override fun setWithoutDataLimit() {
-        dataViews.visibility = View.GONE
-        mobilePlanSet = true
-    }
+//    override fun setWithDataLimit() {
+//        mobilePlanInMB = Prefs.getInt(DATA_LIMIT, 0)
+//        mobilePlanSet = true
+//    }
+//
+//    override fun setWithoutDataLimit() {
+//        dataViews.visibility = View.GONE
+//        mobilePlanSet = true
+//    }
 }

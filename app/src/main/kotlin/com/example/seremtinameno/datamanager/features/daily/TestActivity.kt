@@ -12,6 +12,10 @@ import com.example.seremtinameno.datamanager.R
 import com.example.seremtinameno.datamanager.core.di.ApplicationComponent
 import com.example.seremtinameno.datamanager.core.platform.BaseActivity
 import com.example.seremtinameno.datamanager.core.platform.BaseFragment
+import com.example.seremtinameno.datamanager.features.daily.DailyUsageFragment
+import com.example.seremtinameno.datamanager.features.daily.TestFragment1
+import com.example.seremtinameno.datamanager.features.daily.TestFragment2
+import com.example.seremtinameno.datamanager.features.daily.ViewPagerAdapter
 import com.ncapdevi.fragnav.FragNavController
 
 class TestActivity : BaseActivity(), FragNavController.RootFragmentListener
@@ -42,7 +46,7 @@ class TestActivity : BaseActivity(), FragNavController.RootFragmentListener
     }
 
     private fun setupViewPager(viewPager: ViewPager) {
-        val adapter = ViewPagerAdapater(supportFragmentManager)
+        val adapter = ViewPagerAdapter(supportFragmentManager)
         adapter.addFragment(DailyUsageFragment.newInstance(0), "Daily usage")
         adapter.addFragment(TestFragment1.newInstance(0), "Test1")
         adapter.addFragment(TestFragment2.newInstance(0), "Test2")

@@ -62,6 +62,10 @@ abstract class BaseActivity : AppCompatActivity() {
         Toasty.error(context, message, Toast.LENGTH_SHORT, true).show()
     }
 
+    fun showSuccessToast(context: Context, message: String) {
+        Toasty.success(context, message, Toast.LENGTH_SHORT, true).show()
+    }
+
     fun injectUI(activity: BaseActivity) {
         ButterKnife.bind(activity)
     }

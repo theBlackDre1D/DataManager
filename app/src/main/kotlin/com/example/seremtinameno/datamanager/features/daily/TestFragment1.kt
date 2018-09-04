@@ -1,4 +1,4 @@
-package com.example.seremtinameno.datamanager.features.datausage.daily
+package com.example.seremtinameno.datamanager.features.daily
 
 import android.os.Bundle
 import android.support.v4.app.Fragment

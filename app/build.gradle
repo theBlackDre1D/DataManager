@@ -181,10 +181,13 @@ dependencies {
     implementation applicationDependencies.fragNav
     implementation applicationDependencies.circularProgress
     implementation applicationDependencies.toasty
-    implementation ('com.crashlytics.sdk.android:crashlytics:2.9.5@aar') {
+    implementation applicationDependencies.materialIntro
+    implementation applicationDependencies.holyViewPager
+    implementation applicationDependencies.observableScrollView
+
+    implementation('com.crashlytics.sdk.android:crashlytics:2.9.5@aar') {
         transitive = true
     }
-
 
     //Unit/Integration tests dependencies
     testImplementation unitTestDependencies.kotlin

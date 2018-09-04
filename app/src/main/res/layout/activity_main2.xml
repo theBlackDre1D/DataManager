@@ -10,7 +10,7 @@
         android:id="@+id/wrapper"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/darb_blue"
+        android:background="@color/white"
         >
 
         <LinearLayout
@@ -25,7 +25,7 @@
                 android:text="@string/today"
                 android:textStyle="bold"
                 android:textSize="20sp"
-                android:textColor="@color/white"
+                android:textColor="@color/purple"
                 android:layout_marginStart="@dimen/marginSide"
                 android:layout_marginTop="20dp"
                 />
@@ -45,7 +45,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/data"
                     android:textStyle="bold"
-                    android:textColor="@color/white"
+                    android:textColor="@color/purple"
 
                     />
 
@@ -54,7 +54,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/wi_fi"
                     android:textStyle="bold"
-                    android:textColor="@color/white"
+                    android:textColor="@color/purple"
                     android:layout_marginStart="200dp"
                     />
 
@@ -75,7 +75,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:textStyle="bold"
-                    android:textColor="@color/white"
+                    android:textColor="@color/purple"
                     android:textSize="30sp"
                     android:layout_gravity="center"
                     android:layout_marginTop="8dp"
@@ -90,7 +90,7 @@
                     android:gravity="bottom"
                     android:text="MB"
                     android:textStyle="bold"
-                    android:textColor="@color/white"
+                    android:textColor="@color/purple"
                     android:textSize="12sp"
                     />
 
@@ -99,7 +99,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:textColor="@color/white"
+                    android:textColor="@color/purple"
                     android:textSize="30sp"
                     android:layout_gravity="center"
                     android:layout_marginTop="8dp"
@@ -113,7 +113,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="MB"
-                    android:textColor="@color/white"
+                    android:textColor="@color/purple"
                     android:textSize="12sp"
                     android:textStyle="bold"
                     android:layout_marginStart="5dp"
@@ -132,7 +132,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/white"
+                    android:textColor="@color/purple"
                     android:textSize="20sp"
                     android:text="@string/total_usage"
                     android:textStyle="bold"
@@ -146,7 +146,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="8dp"
-                    app:progressColor="@color/green"
+                    app:progressColor="@color/purple"
                     app:progressBackgroundColor="@color/grey"
                     app:progressStrokeWidth="18dp"
                     app:direction="clockwise"
@@ -165,14 +165,14 @@
                         android:text="Your plan (MB): "
                         android:textSize="15sp"
                         android:textStyle="bold"
-                        android:textColor="@color/white"
+                        android:textColor="@color/purple"
                         />
 
                     <TextView
                         android:id="@+id/userPlan"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/white"
+                        android:textColor="@color/purple"
                         android:textSize="15sp"
                         android:textStyle="bold"
                         android:layout_marginStart="2dp"
@@ -194,14 +194,14 @@
                         android:text="Used (MB): "
                         android:textSize="15sp"
                         android:textStyle="bold"
-                        android:textColor="@color/white"
+                        android:textColor="@color/purple"
                         />
 
                     <TextView
                         android:id="@+id/used"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/white"
+                        android:textColor="@color/purple"
                         android:textSize="15sp"
                         android:textStyle="bold"
                         android:text="324"
