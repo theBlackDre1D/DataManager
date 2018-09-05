@@ -32,7 +32,7 @@ import com.example.seremtinameno.datamanager.core.extension.failure
 import com.example.seremtinameno.datamanager.core.extension.observe
 import com.example.seremtinameno.datamanager.core.helpers.ColorParser
 import com.example.seremtinameno.datamanager.core.platform.BaseActivity
-import com.example.seremtinameno.datamanager.features.intro.IntroActivity
+import com.example.seremtinameno.datamanager.features.settings.RaiseDataLimitDialog
 import com.example.seremtinameno.datamanager.features.settings.SettingsActivity
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.YAxis
@@ -108,6 +108,8 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     private val formatter = SimpleDateFormat(DATE_FORMAT)
 
+    private var usedMB = 0.0
+
     @Inject
     lateinit var monthlyDataUsage:          DataUsageViewModel
 
@@ -123,24 +125,36 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         appComponent.inject(this)
         showLoading()
 
+        initDates()
         checkIfLimitIsSet()
         prepareDataPlan()
-        initDates()
 
         permissionProvider.setDelegate(this)
         permissionCheck()
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onResume() {
         super.onResume()
 
         checkIfLimitIsSet()
         prepareDataPlan()
+        refreshUI()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun refreshUI() {
+//        val plan = Prefs.getInt(DATA_LIMIT, 0)
+//        val extraData = Prefs.getInt(RaiseDataLimitDialog.EXTRA_DATA, 0)
+//        mobilePlanInMB = plan + extraData
+//
+//        userPlan.text = mobilePlanInMB.toString()
+        calculateDataUsage(usedMB.toLong())
     }
 
     @OnClick(R.id.testButton)
     fun goToTest() {
-        startActivity(IntroActivity.getCallingIntent(this))
+//        startActivity(IntroActivity.getCallingIntent(this))
     }
 
     companion object {
@@ -265,6 +279,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
             previousDate = currentBucketDate
         }
 
+        usedMB = totalUsage.toDouble()
         calculateDataUsage(totalUsage)
     }
 
@@ -336,22 +351,31 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
 //        todayDate = DateFormat.getDateInstance().format(endTime)
         todayDate = formatter.format(endTime)
+
+        val dateInString = todayDate.substring(0,2)
+        if (dateInString == "01") {
+            newMonth()
+        }
+    }
+
+    private fun newMonth() {
+        Prefs.putInt(RaiseDataLimitDialog.EXTRA_DATA, 0)
     }
 
     @SuppressLint("SetTextI18n")
     @RequiresApi(Build.VERSION_CODES.M)
     private fun calculateDataUsage(totalUsage: Long) {
-        val usedMB = totalUsage / (1024.0 * 1024.0)
+        val usageInMB = totalUsage / (1024.0 * 1024.0)
 //        progressWidget.progress = calculatePercentage(usedMB)
 
         val textAdapter = MyProgressTextAdapter()
         textAdapter.setView(this)
 
         userPlan.text = mobilePlanInMB.toString()
-        used.text = precision.format(usedMB)
-        progressIndicator.maxProgress = 2000.0
+        used.text = precision.format(usageInMB)
+        progressIndicator.maxProgress = mobilePlanInMB.toDouble()
         progressIndicator.setProgressTextAdapter(textAdapter)
-        progressIndicator.setCurrentProgress(usedMB)
+        progressIndicator.setCurrentProgress(usageInMB)
     }
 
     private fun showInGraph() {
@@ -401,8 +425,9 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
             dataViews.visibility = View.GONE
         } else {
             dataViews.visibility = View.VISIBLE
-            val test = Prefs.getInt(DATA_LIMIT, 0)
-            mobilePlanInMB = test
+            val plan = Prefs.getInt(DATA_LIMIT, 0)
+            val extraData = Prefs.getInt(RaiseDataLimitDialog.EXTRA_DATA, 0)
+            mobilePlanInMB = plan + extraData
         }
     }
 

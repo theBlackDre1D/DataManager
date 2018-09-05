@@ -42,6 +42,7 @@ class SettingsActivity : BaseActivity() {
     companion object {
 
         const val ACTIVITY_NAME = "settings"
+        const val NOTIFICATIONS = "notifications"
 
         fun getCallingIntent(context: Context): Intent {
             return Intent(context, SettingsActivity::class.java)
@@ -50,6 +51,7 @@ class SettingsActivity : BaseActivity() {
 
     private fun initCurrentPrefs() {
         dataLimitStatus.isChecked = Prefs.getBoolean(SetDataLimitActivity.LIMIT, true)
+        allowNotifications.isChecked = Prefs.getBoolean(NOTIFICATIONS, true)
     }
 
     @OnClick(R.id.enableDataLimit)
@@ -57,7 +59,12 @@ class SettingsActivity : BaseActivity() {
         Prefs.putBoolean(SetDataLimitActivity.LIMIT, dataLimitStatus.isChecked)
     }
 
-    @OnClick(R.id.setNewDataLimit)
+    @OnClick(R.id.allowNotifications)
+    fun notificationsStatus() {
+        Prefs.putBoolean(NOTIFICATIONS, allowNotifications.isChecked)
+    }
+
+    @OnClick(R.id.newDataLimit)
     fun setNewDataLimit() {
         startActivity(SetDataLimitActivity.getCallingIntent(this, ACTIVITY_NAME))
     }
