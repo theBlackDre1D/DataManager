@@ -7,8 +7,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import butterknife.ButterKnife
-import com.example.seremtinameno.datamanager.AndroidApplication
+import com.example.seremtinameno.datamanager.core.AndroidApplication
 import com.example.seremtinameno.datamanager.core.di.ApplicationComponent
 //import com.example.seremtinameno.datamanager.core.extension.viewContainer
 import kotlinx.android.synthetic.main.progress.*

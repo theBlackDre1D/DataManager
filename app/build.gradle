@@ -150,6 +150,7 @@ dependencies {
 
     //Compile time dependencies
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+    implementation 'com.android.support:support-v4:27.1.1'
     kapt applicationDependencies.archComponentsCompiler
     kapt applicationDependencies.daggerCompiler
     compileOnly applicationDependencies.javaxAnnotation
@@ -184,6 +185,7 @@ dependencies {
     implementation applicationDependencies.materialIntro
     implementation applicationDependencies.holyViewPager
     implementation applicationDependencies.observableScrollView
+    implementation applicationDependencies.bungee
 
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.5@aar') {
         transitive = true

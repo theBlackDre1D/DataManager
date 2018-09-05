@@ -13,6 +13,8 @@ import butterknife.OnClick
 import com.example.seremtinameno.datamanager.R
 import com.example.seremtinameno.datamanager.core.platform.BaseActivity
 import com.example.seremtinameno.datamanager.core.platform.BaseFragment
+import com.example.seremtinameno.datamanager.features.settings.SettingsActivity
+import com.example.seremtinameno.datamanager.features.splash.SplashActivity
 import com.pixplicity.easyprefs.library.Prefs
 import es.dmoral.toasty.Toasty
 
@@ -27,22 +29,35 @@ class SetDataLimitActivity : BaseActivity() {
     @BindView(R.id.GB)
     lateinit var GB: RadioButton
 
+    private var comingFrom = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_set_data_limit)
 
         ButterKnife.bind(this)
 
+        getFromIntent()
         MB.isChecked = true
     }
 
     companion object {
         const val LIMIT = "limit"
         const val USER_ASKED = "asked"
+        const val FROM = "from"
 
-        fun getCallingIntent(context: Context): Intent {
-            return Intent(context, SetDataLimitActivity::class.java)
+        fun getCallingIntent(context: Context, comingFrom: String): Intent {
+            val intent = Intent(context, SetDataLimitActivity::class.java)
+            intent.putExtra(FROM, comingFrom)
+
+            return intent
         }
+    }
+
+    private fun getFromIntent() {
+        val intent = intent
+
+        comingFrom = intent.getStringExtra(FROM)
     }
 
     private fun checkCheck(): Boolean {
@@ -66,9 +81,11 @@ class SetDataLimitActivity : BaseActivity() {
 
         dialog.setButton(AlertDialog.BUTTON_POSITIVE, "Confirm"
         ) { dialog, _ ->
-            noDataLimit()
+            if (comingFrom == SplashActivity.ACTIVITY_NAME) {
+                noDataLimit()
+                Toasty.error(this, "Data limit not set", Toast.LENGTH_SHORT, true).show()
+            }
 
-            Toasty.error(this, "Data limit not set", Toast.LENGTH_SHORT, true).show()
             goToMainActivity()
         }
 

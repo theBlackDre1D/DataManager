@@ -22,7 +22,7 @@ import android.widget.LinearLayout
 import antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
 import butterknife.BindView
 import butterknife.OnClick
-import com.example.seremtinameno.datamanager.AndroidApplication
+import com.example.seremtinameno.datamanager.core.AndroidApplication
 import com.example.seremtinameno.datamanager.R
 import com.example.seremtinameno.datamanager.core.permissions.PermissionProvider
 import com.example.seremtinameno.datamanager.core.platform.BaseFragment
@@ -33,12 +33,12 @@ import com.example.seremtinameno.datamanager.core.extension.observe
 import com.example.seremtinameno.datamanager.core.helpers.ColorParser
 import com.example.seremtinameno.datamanager.core.platform.BaseActivity
 import com.example.seremtinameno.datamanager.features.intro.IntroActivity
+import com.example.seremtinameno.datamanager.features.settings.SettingsActivity
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.pixplicity.easyprefs.library.Prefs
 import timber.log.Timber
-import java.text.DateFormat
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -96,15 +96,15 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     private var mobilePlanInMB:             Int = 0
 
-    private var mobileDataPerDay =          HashMap<String, Long>()
+    private var mobileDataPerDay = HashMap<String, Long>()
 
-    private var wifiDataPerDay =            HashMap<String, Long>()
+    private var wifiDataPerDay = HashMap<String, Long>()
 
-    private var precision =                 DecimalFormat("0.00")
+    private var precision = DecimalFormat("0.00")
 
-    private var mobilePlanSet =             false
+    private var mobilePlanSet = false
 
-    private var todayDate =                 ""
+    private var todayDate = ""
 
     private val formatter = SimpleDateFormat(DATE_FORMAT)
 
@@ -119,18 +119,23 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-//        checkIfLimitIsSet()
-
         injectUI(this)
         appComponent.inject(this)
         showLoading()
+
         checkIfLimitIsSet()
         prepareDataPlan()
-
         initDates()
 
         permissionProvider.setDelegate(this)
         permissionCheck()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        checkIfLimitIsSet()
+        prepareDataPlan()
     }
 
     @OnClick(R.id.testButton)
@@ -163,6 +168,11 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     }
 
+    @OnClick(R.id.settings)
+    fun goToSettings() {
+        startActivity(SettingsActivity.getCallingIntent(this))
+    }
+
     @TargetApi(Build.VERSION_CODES.N)
     @RequiresApi(Build.VERSION_CODES.M)
     private fun renderData(data: HashMap<String, NetworkStats>?) {
@@ -185,24 +195,12 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     private fun sortData(map: HashMap<Long, Long>) {
         map.toList().sortedBy { (key, _) -> key}.toMap()
-//        map.toSortedMap(compareBy<Long> { it }.thenBy { it })
-//        map.toSortedMap()
     }
 
     private fun showTodayData() {
         var todayData = 0L
 
         if (mobileDataPerDay.size > 0) {
-//            val keys = mobileDataPerDay.keys
-//            var lastRecord = keys.last() // just need to be initialized
-//            keys.forEach { key ->
-//                val toDate = DateFormat.getDateInstance().format(key)
-//                if (toDate == todayDate) {
-//                    lastRecord = key
-//                }
-//            }
-
-//            todayData = (mobileDataPerDay[lastRecord])!!
             if (mobileDataPerDay.containsKey(todayDate)) {
                 todayData = mobileDataPerDay[todayDate]!!
             }
@@ -224,16 +222,6 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         var todayWifi = 0L
 
         if (wifiDataPerDay.size > 0) {
-//            val keys = wifiDataPerDay.keys
-//            var lastRecord = keys.last() // just need to be initialized
-//
-//            keys.forEach { key ->
-//                if (DateFormat.getDateInstance().format(key) == todayDate) {
-//                    lastRecord = key
-//                }
-//            }
-//
-//            todayWifi = (wifiDataPerDay[lastRecord])!!
             if (wifiDataPerDay.containsKey(todayDate)) {
                 todayWifi = wifiDataPerDay[todayDate]!!
             }
@@ -412,6 +400,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         if (!mobilePlanSet) {
             dataViews.visibility = View.GONE
         } else {
+            dataViews.visibility = View.VISIBLE
             val test = Prefs.getInt(DATA_LIMIT, 0)
             mobilePlanInMB = test
         }
@@ -460,14 +449,4 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     override fun getDataLimit(): Double {
         return mobilePlanInMB.toDouble()
     }
-
-//    override fun setWithDataLimit() {
-//        mobilePlanInMB = Prefs.getInt(DATA_LIMIT, 0)
-//        mobilePlanSet = true
-//    }
-//
-//    override fun setWithoutDataLimit() {
-//        dataViews.visibility = View.GONE
-//        mobilePlanSet = true
-//    }
 }

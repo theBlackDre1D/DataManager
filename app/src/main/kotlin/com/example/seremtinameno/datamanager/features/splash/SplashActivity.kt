@@ -21,11 +21,6 @@ class SplashActivity : BaseActivity() {
         initCrashlytics()
         initPrefs()
 
-//        val handler = Handler()
-//        handler.postDelayed({
-
-//        }, 500)
-
         try {
             val set = Prefs.getBoolean(SetDataLimitActivity.LIMIT, false)
             val asked = Prefs.getBoolean(SetDataLimitActivity.USER_ASKED, false)
@@ -33,18 +28,18 @@ class SplashActivity : BaseActivity() {
             if (asked) {
                 startActivity(MainActivity.getCallingIntent(this))
             } else {
-                startActivity(SetDataLimitActivity.getCallingIntent(this))
+                startActivity(SetDataLimitActivity.getCallingIntent(this, ACTIVITY_NAME))
             }
         } catch (error: Exception) {
-            startActivity(SetDataLimitActivity.getCallingIntent(this))
+            startActivity(SetDataLimitActivity.getCallingIntent(this, ACTIVITY_NAME))
         }
 
         finish()
-//        TaskStackBuilder.create(this)
-//                .addNextIntentWithParentStack(IntroActivity.getCallingIntent(this))
-//                .addNextIntent(MainActivity.getCallingIntent(this))
-//                .startActivities()
 
+    }
+
+    companion object {
+        const val ACTIVITY_NAME = "splash"
     }
 
     private fun initPrefs() {

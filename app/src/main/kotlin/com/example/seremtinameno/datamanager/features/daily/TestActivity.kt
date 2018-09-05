@@ -7,7 +7,7 @@ import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
 import butterknife.BindView
-import com.example.seremtinameno.datamanager.AndroidApplication
+import com.example.seremtinameno.datamanager.core.AndroidApplication
 import com.example.seremtinameno.datamanager.R
 import com.example.seremtinameno.datamanager.core.di.ApplicationComponent
 import com.example.seremtinameno.datamanager.core.platform.BaseActivity

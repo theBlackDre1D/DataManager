@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.seremtinameno.datamanager
+package com.example.seremtinameno.datamanager.core
 
 import android.app.Application
 import com.example.seremtinameno.datamanager.core.di.ApplicationComponent

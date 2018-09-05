@@ -78,7 +78,8 @@ ext {
       toasty:                     "com.github.GrenderG:Toasty:$toasty_version",
       materialIntro:              "agency.tango.android:material-intro-screen:$materialIntro_version",
       holyViewPager:              "com.github.florent37:hollyviewpager:$holyViewPager_version",
-      observableScrollView:       "com.github.ksoichiro:android-observablescrollview:$observableScrollView_version"
+      observableScrollView:       "com.github.ksoichiro:android-observablescrollview:$observableScrollView_version",
+      bungee:                     "com.github.Binary-Finery:Bungee:master-SNAPSHOT"
   ]
 
   unitTesting = [

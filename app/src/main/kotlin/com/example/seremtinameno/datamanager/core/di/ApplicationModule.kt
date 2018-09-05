@@ -16,7 +16,7 @@
 package com.example.seremtinameno.datamanager.core.di
 
 import android.content.Context
-import com.example.seremtinameno.datamanager.AndroidApplication
+import com.example.seremtinameno.datamanager.core.AndroidApplication
 import com.example.seremtinameno.datamanager.BuildConfig
 import com.example.seremtinameno.datamanager.features.datausage.DataRepository
 import dagger.Module
