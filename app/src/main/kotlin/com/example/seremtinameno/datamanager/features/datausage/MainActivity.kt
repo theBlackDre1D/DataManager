@@ -32,6 +32,7 @@ import com.example.seremtinameno.datamanager.core.extension.failure
 import com.example.seremtinameno.datamanager.core.extension.observe
 import com.example.seremtinameno.datamanager.core.helpers.ColorParser
 import com.example.seremtinameno.datamanager.core.platform.BaseActivity
+import com.example.seremtinameno.datamanager.features.daily.DailyUseActivity
 import com.example.seremtinameno.datamanager.features.settings.RaiseDataLimitDialog
 import com.example.seremtinameno.datamanager.features.settings.SettingsActivity
 import com.github.mikephil.charting.charts.BarChart
@@ -155,6 +156,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     @OnClick(R.id.testButton)
     fun goToTest() {
 //        startActivity(IntroActivity.getCallingIntent(this))
+        startActivity(DailyUseActivity.getCallingIntent(this))
     }
 
     companion object {

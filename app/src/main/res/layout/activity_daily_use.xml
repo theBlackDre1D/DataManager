@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".features.daily.DailyUseActivity"
+    android:background="@color/darb_blue"
+    >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:textColor="@color/white"
+        android:text="@string/daily_usage"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:gravity="center"
+        />
+
+    <com.github.florent37.hollyviewpager.HollyViewPager
+        android:id="@+id/hollyViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:hvp_headerHeight="150dp"
+        />
+
+    <include layout="@layout/loading" />
+
+</RelativeLayout>

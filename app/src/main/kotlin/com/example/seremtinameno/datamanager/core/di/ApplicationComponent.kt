@@ -35,6 +35,7 @@ interface ApplicationComponent {
     fun inject(activity: MainActivity)
     fun inject(activity: TestActivity)
     fun inject(activity: SettingsActivity)
+    fun inject(activity: BaseActivity)
 
 //    fun inject(moviesFragment: MoviesFragment)
 //    fun inject(movieDetailsFragment: MovieDetailsFragment)

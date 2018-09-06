@@ -92,4 +92,5 @@
     <string name="settings">SETTINGS</string>
     <string name="set_your_monthly_data_limit">Set your monthly data limit</string>
     <string name="switch_data_limit">Data limit enabled</string>
+    <string name="daily_usage">DAILY USAGE</string>
 </resources>

@@ -5,12 +5,18 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.Unbinder
 import com.example.seremtinameno.datamanager.R
+import com.github.florent37.hollyviewpager.HollyViewPagerBus
+import com.github.ksoichiro.android.observablescrollview.ObservableScrollView
 
 
 class DailyUsageFragment: Fragment() {
+
+    @BindView(R.id.scrollView)
+    lateinit var observableScrollView: ObservableScrollView
 
     private lateinit var unbinder: Unbinder
 
@@ -22,6 +28,8 @@ class DailyUsageFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         unbinder = ButterKnife.bind(this, view)
+
+        HollyViewPagerBus.registerScrollView(context, observableScrollView)
     }
 
     override fun onDestroyView() {
