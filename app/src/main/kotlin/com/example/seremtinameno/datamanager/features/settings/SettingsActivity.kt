@@ -65,7 +65,7 @@ class SettingsActivity : BaseActivity() {
     }
 
     @OnClick(R.id.newDataLimit)
-    fun setNewDataLimit() {
+    fun clicked() {
         startActivity(SetDataLimitActivity.getCallingIntent(this, ACTIVITY_NAME))
     }
 

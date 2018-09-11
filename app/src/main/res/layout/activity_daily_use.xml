@@ -10,6 +10,7 @@
     >
 
     <TextView
+        android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:textColor="@color/white"
@@ -22,8 +23,9 @@
     <com.github.florent37.hollyviewpager.HollyViewPager
         android:id="@+id/hollyViewPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:hvp_headerHeight="150dp"
+        android:layout_below="@+id/header"
         />
 
     <include layout="@layout/loading" />
