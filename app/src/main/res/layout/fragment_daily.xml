@@ -26,6 +26,22 @@
             android:text="just useless text"
             />
 
+        <TextView
+            android:id="@+id/text1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="data"
+            />
+
+        <TextView
+            android:id="@+id/text2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="wifi"
+            />
+
     </LinearLayout>
 
 </com.github.ksoichiro.android.observablescrollview.ObservableScrollView>

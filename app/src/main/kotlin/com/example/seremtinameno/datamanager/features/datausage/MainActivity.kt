@@ -156,7 +156,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     @OnClick(R.id.testButton)
     fun goToTest() {
 //        startActivity(IntroActivity.getCallingIntent(this))
-        startActivity(DailyUseActivity.getCallingIntent(this))
+        startActivity(DailyUseActivity.getCallingIntent(this, hashMapOf("data" to mobileDataPerDay, "wifi" to wifiDataPerDay)))
     }
 
     companion object {
