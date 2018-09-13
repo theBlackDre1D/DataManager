@@ -20,9 +20,11 @@ import com.example.seremtinameno.datamanager.features.datausage.MainActivity
 import com.github.florent37.hollyviewpager.HollyViewPager
 import com.github.florent37.hollyviewpager.HollyViewPagerConfigurator
 import java.io.Serializable
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
+import kotlin.collections.ArrayList
 
 class DailyUseActivity : BaseActivity() {
 
@@ -43,6 +45,10 @@ class DailyUseActivity : BaseActivity() {
     private lateinit var dataTogether: HashMap<String, Usage>
 
     private val orderedDates = ArrayList<String>()
+
+    private val formatter = SimpleDateFormat(MainActivity.DATE_FORMAT)
+
+    private val displayFormatter = SimpleDateFormat("dd. MM. yyyy")
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -103,16 +109,21 @@ class DailyUseActivity : BaseActivity() {
     }
 
     private fun initHollyViewPager() {
+        showLoading()
+
+        val titles = ArrayList<String>()
         hollyViewPager.viewPager.pageMargin = resources.getDimensionPixelOffset(R.dimen.viewpager_margin)
 
         hollyViewPager.configurator = HollyViewPagerConfigurator {
-            ((it+4)%10)/10f
+//            val result = ((it+4)%10)/10f
+//            result
+            0.6f
         }
 
         hollyViewPager.setAdapter(object : FragmentPagerAdapter(supportFragmentManager) {
             override fun getItem(position: Int): Fragment {
                 val key = orderedDates[position]
-                return DailyUsageFragment.newInstance(0, dataTogether[key]!!)
+                return DailyUsageFragment.newInstance(0, dataTogether[key]!!, titles[position])
             }
 
             override fun getCount(): Int {
@@ -120,9 +131,16 @@ class DailyUseActivity : BaseActivity() {
             }
 
             override fun getPageTitle(position: Int): CharSequence? {
-                return "Title: $position"
+                val key = orderedDates[position]
+                val date = formatter.parse(key)
+                val title = displayFormatter.format(date)
+                titles.add(position, title)
+//                return "Title: $position"
+                return title
             }
         })
+
+        hideLoading()
     }
 
     override fun fragment(): BaseFragment {

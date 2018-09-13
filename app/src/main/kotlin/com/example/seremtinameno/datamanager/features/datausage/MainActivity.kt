@@ -21,6 +21,7 @@ import android.view.View
 import android.widget.LinearLayout
 import antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
 import butterknife.BindView
+import butterknife.ButterKnife
 import butterknife.OnClick
 import com.example.seremtinameno.datamanager.core.AndroidApplication
 import com.example.seremtinameno.datamanager.R
@@ -123,6 +124,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         setContentView(R.layout.activity_main)
 
         injectUI(this)
+//        ButterKnife.bind(this)
         appComponent.inject(this)
         showLoading()
 

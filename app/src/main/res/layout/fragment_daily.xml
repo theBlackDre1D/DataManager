@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.github.ksoichiro.android.observablescrollview.ObservableScrollView
-    android:id="@+id/scrollView"
+<com.github.ksoichiro.android.observablescrollview.ObservableScrollView android:id="@+id/scrollView"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbars="none"
-    android:background="@color/darb_blue"
-    >
+    android:background="@color/dark_blue"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,27 +19,105 @@
 
         <include layout="@layout/hvp_header_placeholder"/>
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="just useless text"
-            />
+            android:orientation="vertical"
+            android:background="@drawable/fragment_background"
+            android:layout_marginEnd="30dp"
+            >
 
-        <TextView
-            android:id="@+id/text1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:text="data"
-            />
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="May 24"
+                android:textColor="@color/dark_blue"
+                android:textSize="25sp"
+                android:gravity="center"
 
-        <TextView
-            android:id="@+id/text2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:text="wifi"
-            />
+                />
+
+            <antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
+                android:id="@+id/circularProgressBar"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="50dp"
+                app:progressColor="@color/dark_blue"
+                app:progressBackgroundColor="@color/grey"
+                app:progressStrokeWidth="18dp"
+                app:direction="clockwise"
+                />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="10dp"
+                android:paddingStart="10dp"
+                android:layout_marginTop="15dp"
+                >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/data"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:textColor="@color/dark_blue"
+                    />
+
+                <TextView
+                    android:id="@+id/usedData"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="0.0 MB"
+                    android:textColor="@color/dark_blue"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="10dp"
+                android:paddingStart="10dp"
+                android:layout_marginTop="15dp"
+                >
+
+                <TextView
+                    android:id="@+id/label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dark_blue"
+                    android:text="@string/wi_fi"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    />
+
+                <TextView
+                    android:id="@+id/usedWifi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="0.0 MB"
+                    android:textColor="@color/dark_blue"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    />
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                />
+        </LinearLayout>
+
 
     </LinearLayout>
 

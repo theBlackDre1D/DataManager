@@ -55,7 +55,7 @@ class SettingsActivity : BaseActivity() {
     }
 
     @OnClick(R.id.enableDataLimit)
-    fun dataLimitStatus() {
+    fun dataLimit() {
         Prefs.putBoolean(SetDataLimitActivity.LIMIT, dataLimitStatus.isChecked)
     }
 
