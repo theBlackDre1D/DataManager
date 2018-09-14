@@ -1,0 +1,106 @@
+allprojects {
+  repositories {
+    google()
+    jcenter()
+  }
+}
+
+ext {
+  //Android libraries
+  appCompat_version = '27.1.0'
+  constraintLayout_version = '1.0.2'
+  archComponents_version = '1.1.1'
+  glide_version = '4.0.0'
+
+  //Third party libraries
+  kotlin_coroutines_version = '0.22.1'
+  dagger_version = '2.11'
+  javaxAnnotations_version = '1.0'
+  javaxInject_version = '1'
+  retrofit_version = '2.3.0'
+  okhttp_logging_interceptor_version = '3.8.1'
+  prefs_version = '1.9.0'
+  butterKnife_version = '8.8.1'
+  anko_version = '0.10.5'
+  timber_version = '4.7.1'
+  avLibrary_version = '2.1.3'
+  charts_version = 'v3.0.3'
+  anyChart_version = '0.3.0'
+  fragNav_version = '2.4.0'
+  circularProgress_version = '1.1.3'
+  toasty_version = '1.3.0'
+  materialIntro_version = '0.0.5'
+  holyViewPager_version = '1.0.1'
+  observableScrollView_version = '1.5.2'
+
+  //Unit Testing
+  robolectric_version = '3.8'
+  junit_version = '4.12'
+  mockito_version = '1.4.0'
+  kluent_version = '1.14'
+
+  //Acceptance Testing
+  runner_version = '1.0.2-alpha1'
+  espresso_version = '3.0.2-alpha1'
+
+  //Development
+  leakCanaryVersion = '1.5'
+
+  mainApplication = [
+      kotlin:                     "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version",
+      kotlinCoroutines:           "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_coroutines_version",
+      kotlinCoroutinesAndroid:    "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutines_version",
+      appCompat:                  "com.android.support:appcompat-v7:$appCompat_version",
+      cardView:                   "com.android.support:cardview-v7:$appCompat_version",
+      recyclerView:               "com.android.support:recyclerview-v7:$appCompat_version",
+      design:                     "com.android.support:design:$appCompat_version",
+      constraintLayout:           "com.android.support.constraint:constraint-layout:$constraintLayout_version",
+      androidAnnotations:         "com.android.support:support-annotations:$appCompat_version",
+      archComponents:             "android.arch.lifecycle:extensions:$archComponents_version",
+      archComponentsCompiler:     "android.arch.lifecycle:compiler:$archComponents_version",
+      glide:                      "com.github.bumptech.glide:glide:$glide_version",
+      daggerCompiler:             "com.google.dagger:dagger-compiler:$dagger_version",
+      dagger:                     "com.google.dagger:dagger:$dagger_version",
+      javaxAnnotation:            "javax.annotation:jsr250-api:$javaxAnnotations_version",
+      javaxInject:                "javax.inject:javax.inject:$javaxInject_version",
+      retrofit:                   "com.squareup.retrofit2:converter-gson:$retrofit_version",
+      okhttpLoggingInterceptor:   "com.squareup.okhttp3:logging-interceptor:$okhttp_logging_interceptor_version",
+      prefs:                      "com.pixplicity.easyprefs:library:$prefs_version",
+      butterKnife:                "com.jakewharton:butterknife:$butterKnife_version",
+      butterKnifeProcessor:       "com.jakewharton:butterknife-compiler:$butterKnife_version",
+      anko_snackBar:              "org.jetbrains.anko:anko-design:$anko_version",
+      timber:                     "com.jakewharton.timber:timber:$timber_version",
+      progressBar:                "com.wang.avi:library:$avLibrary_version",
+      charts:                     "com.github.PhilJay:MPAndroidChart:$charts_version",
+      anyChart:                   "com.github.AnyChart:AnyChart-Android:$anyChart_version",
+      fragNav:                    "com.ncapdevi:frag-nav:$fragNav_version",
+      circularProgress:           "com.github.antonKozyriatskyi:CircularProgressIndicator:$circularProgress_version",
+      toasty:                     "com.github.GrenderG:Toasty:$toasty_version",
+      materialIntro:              "agency.tango.android:material-intro-screen:$materialIntro_version",
+      holyViewPager:              "com.github.florent37:hollyviewpager:$holyViewPager_version",
+      observableScrollView:       "com.github.ksoichiro:android-observablescrollview:$observableScrollView_version",
+      bungee:                     "com.github.Binary-Finery:Bungee:master-SNAPSHOT"
+  ]
+
+  unitTesting = [
+      kotlin:             "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version",
+      kotlinTest:         "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version",
+      robolectric:        "org.robolectric:robolectric:$robolectric_version",
+      junit:              "junit:junit:$junit_version",
+      mockito:            "com.nhaarman:mockito-kotlin:$mockito_version",
+      kluent:             "org.amshove.kluent:kluent:$kluent_version",
+  ]
+
+  acceptanceTesting = [
+      testRunner:         "com.android.support.test:runner:$runner_version",
+      testRules:          "com.android.support.test:rules:$runner_version",
+      espressoCore:       "com.android.support.test.espresso:espresso-core:$espresso_version",
+      espressoIntents:    "com.android.support.test.espresso:espresso-intents:$espresso_version",
+      androidAnnotations: "com.android.support:support-annotations:$appCompat_version",
+  ]
+
+  development = [
+      leakCanary:         "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}",
+      leakCanaryNoop:     "com.squareup.leakcanary:leakcanary-android-no-op:${leakCanaryVersion}",
+  ]
+}

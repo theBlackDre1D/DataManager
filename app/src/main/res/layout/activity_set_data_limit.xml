@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".features.datausage.SetDataLimitActivity"
+    android:background="@color/dark_blue"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:text="@string/set_your_monthly_data_limit"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:layout_marginBottom="60dp"
+            />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginTop="12dp"
+            >
+
+            <RadioButton
+                android:id="@+id/MB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="MB"
+                />
+
+            <RadioButton
+                android:id="@+id/GB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="GB"
+                />
+
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/dataLimit"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:textColor="@color/dark_blue"
+            android:textColorHint="@color/grey"
+            android:background="@color/white"
+            android:layout_marginStart="150dp"
+            android:layout_marginEnd="150dp"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="12dp"
+            android:paddingTop="4dp"
+            android:inputType="number"
+            />
+
+        <LinearLayout
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            >
+
+            <Button
+                android:id="@+id/cancel"
+                android:layout_width="100dp"
+                android:layout_height="35dp"
+                android:background="@drawable/rounded_button"
+                android:textColor="@color/dark_blue"
+                android:text="@string/cancel"
+                android:layout_marginEnd="12dp"
+                />
+
+            <Button
+                android:id="@+id/confirm"
+                android:layout_width="100dp"
+                android:layout_height="35dp"
+                android:background="@drawable/rounded_button"
+                android:textColor="@color/dark_blue"
+                android:text="@string/confirm"
+                android:layout_marginStart="12dp"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>
