@@ -86,7 +86,11 @@ class SetDataLimitActivity : BaseActivity() {
                 Toasty.error(this, "Data limit not set", Toast.LENGTH_SHORT, true).show()
             }
 
-            goToMainActivity()
+            if (comingFrom == SettingsActivity.ACTIVITY_NAME) {
+                super.onBackPressed()
+            } else {
+                goToMainActivity()
+            }
         }
 
         dialog.show()

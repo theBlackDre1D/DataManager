@@ -35,6 +35,7 @@
                 android:textColor="@color/dark_blue"
                 android:textSize="25sp"
                 android:gravity="center"
+                android:textStyle="bold"
 
                 />
 
