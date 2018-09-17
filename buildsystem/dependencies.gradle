@@ -7,10 +7,11 @@ allprojects {
 
 ext {
   //Android libraries
-  appCompat_version = '27.1.0'
+  appCompat_version = '27.1.1'
   constraintLayout_version = '1.0.2'
   archComponents_version = '1.1.1'
   glide_version = '4.0.0'
+  androidX_version = '1.0.0-rc02'
 
   //Third party libraries
   kotlin_coroutines_version = '0.22.1'
@@ -32,6 +33,8 @@ ext {
   materialIntro_version = '0.0.5'
   holyViewPager_version = '1.0.1'
   observableScrollView_version = '1.5.2'
+  materialDrawer_version = '1.3.6'
+
 
   //Unit Testing
   robolectric_version = '3.8'
@@ -79,7 +82,15 @@ ext {
       materialIntro:              "agency.tango.android:material-intro-screen:$materialIntro_version",
       holyViewPager:              "com.github.florent37:hollyviewpager:$holyViewPager_version",
       observableScrollView:       "com.github.ksoichiro:android-observablescrollview:$observableScrollView_version",
-      bungee:                     "com.github.Binary-Finery:Bungee:master-SNAPSHOT"
+//      materialDrawer:             "com.mikepenz:materialdrawer:$materialDrawer_version",
+      materialDrawer:             "co.zsmb:materialdrawer-kt:$materialDrawer_version",
+
+      // androidX dependencies
+      x_appCompact:               "androidx.appcompat:appcompat:$androidX_version",
+      x_recyclerView:             "androidx.recyclerview:recyclerview:$androidX_version",
+      x_annotation:               "androidx.annotation:annotation:$androidX_version",
+      x_material:                 "com.google.android.material:material:$androidX_version",
+      x_constraintLayout:         "androidx.constraintlayout:constraintlayout:2.0.0-alpha"
   ]
 
   unitTesting = [

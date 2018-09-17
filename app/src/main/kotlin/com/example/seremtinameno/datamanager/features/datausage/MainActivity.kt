@@ -11,6 +11,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Process
 import android.provider.Settings
@@ -18,11 +19,18 @@ import android.support.annotation.RequiresApi
 import android.support.v4.app.ActivityCompat
 import android.widget.TextView
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
 import butterknife.BindView
-import butterknife.ButterKnife
 import butterknife.OnClick
+import co.zsmb.materialdrawerkt.builders.accountHeader
+import co.zsmb.materialdrawerkt.builders.drawer
+import co.zsmb.materialdrawerkt.builders.footer
+import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
+import co.zsmb.materialdrawerkt.draweritems.badgeable.secondaryItem
+import co.zsmb.materialdrawerkt.draweritems.divider
+import co.zsmb.materialdrawerkt.draweritems.profile.profile
 import com.example.seremtinameno.datamanager.core.AndroidApplication
 import com.example.seremtinameno.datamanager.R
 import com.example.seremtinameno.datamanager.core.permissions.PermissionProvider
@@ -39,6 +47,7 @@ import com.example.seremtinameno.datamanager.features.settings.SettingsActivity
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
+import com.mikepenz.materialdrawer.Drawer
 import com.pixplicity.easyprefs.library.Prefs
 import timber.log.Timber
 import java.text.DecimalFormat
@@ -88,6 +97,11 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     @BindView(R.id.dataViews)
     lateinit var dataViews:                 LinearLayout
 
+    @BindView(R.id.threeLines)
+    lateinit var threeLines:                ImageView
+
+    private lateinit var drawer:            Drawer
+
     private lateinit var wifiData:          NetworkStats
 
     private lateinit var mobileData:        NetworkStats
@@ -124,8 +138,8 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         setContentView(R.layout.activity_main)
 
         injectUI(this)
-//        ButterKnife.bind(this)
         appComponent.inject(this)
+        setUpDrawer()
         showLoading()
 
         initDates()
@@ -155,10 +169,50 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         calculateDataUsage(usedMB.toLong())
     }
 
+    private fun setUpDrawer() {
+        drawer = drawer {
+            sliderBackgroundColor = ColorParser.parse(this@MainActivity, "green").toLong()
+
+            accountHeader {
+                background = ColorParser.parse(this@MainActivity, "white")
+                profile("Michal", "user.email@gmail.com") {
+                    icon = R.drawable.app_icon
+                }
+            }
+            primaryItem("Home") {}
+            divider {  }
+            primaryItem("Users") {}
+            primaryItem("Settings") {
+                onClick { _ ->
+                    startActivity(SettingsActivity.getCallingIntent(this@MainActivity))
+                    false
+                }
+            }
+
+            footer {
+                primaryItem("Source on GitHub" ) {
+                    icon = R.drawable.github_logo
+                    onClick { _ ->
+                        val browserIntent = Intent(Intent.ACTION_VIEW,
+                                Uri.parse("https://github.com/theBlackDre1D/" +
+                                        "DataManager/tree/devel"))
+                        startActivity(browserIntent)
+                        false
+                    }
+                }
+            }
+        }
+    }
+
     @OnClick(R.id.testButton)
     fun goToTest() {
-//        startActivity(IntroActivity.getCallingIntent(this))
-        startActivity(DailyUseActivity.getCallingIntent(this, hashMapOf("data" to mobileDataPerDay, "wifi" to wifiDataPerDay)))
+        startActivity(DailyUseActivity.getCallingIntent(this,
+                hashMapOf("data" to mobileDataPerDay, "wifi" to wifiDataPerDay)))
+    }
+
+    @OnClick(R.id.threeLines)
+    fun openDrawer() {
+        drawer.openDrawer()
     }
 
     companion object {
@@ -186,10 +240,10 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     }
 
-    @OnClick(R.id.settings)
-    fun goToSettings() {
-        startActivity(SettingsActivity.getCallingIntent(this))
-    }
+//    @OnClick(R.id.settings)
+//    fun goToSettings() {
+//        startActivity(SettingsActivity.getCallingIntent(this))
+//    }
 
     @TargetApi(Build.VERSION_CODES.N)
     @RequiresApi(Build.VERSION_CODES.M)
@@ -419,8 +473,10 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     private fun checkForPermission(context: Context): Boolean {
-        val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
-        val mode = appOps.checkOpNoThrow(OPSTR_GET_USAGE_STATS, Process.myUid(), context.packageName)
+        val appOps = context.getSystemService(Context.APP_OPS_SERVICE)
+                as AppOpsManager
+        val mode = appOps.checkOpNoThrow(OPSTR_GET_USAGE_STATS, Process.myUid(),
+                context.packageName)
         return mode == MODE_ALLOWED
     }
 
@@ -435,10 +491,12 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
+                                            grantResults: IntArray) {
         when (requestCode) {
             PERMISSION_READ_STATE -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.isNotEmpty() &&
+                        grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Timber.d("Permission to read phone stats granted")
                     loadData()
                 } else {
