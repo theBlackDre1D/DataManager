@@ -27,6 +27,7 @@ import butterknife.OnClick
 import co.zsmb.materialdrawerkt.builders.accountHeader
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.builders.footer
+import co.zsmb.materialdrawerkt.draweritems.badge
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import co.zsmb.materialdrawerkt.draweritems.badgeable.secondaryItem
 import co.zsmb.materialdrawerkt.draweritems.divider
@@ -171,23 +172,35 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     private fun setUpDrawer() {
         drawer = drawer {
-            sliderBackgroundColor = ColorParser.parse(this@MainActivity, "green").toLong()
+            sliderBackgroundColor = ColorParser.parse(this@MainActivity, "grey_light").toLong()
+            headerViewRes = R.layout.header
 
-            accountHeader {
-                background = ColorParser.parse(this@MainActivity, "white")
-                profile("Michal", "user.email@gmail.com") {
-                    icon = R.drawable.app_icon
+//            accountHeader {
+//                background = ColorParser.parse(this@MainActivity, "white")
+//                profile("Michal", "user.email@gmail.com") {
+//                    icon = R.drawable.app_icon
+//                }
+//            }
+            primaryItem("Home") {
+                icon = R.drawable.home_icon
+            }
+            primaryItem("Daily") {
+                icon = R.drawable.daily_icon
+
+                onClick { _ ->
+                    goToTest()
+                    false
                 }
             }
-            primaryItem("Home") {}
-            divider {  }
-            primaryItem("Users") {}
             primaryItem("Settings") {
+                icon = R.drawable.settings_button_black
                 onClick { _ ->
                     startActivity(SettingsActivity.getCallingIntent(this@MainActivity))
                     false
                 }
             }
+
+            divider {}
 
             footer {
                 primaryItem("Source on GitHub" ) {
@@ -204,7 +217,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         }
     }
 
-    @OnClick(R.id.testButton)
+//    @OnClick(R.id.testButton)
     fun goToTest() {
         startActivity(DailyUseActivity.getCallingIntent(this,
                 hashMapOf("data" to mobileDataPerDay, "wifi" to wifiDataPerDay)))
@@ -450,6 +463,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         company.axisDependency = YAxis.AxisDependency.LEFT
         company.valueTextColor = Color.WHITE
         company.valueTextSize = TEXT_SIZE
+        company.color = ColorParser.parse(this, "green")
 
         val data = BarData(company)
         data.barWidth = 0.9f

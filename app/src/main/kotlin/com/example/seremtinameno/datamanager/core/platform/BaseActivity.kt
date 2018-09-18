@@ -19,11 +19,21 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
 import butterknife.ButterKnife
+import co.zsmb.materialdrawerkt.builders.drawer
+import co.zsmb.materialdrawerkt.builders.footer
+import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
+import co.zsmb.materialdrawerkt.draweritems.divider
+import com.example.seremtinameno.datamanager.R
+import com.example.seremtinameno.datamanager.core.helpers.ColorParser
+import com.example.seremtinameno.datamanager.features.settings.SettingsActivity
+import com.mikepenz.materialdrawer.Drawer
 import es.dmoral.toasty.Toasty
 import javax.inject.Inject
 
@@ -34,6 +44,8 @@ import javax.inject.Inject
  * @see AppCompatActivity
  */
 abstract class BaseActivity : AppCompatActivity() {
+
+    private lateinit var drawer: Drawer
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -75,6 +87,7 @@ abstract class BaseActivity : AppCompatActivity() {
         vm.body()
         return vm
     }
+
 
 
 //    abstract fun initUI()

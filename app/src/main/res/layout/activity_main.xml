@@ -10,7 +10,7 @@
         android:id="@+id/top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/orange"
+        android:background="@color/dark_blue"
         >
 
         <TextView
@@ -244,13 +244,6 @@
                 android:layout_height="200dp"
                 android:layout_marginBottom="20dp"
                 android:layout_marginTop="12dp" />
-
-            <Button
-                android:id="@+id/testButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="test" />
-
 
         </LinearLayout>
 
