@@ -45,7 +45,7 @@ import javax.inject.Inject
  */
 abstract class BaseActivity : AppCompatActivity() {
 
-    private lateinit var drawer: Drawer
+    protected lateinit var drawer: Drawer
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -88,7 +88,70 @@ abstract class BaseActivity : AppCompatActivity() {
         return vm
     }
 
+    protected fun setupDrawer() {
+        drawer = drawer {
+            sliderBackgroundColor = ColorParser.parse(this@BaseActivity, "grey_light").toLong()
+            headerViewRes = R.layout.header
 
+//            accountHeader {
+//                background = ColorParser.parse(this@MainActivity, "white")
+//                profile("Michal", "user.email@gmail.com") {
+//                    icon = R.drawable.app_icon
+//                }
+//            }
+            primaryItem("Home") {
+                icon = R.drawable.home_icon
+
+                onClick { _ ->
+                    onHomePressed()
+                    false
+                }
+            }
+            primaryItem("Daily") {
+                icon = R.drawable.daily_icon
+
+                onClick { _ ->
+                    onDailyPressed()
+                    false
+                }
+            }
+            primaryItem("Settings") {
+                icon = R.drawable.settings_button_black
+                onClick { _ ->
+                    startActivity(SettingsActivity.getCallingIntent(this@BaseActivity))
+                    false
+                }
+            }
+
+            divider {}
+
+            footer {
+                primaryItem("Source on GitHub" ) {
+                    icon = R.drawable.github_logo
+                    onClick { _ ->
+                        val browserIntent = Intent(Intent.ACTION_VIEW,
+                                Uri.parse("https://github.com/theBlackDre1D/" +
+                                        "DataManager/tree/devel"))
+                        startActivity(browserIntent)
+                        false
+                    }
+                }
+            }
+        }
+    }
+
+
+
+    protected open fun onHomePressed() {
+        showErrorToast(this, "Not implemented")
+    }
+    protected open fun onDailyPressed() {
+        showErrorToast(this, "Not implemented")
+    }
+
+    protected open fun setupListeners() {
+        // nothing
+    }
 
 //    abstract fun initUI()
     abstract fun fragment(): BaseFragment

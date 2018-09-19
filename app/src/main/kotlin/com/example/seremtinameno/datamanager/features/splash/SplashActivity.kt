@@ -53,7 +53,7 @@ class SplashActivity : BaseActivity() {
 
 
     private fun initCrashlytics() {
-//        Fabric.with(this, Crashlytics())
+        Fabric.with(this, Crashlytics())
     }
 
     override fun fragment(): BaseFragment {
@@ -66,5 +66,13 @@ class SplashActivity : BaseActivity() {
 
     override fun hideLoading() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onHomePressed() {
+        // nothing
+    }
+
+    override fun onDailyPressed() {
+        // nothing
     }
 }

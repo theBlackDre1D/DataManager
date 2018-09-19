@@ -24,14 +24,10 @@ import android.widget.LinearLayout
 import antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
 import butterknife.BindView
 import butterknife.OnClick
-import co.zsmb.materialdrawerkt.builders.accountHeader
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.builders.footer
-import co.zsmb.materialdrawerkt.draweritems.badge
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
-import co.zsmb.materialdrawerkt.draweritems.badgeable.secondaryItem
 import co.zsmb.materialdrawerkt.draweritems.divider
-import co.zsmb.materialdrawerkt.draweritems.profile.profile
 import com.example.seremtinameno.datamanager.core.AndroidApplication
 import com.example.seremtinameno.datamanager.R
 import com.example.seremtinameno.datamanager.core.permissions.PermissionProvider
@@ -50,6 +46,7 @@ import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.mikepenz.materialdrawer.Drawer
 import com.pixplicity.easyprefs.library.Prefs
+import es.dmoral.toasty.Toasty
 import timber.log.Timber
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
@@ -101,7 +98,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     @BindView(R.id.threeLines)
     lateinit var threeLines:                ImageView
 
-    private lateinit var drawer:            Drawer
+//    private lateinit var drawer:            Drawer
 
     private lateinit var wifiData:          NetworkStats
 
@@ -133,14 +130,16 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     @Inject
     lateinit var permissionProvider:        PermissionProvider
 
-    @TargetApi(Build.VERSION_CODES.M)
+//    @TargetApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setupDrawer()
 
         injectUI(this)
         appComponent.inject(this)
-        setUpDrawer()
+//        setUpDrawer()
+        setupListeners()
         showLoading()
 
         initDates()
@@ -170,62 +169,9 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         calculateDataUsage(usedMB.toLong())
     }
 
-    private fun setUpDrawer() {
-        drawer = drawer {
-            sliderBackgroundColor = ColorParser.parse(this@MainActivity, "grey_light").toLong()
-            headerViewRes = R.layout.header
-
-//            accountHeader {
-//                background = ColorParser.parse(this@MainActivity, "white")
-//                profile("Michal", "user.email@gmail.com") {
-//                    icon = R.drawable.app_icon
-//                }
-//            }
-            primaryItem("Home") {
-                icon = R.drawable.home_icon
-            }
-            primaryItem("Daily") {
-                icon = R.drawable.daily_icon
-
-                onClick { _ ->
-                    goToTest()
-                    false
-                }
-            }
-            primaryItem("Settings") {
-                icon = R.drawable.settings_button_black
-                onClick { _ ->
-                    startActivity(SettingsActivity.getCallingIntent(this@MainActivity))
-                    false
-                }
-            }
-
-            divider {}
-
-            footer {
-                primaryItem("Source on GitHub" ) {
-                    icon = R.drawable.github_logo
-                    onClick { _ ->
-                        val browserIntent = Intent(Intent.ACTION_VIEW,
-                                Uri.parse("https://github.com/theBlackDre1D/" +
-                                        "DataManager/tree/devel"))
-                        startActivity(browserIntent)
-                        false
-                    }
-                }
-            }
-        }
-    }
-
-//    @OnClick(R.id.testButton)
-    fun goToTest() {
+    private fun goToDailyUsage() {
         startActivity(DailyUseActivity.getCallingIntent(this,
                 hashMapOf("data" to mobileDataPerDay, "wifi" to wifiDataPerDay)))
-    }
-
-    @OnClick(R.id.threeLines)
-    fun openDrawer() {
-        drawer.openDrawer()
     }
 
     companion object {
@@ -252,11 +198,6 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         monthlyDataUsage.loadDataUsage(params)
 
     }
-
-//    @OnClick(R.id.settings)
-//    fun goToSettings() {
-//        startActivity(SettingsActivity.getCallingIntent(this))
-//    }
 
     @TargetApi(Build.VERSION_CODES.N)
     @RequiresApi(Build.VERSION_CODES.M)
@@ -549,5 +490,20 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     override fun getDataLimit(): Double {
         return mobilePlanInMB.toDouble()
+    }
+
+    override fun onHomePressed() {
+        // nothing
+        Toasty.info(this, "You are already there :)").show()
+    }
+
+    override fun onDailyPressed() {
+        goToDailyUsage()
+    }
+
+    override fun setupListeners() {
+        threeLines.setOnClickListener {
+            drawer.openDrawer()
+        }
     }
 }

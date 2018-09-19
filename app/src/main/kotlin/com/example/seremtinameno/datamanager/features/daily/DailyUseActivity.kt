@@ -155,6 +155,14 @@ class DailyUseActivity : BaseActivity() {
         loading.visibility = View.GONE
     }
 
+    override fun onHomePressed() {
+        super.onBackPressed()
+    }
+
+    override fun onDailyPressed() {
+        // nothing
+    }
+
     data class Usage(val data: Long?,
                      var wifi: Long?): Serializable
 }

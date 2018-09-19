@@ -94,4 +94,12 @@ class SettingsActivity : BaseActivity() {
     override fun hideLoading() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
+
+    override fun onHomePressed() {
+        startActivity(MainActivity.getCallingIntent(this))
+    }
+
+    override fun onDailyPressed() {
+        super.onBackPressed()
+    }
 }

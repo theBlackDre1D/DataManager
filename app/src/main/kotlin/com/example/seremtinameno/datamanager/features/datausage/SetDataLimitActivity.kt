@@ -142,4 +142,12 @@ class SetDataLimitActivity : BaseActivity() {
     override fun hideLoading() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
+
+    override fun onHomePressed() {
+        showErrorToast(this, "Not allowed here")
+    }
+
+    override fun onDailyPressed() {
+        showErrorToast(this, "Not allowed here")
+    }
 }
