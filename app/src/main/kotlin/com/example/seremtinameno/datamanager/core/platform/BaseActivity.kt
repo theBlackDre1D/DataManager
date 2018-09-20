@@ -35,6 +35,9 @@ import com.example.seremtinameno.datamanager.core.helpers.ColorParser
 import com.example.seremtinameno.datamanager.features.settings.SettingsActivity
 import com.mikepenz.materialdrawer.Drawer
 import es.dmoral.toasty.Toasty
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
 import javax.inject.Inject
 
 /**
@@ -126,7 +129,7 @@ abstract class BaseActivity : AppCompatActivity() {
             divider {}
 
             footer {
-                primaryItem("Source on GitHub" ) {
+                primaryItem("Source on GitHub") {
                     icon = R.drawable.github_logo
                     onClick { _ ->
                         val browserIntent = Intent(Intent.ACTION_VIEW,
@@ -138,6 +141,7 @@ abstract class BaseActivity : AppCompatActivity() {
                 }
             }
         }
+//        drawer = newDrawer.await()
     }
 
 

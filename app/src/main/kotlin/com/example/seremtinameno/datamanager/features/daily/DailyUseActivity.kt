@@ -10,7 +10,9 @@ import android.support.annotation.RequiresApi
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentPagerAdapter
 import android.view.View
+import android.widget.ImageView
 import butterknife.BindView
+import butterknife.OnClick
 import com.example.seremtinameno.datamanager.R
 import com.example.seremtinameno.datamanager.core.AndroidApplication
 import com.example.seremtinameno.datamanager.core.di.ApplicationComponent
@@ -38,6 +40,9 @@ class DailyUseActivity : BaseActivity() {
     @BindView(R.id.loading)
     lateinit var loading: View
 
+//    @BindView(R.id.threeLines)
+//    lateinit var threeLines: ImageView
+
     private lateinit var mobileData: HashMap<String, Long>
 
     private lateinit var wifiData: HashMap<String, Long>
@@ -57,6 +62,8 @@ class DailyUseActivity : BaseActivity() {
 
         injectUI(this)
         appComponent.inject(this)
+        setupDrawer()
+
         getFromIntent()
         processToOneEntity()
         createOrderDates()
@@ -85,6 +92,12 @@ class DailyUseActivity : BaseActivity() {
             orderedDates.add(key)
         }
     }
+
+    @OnClick(R.id.threeLines)
+    fun openDrawer() {
+        drawer.openDrawer()
+    }
+
 
     private fun processToOneEntity() {
         dataTogether = HashMap()

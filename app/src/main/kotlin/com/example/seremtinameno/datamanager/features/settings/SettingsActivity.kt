@@ -3,6 +3,7 @@ package com.example.seremtinameno.datamanager.features.settings
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.Switch
 import butterknife.BindView
 import butterknife.OnClick
@@ -23,6 +24,9 @@ class SettingsActivity : BaseActivity() {
     @BindView(R.id.enableDataLimit)
     lateinit var dataLimitStatus:           Switch
 
+    @BindView(R.id.threeLines)
+    lateinit var threeLines:                ImageView
+
     private var changed = false
 
     private val appComponent: ApplicationComponent by lazy(mode = LazyThreadSafetyMode.NONE) {
@@ -35,6 +39,7 @@ class SettingsActivity : BaseActivity() {
 
         injectUI(this)
         appComponent.inject(this)
+        setupDrawer()
 
         initCurrentPrefs()
     }
@@ -67,6 +72,11 @@ class SettingsActivity : BaseActivity() {
     @OnClick(R.id.newDataLimit)
     fun clicked() {
         startActivity(SetDataLimitActivity.getCallingIntent(this, ACTIVITY_NAME))
+    }
+
+    @OnClick(R.id.threeLines)
+    fun openDrawer() {
+        drawer.openDrawer()
     }
 
     @OnClick(R.id.raiseDataLimit)

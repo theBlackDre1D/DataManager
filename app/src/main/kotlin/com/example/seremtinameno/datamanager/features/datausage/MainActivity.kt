@@ -47,6 +47,7 @@ import com.github.mikephil.charting.data.*
 import com.mikepenz.materialdrawer.Drawer
 import com.pixplicity.easyprefs.library.Prefs
 import es.dmoral.toasty.Toasty
+import kotlinx.coroutines.experimental.launch
 import timber.log.Timber
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
@@ -407,7 +408,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         company.color = ColorParser.parse(this, "green")
 
         val data = BarData(company)
-        data.barWidth = 0.9f
+        data.barWidth = 0.7f
 
         graphWidget.data = data
 
@@ -464,7 +465,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     }
 
     override fun onBackPressed() {
-//        moveTaskToBack(true)
+        moveTaskToBack(true)
         finish()
     }
 
