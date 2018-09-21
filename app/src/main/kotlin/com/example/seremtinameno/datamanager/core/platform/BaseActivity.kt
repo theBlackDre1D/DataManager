@@ -121,7 +121,7 @@ abstract class BaseActivity : AppCompatActivity() {
             primaryItem("Settings") {
                 icon = R.drawable.settings_button_black
                 onClick { _ ->
-                    startActivity(SettingsActivity.getCallingIntent(this@BaseActivity))
+                    onSettingsPressed()
                     false
                 }
             }
@@ -144,8 +144,6 @@ abstract class BaseActivity : AppCompatActivity() {
 //        drawer = newDrawer.await()
     }
 
-
-
     protected open fun onHomePressed() {
         showErrorToast(this, "Not implemented")
     }
@@ -153,8 +151,16 @@ abstract class BaseActivity : AppCompatActivity() {
         showErrorToast(this, "Not implemented")
     }
 
+    protected open fun onSettingsPressed() {
+        startActivity(SettingsActivity.getCallingIntent(this@BaseActivity))
+    }
+
     protected open fun setupListeners() {
         // nothing
+    }
+
+    protected fun alreadyHere() {
+        Toasty.info(this, "You are already there :)").show()
     }
 
 //    abstract fun initUI()

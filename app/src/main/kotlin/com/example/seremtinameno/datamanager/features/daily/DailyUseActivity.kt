@@ -98,7 +98,6 @@ class DailyUseActivity : BaseActivity() {
         drawer.openDrawer()
     }
 
-
     private fun processToOneEntity() {
         dataTogether = HashMap()
 
@@ -173,7 +172,7 @@ class DailyUseActivity : BaseActivity() {
     }
 
     override fun onDailyPressed() {
-        // nothing
+        alreadyHere()
     }
 
     data class Usage(val data: Long?,

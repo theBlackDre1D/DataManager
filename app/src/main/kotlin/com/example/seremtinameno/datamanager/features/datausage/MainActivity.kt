@@ -494,8 +494,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     }
 
     override fun onHomePressed() {
-        // nothing
-        Toasty.info(this, "You are already there :)").show()
+        alreadyHere()
     }
 
     override fun onDailyPressed() {

@@ -112,7 +112,7 @@ class SetDataLimitActivity : BaseActivity() {
 
             Prefs.putInt(MainActivity.DATA_LIMIT, inNumber)
 
-            Toasty.success(this, "Data limit set!", Toast.LENGTH_SHORT, true).show()
+            showSuccessToast(this, "Data limit set!")
             withDataLimit()
 
             if (comingFrom == SettingsActivity.ACTIVITY_NAME) {

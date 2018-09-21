@@ -112,4 +112,8 @@ class SettingsActivity : BaseActivity() {
     override fun onDailyPressed() {
         super.onBackPressed()
     }
+
+    override fun onSettingsPressed() {
+        alreadyHere()
+    }
 }
