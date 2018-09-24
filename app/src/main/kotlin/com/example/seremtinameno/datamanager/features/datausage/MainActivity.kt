@@ -189,7 +189,6 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     }
 
     private fun loadData() {
-
         monthlyDataUsage = viewModel(viewModelFactory) {
             observe(dataUsage, ::renderData)
             failure(failure, ::handleFailure)
