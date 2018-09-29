@@ -99,8 +99,6 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     @BindView(R.id.threeLines)
     lateinit var threeLines:                ImageView
 
-//    private lateinit var drawer:            Drawer
-
     private lateinit var wifiData:          NetworkStats
 
     private lateinit var mobileData:        NetworkStats
@@ -111,17 +109,17 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     private var mobilePlanInMB:             Int = 0
 
-    private var mobileDataPerDay = HashMap<String, Long>()
+    private var mobileDataPerDay =          HashMap<String, Long>()
 
-    private var wifiDataPerDay = HashMap<String, Long>()
+    private var wifiDataPerDay =            HashMap<String, Long>()
 
-    private var precision = DecimalFormat("0.00")
+    private var precision =                 DecimalFormat("0.00")
 
     private var mobilePlanSet = false
 
     private var todayDate = ""
 
-    private val formatter = SimpleDateFormat(DATE_FORMAT)
+    private val formatter =                 SimpleDateFormat(DATE_FORMAT)
 
     private var usedMB = 0.0
 

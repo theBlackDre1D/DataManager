@@ -34,6 +34,7 @@ ext {
   holyViewPager_version = '1.0.1'
   observableScrollView_version = '1.5.2'
   materialDrawer_version = '1.3.6'
+  discreteSW_version = '1.4.9'
 
 
   //Unit Testing
@@ -84,6 +85,7 @@ ext {
       observableScrollView:       "com.github.ksoichiro:android-observablescrollview:$observableScrollView_version",
 //      materialDrawer:             "com.mikepenz:materialdrawer:$materialDrawer_version",
       materialDrawer:             "co.zsmb:materialdrawer-kt:$materialDrawer_version",
+      discreteScrollView:         "com.yarolegovich:discrete-scrollview:$discreteSW_version",
 
       // androidX dependencies
       x_appCompact:               "androidx.appcompat:appcompat:$androidX_version",

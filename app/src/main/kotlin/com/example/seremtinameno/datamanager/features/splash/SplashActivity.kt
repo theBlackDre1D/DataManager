@@ -22,7 +22,7 @@ class SplashActivity : BaseActivity() {
         initPrefs()
 
         try {
-            val set = Prefs.getBoolean(SetDataLimitActivity.LIMIT, false)
+//            val set = Prefs.getBoolean(SetDataLimitActivity.LIMIT, false)
             val asked = Prefs.getBoolean(SetDataLimitActivity.USER_ASKED, false)
 
             if (asked) {

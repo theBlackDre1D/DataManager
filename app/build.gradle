@@ -186,6 +186,8 @@ dependencies {
     implementation applicationDependencies.holyViewPager
     implementation applicationDependencies.observableScrollView
     implementation applicationDependencies.materialDrawer
+    implementation applicationDependencies.discreteScrollView
+
 
     // androidX dependencies
 //    implementation applicationDependencies.x_appCompact
