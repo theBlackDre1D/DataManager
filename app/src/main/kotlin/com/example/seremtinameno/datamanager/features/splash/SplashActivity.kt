@@ -22,8 +22,13 @@ class SplashActivity : BaseActivity() {
         initPrefs()
 
         try {
-//            val set = Prefs.getBoolean(SetDataLimitActivity.LIMIT, false)
+            val set = Prefs.getBoolean(SetDataLimitActivity.LIMIT, false)
             val asked = Prefs.getBoolean(SetDataLimitActivity.USER_ASKED, false)
+            val firstLaunch = Prefs.getBoolean(IntroActivity.FIRST_LAUNCH, true)
+
+            if (firstLaunch) {
+                startActivityForResult(IntroActivity.getCallingIntent(this), 1)
+            }
 
             if (asked) {
                 startActivity(MainActivity.getCallingIntent(this))

@@ -129,7 +129,6 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     @Inject
     lateinit var permissionProvider:        PermissionProvider
 
-//    @TargetApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
