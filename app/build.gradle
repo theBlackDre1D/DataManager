@@ -75,6 +75,7 @@ apply plugin: 'io.fabric'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.gms.google-services'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
@@ -187,7 +188,7 @@ dependencies {
     implementation applicationDependencies.observableScrollView
     implementation applicationDependencies.materialDrawer
     implementation applicationDependencies.discreteScrollView
-
+    implementation applicationDependencies.firebase
 
     // androidX dependencies
 //    implementation applicationDependencies.x_appCompact
@@ -195,7 +196,6 @@ dependencies {
 //    implementation applicationDependencies.x_annotation
 //    implementation applicationDependencies.x_material
 //    implementation applicationDependencies.x_constraintLayout
-
 
 
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.5@aar') {

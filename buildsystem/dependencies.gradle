@@ -35,6 +35,7 @@ ext {
   observableScrollView_version = '1.5.2'
   materialDrawer_version = '1.3.6'
   discreteSW_version = '1.4.9'
+  firebase_version = '17.3.0'
 
 
   //Unit Testing
@@ -86,6 +87,7 @@ ext {
 //      materialDrawer:             "com.mikepenz:materialdrawer:$materialDrawer_version",
       materialDrawer:             "co.zsmb:materialdrawer-kt:$materialDrawer_version",
       discreteScrollView:         "com.yarolegovich:discrete-scrollview:$discreteSW_version",
+      firebase:                   "com.google.firebase:firebase-messaging:$firebase_version",
 
       // androidX dependencies
       x_appCompact:               "androidx.appcompat:appcompat:$androidX_version",
