@@ -188,7 +188,11 @@ dependencies {
     implementation applicationDependencies.observableScrollView
     implementation applicationDependencies.materialDrawer
     implementation applicationDependencies.discreteScrollView
-    implementation applicationDependencies.firebase
+    implementation applicationDependencies.firebaseMessaging
+//    implementation applicationDependencies.firebaseCore
+    implementation applicationDependencies.renderers
+    implementation applicationDependencies.calendarIcons
+
 
     // androidX dependencies
 //    implementation applicationDependencies.x_appCompact

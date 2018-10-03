@@ -23,6 +23,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
 import butterknife.BindView
+import butterknife.ButterKnife
 import butterknife.OnClick
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.builders.footer
@@ -41,6 +42,7 @@ import com.example.seremtinameno.datamanager.core.platform.BaseActivity
 import com.example.seremtinameno.datamanager.features.daily.DailyUseActivity
 import com.example.seremtinameno.datamanager.features.settings.RaiseDataLimitDialog
 import com.example.seremtinameno.datamanager.features.settings.SettingsActivity
+import com.example.seremtinameno.datamanager.features.testing.TestActivity
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
@@ -134,7 +136,8 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         setContentView(R.layout.activity_main)
         setupDrawer()
 
-        injectUI(this)
+//        injectUI(this)
+        ButterKnife.bind(this)
         appComponent.inject(this)
 //        setUpDrawer()
         setupListeners()
@@ -458,6 +461,11 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
                 }
             }
         }
+    }
+
+    @OnClick(R.id.text)
+    fun test() {
+        startActivity(TestActivity.getCallingIntent(this))
     }
 
     override fun onBackPressed() {

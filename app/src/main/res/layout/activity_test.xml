@@ -1,35 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".features.datausage.daily.TestActivity">
+    tools:context=".features.datausage.daily.TestActivity"
+    android:background="@color/dark_blue"
+    >
 
-    <!--<com.roughike.bottombar.BottomBar-->
-        <!--android:id="@+id/bottomBar"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="60dp"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:background="@color/colorPrimary"-->
-        <!--app:bb_activeTabAlpha="1"-->
-        <!--app:bb_activeTabColor="#FFFFFF"-->
-        <!--app:bb_inActiveTabAlpha="0.4"-->
-        <!--app:bb_inActiveTabColor="#FFFFFF"-->
-        <!--/>-->
-
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tabs"
+    <FrameLayout
+        android:id="@+id/top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabTextColor="@color/cardview_light_background"
-    />
+        android:background="@color/dark_blue"
+        >
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewPager"
+        <TextView
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:gravity="center"
+            android:text="@string/daily_usage"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/threeLines"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/three_lines"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="10dp"
+            />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_below="@id/top"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:layout_height="match_parent">
+
+
+    </LinearLayout>
+
+    <com.yarolegovich.discretescrollview.DiscreteScrollView
+        android:id="@+id/picker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="30dp"
+        >
+
+    </com.yarolegovich.discretescrollview.DiscreteScrollView>
 
 </RelativeLayout>

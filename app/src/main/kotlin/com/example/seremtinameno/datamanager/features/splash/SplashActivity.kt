@@ -40,7 +40,6 @@ class SplashActivity : BaseActivity() {
         }
 
         finish()
-
     }
 
     companion object {

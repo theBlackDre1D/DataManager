@@ -36,6 +36,8 @@ ext {
   materialDrawer_version = '1.3.6'
   discreteSW_version = '1.4.9'
   firebase_version = '17.3.0'
+  renderers_version = '3.4.0'
+  calendarIcons_version = '1.0.1'
 
 
   //Unit Testing
@@ -87,7 +89,10 @@ ext {
 //      materialDrawer:             "com.mikepenz:materialdrawer:$materialDrawer_version",
       materialDrawer:             "co.zsmb:materialdrawer-kt:$materialDrawer_version",
       discreteScrollView:         "com.yarolegovich:discrete-scrollview:$discreteSW_version",
-      firebase:                   "com.google.firebase:firebase-messaging:$firebase_version",
+      firebaseCore:               "com.google.firebase:firebase-core:16.0.4",
+      firebaseMessaging:          "com.google.firebase:firebase-messaging:$firebase_version",
+      renderers:                  "com.github.pedrovgs:renderers:$renderers_version",
+      calendarIcons:              "com.github.sillebille:dynamic-calendar:$calendarIcons_version",
 
       // androidX dependencies
       x_appCompact:               "androidx.appcompat:appcompat:$androidX_version",

@@ -13,6 +13,7 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.Unbinder
 import com.example.seremtinameno.datamanager.R
+import com.example.seremtinameno.datamanager.features.daily.models.Usage
 import com.example.seremtinameno.datamanager.features.datausage.MainActivity
 import com.example.seremtinameno.datamanager.features.datausage.MyProgressTextAdapter
 import com.github.florent37.hollyviewpager.HollyViewPagerBus
@@ -84,7 +85,7 @@ class DailyUsageFragment: Fragment(), MyProgressTextAdapter.View {
     private fun getFromIntent() {
         val args = arguments
         args?.let { _ ->
-            val usage = args.getSerializable(USAGE_DATA) as DailyUseActivity.Usage
+            val usage = args.getSerializable(USAGE_DATA) as Usage
 
             usage.data?.let {
                 usedData = usage.data / (1024.0 * 1024.0)
@@ -105,7 +106,7 @@ class DailyUsageFragment: Fragment(), MyProgressTextAdapter.View {
         const val USAGE_DATA = "usage_data"
         private const val TITLE = "title"
 
-        fun newInstance(instance: Int, usage: DailyUseActivity.Usage, title: String): DailyUsageFragment {
+        fun newInstance(instance: Int, usage: Usage, title: String): DailyUsageFragment {
             val args = Bundle()
             args.putInt("something", instance)
             args.putSerializable(USAGE_DATA, usage)
