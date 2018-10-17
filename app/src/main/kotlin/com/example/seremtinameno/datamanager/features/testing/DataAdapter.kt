@@ -13,7 +13,8 @@ import com.kd.dynamic.calendar.generator.ImageGenerator
 import kotlinx.android.synthetic.main.item_daily.view.*
 import java.util.*
 
-class DataAdapter(private val data: ArrayList<Usage>, private val imageGenerator: ImageGenerator): RecyclerView.Adapter<DataAdapter.ViewHolder>() {
+class DataAdapter(private val data: ArrayList<Usage>, private val imageGenerator: ImageGenerator):
+        RecyclerView.Adapter<DataAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_daily, parent, false)
@@ -29,8 +30,6 @@ class DataAdapter(private val data: ArrayList<Usage>, private val imageGenerator
         val dailyInfo = data[position]
         holder.bind(dailyInfo)
     }
-
-
 
     class ViewHolder(itemView: View, private val imageGenerator: ImageGenerator) : RecyclerView.ViewHolder(itemView) {
 //        private val text = itemView.text as TextView

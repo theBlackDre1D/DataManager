@@ -23,7 +23,9 @@
             android:text="@string/daily_usage"
             android:textColor="@color/white"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:fontFamily=""
+            />
 
         <ImageView
             android:id="@+id/threeLines"
@@ -41,6 +43,38 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginTop="15dp"
+            >
+
+            <TextView
+                android:id="@+id/dataUsage"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".50"
+                android:text="38.22"
+                android:gravity="end"
+                android:textColor="@color/white"
+                android:textSize="80sp"
+                />
+            
+            <TextView
+                android:id="@+id/dataUnits"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".20"
+                android:text="MB"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:paddingLeft="5dp"
+                />
+
+            
+
+        </LinearLayout>
 
     </LinearLayout>
 

@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
+import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -33,7 +34,11 @@ import javax.inject.Inject
  */
 abstract class BaseActivity : AppCompatActivity() {
 
-    protected lateinit var drawer: Drawer
+    protected lateinit var drawer:          Drawer
+
+    protected lateinit var basicTextFont:   Typeface
+
+    protected lateinit var headlineFont:    Typeface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -41,6 +46,7 @@ abstract class BaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        addFragment(savedInstanceState)
+        setupFonts()
     }
 
     override fun onBackPressed() {
@@ -145,6 +151,11 @@ abstract class BaseActivity : AppCompatActivity() {
 
     protected fun alreadyHere() {
         Toasty.info(this, "You are already there :)").show()
+    }
+
+    private fun setupFonts() {
+        basicTextFont = Typeface.createFromAsset(assets, "fonts/FTY STRATEGYCIDE NCV.ttf")
+        headlineFont = Typeface.createFromAsset(assets, "fonts/Machine Gunk.otf")
     }
 
 //    abstract fun initUI()
