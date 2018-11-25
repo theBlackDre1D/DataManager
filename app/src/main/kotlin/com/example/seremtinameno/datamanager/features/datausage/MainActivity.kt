@@ -41,15 +41,12 @@ import com.example.seremtinameno.datamanager.core.helpers.ColorParser
 import com.example.seremtinameno.datamanager.core.platform.BaseActivity
 import com.example.seremtinameno.datamanager.features.daily.DailyUseActivity
 import com.example.seremtinameno.datamanager.features.settings.RaiseDataLimitDialog
-import com.example.seremtinameno.datamanager.features.settings.SettingsActivity
 import com.example.seremtinameno.datamanager.features.testing.TestActivity
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
-import com.mikepenz.materialdrawer.Drawer
 import com.pixplicity.easyprefs.library.Prefs
 import es.dmoral.toasty.Toasty
-import kotlinx.coroutines.experimental.launch
 import timber.log.Timber
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat

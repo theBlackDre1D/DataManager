@@ -9,7 +9,6 @@ class MyProgressTextAdapter:            CircularProgressIndicator.ProgressTextAd
 
     private var precision =         DecimalFormat("0.00")
 
-
     fun setView(view: View) {
         this.view = view
     }

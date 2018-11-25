@@ -2,10 +2,13 @@ package com.example.seremtinameno.datamanager.core.interactor
 
 import com.example.seremtinameno.datamanager.core.exception.Failure
 import com.example.seremtinameno.datamanager.core.functional.Either
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.*
+import kotlin.coroutines.suspendCoroutine
+
+//import kotlinx.coroutines.experimental.CommonPool
+//import kotlinx.coroutines.experimental.android.UI
+//import kotlinx.coroutines.experimental.async
+//import kotlinx.coroutines.experimental.launch
 
 /**
  * Abstract class for a Use Case (Interactor in terms of Clean Architecture).
@@ -20,9 +23,13 @@ abstract class UseCase<out Type, in Params> where Type : Any {
     abstract suspend fun run(params: Params): Either<Failure, Type>
 
     operator fun invoke(params: Params, onResult: (Either<Failure, Type>) -> Unit = {}) {
-        val job = async(CommonPool) { run(params) }
-        launch(UI) { onResult(job.await()) }
-    }
+        val job = Job()
+//        val backgroundScope = CoroutineScope(Dispatchers.IO + job)
+//        val uiScope = CoroutineScope(Dispatchers.Main)
 
-    class None
+        val result = CoroutineScope(Dispatchers.IO + job).async {
+            run(params)
+        }
+        CoroutineScope(Dispatchers.Main).launch { onResult(result.await()) }
+    }
 }

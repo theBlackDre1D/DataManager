@@ -21,9 +21,6 @@ import com.example.seremtinameno.datamanager.core.helpers.ColorParser
 import com.example.seremtinameno.datamanager.features.settings.SettingsActivity
 import com.mikepenz.materialdrawer.Drawer
 import es.dmoral.toasty.Toasty
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
 import javax.inject.Inject
 
 /**
