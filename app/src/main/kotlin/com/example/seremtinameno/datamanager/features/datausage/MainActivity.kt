@@ -46,7 +46,6 @@ import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.pixplicity.easyprefs.library.Prefs
-import es.dmoral.toasty.Toasty
 import timber.log.Timber
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
@@ -114,9 +113,9 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     private var precision =                 DecimalFormat("0.00")
 
-    private var mobilePlanSet = false
+    private var mobilePlanSet =             false
 
-    private var todayDate = ""
+    private var todayDate =                 ""
 
     private val formatter =                 SimpleDateFormat(DATE_FORMAT)
 

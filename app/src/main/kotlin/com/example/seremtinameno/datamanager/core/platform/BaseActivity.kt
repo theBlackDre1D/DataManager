@@ -12,10 +12,12 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
 import butterknife.ButterKnife
+import co.zsmb.materialdrawerkt.builders.accountHeader
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.builders.footer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import co.zsmb.materialdrawerkt.draweritems.divider
+import co.zsmb.materialdrawerkt.draweritems.profile.profile
 import com.example.seremtinameno.datamanager.R
 import com.example.seremtinameno.datamanager.core.helpers.ColorParser
 import com.example.seremtinameno.datamanager.features.settings.SettingsActivity
@@ -83,12 +85,12 @@ abstract class BaseActivity : AppCompatActivity() {
             sliderBackgroundColor = ColorParser.parse(this@BaseActivity, "grey_light").toLong()
             headerViewRes = R.layout.header
 
-//            accountHeader {
-//                background = ColorParser.parse(this@MainActivity, "white")
-//                profile("Michal", "user.email@gmail.com") {
-//                    icon = R.drawable.app_icon
-//                }
-//            }
+            accountHeader {
+                background = ColorParser.parse(application, "white")
+                profile("Michal", "user.email@gmail.com") {
+                    icon = R.drawable.app_icon
+                }
+            }
             primaryItem("Home") {
                 icon = R.drawable.home_icon
 

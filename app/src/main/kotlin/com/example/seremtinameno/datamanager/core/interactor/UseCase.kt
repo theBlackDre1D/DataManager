@@ -3,12 +3,6 @@ package com.example.seremtinameno.datamanager.core.interactor
 import com.example.seremtinameno.datamanager.core.exception.Failure
 import com.example.seremtinameno.datamanager.core.functional.Either
 import kotlinx.coroutines.*
-import kotlin.coroutines.suspendCoroutine
-
-//import kotlinx.coroutines.experimental.CommonPool
-//import kotlinx.coroutines.experimental.android.UI
-//import kotlinx.coroutines.experimental.async
-//import kotlinx.coroutines.experimental.launch
 
 /**
  * Abstract class for a Use Case (Interactor in terms of Clean Architecture).
