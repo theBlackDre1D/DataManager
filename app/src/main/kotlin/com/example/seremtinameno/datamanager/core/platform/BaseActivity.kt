@@ -82,7 +82,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     protected fun setupDrawer() {
         drawer = drawer {
-            sliderBackgroundColor = ColorParser.parse(this@BaseActivity, "grey_light").toLong()
+            sliderBackgroundColor = ColorParser.parse(this@BaseActivity, "dark_blue").toLong()
             headerViewRes = R.layout.header
 
             accountHeader {
@@ -130,7 +130,6 @@ abstract class BaseActivity : AppCompatActivity() {
                 }
             }
         }
-//        drawer = newDrawer.await()
     }
 
     protected open fun onHomePressed() {

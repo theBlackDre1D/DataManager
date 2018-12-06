@@ -132,10 +132,8 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         setContentView(R.layout.activity_main)
         setupDrawer()
 
-//        injectUI(this)
         ButterKnife.bind(this)
         appComponent.inject(this)
-//        setUpDrawer()
         setupListeners()
         showLoading()
 
@@ -192,7 +190,6 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
         val params = GetDataUsage.Params(this)
         monthlyDataUsage.loadDataUsage(params)
-
     }
 
     @TargetApi(Build.VERSION_CODES.N)
@@ -274,6 +271,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
             totalUsage += bucket.rxBytes
 //            val currentBucketDate = DateFormat.getDateInstance().format(bucket.startTimeStamp)
             val currentBucketDate = formatter.format(bucket.startTimeStamp)
+            val bucketEndDate = formatter.format(bucket.endTimeStamp)
 //            val currentBucketDate = bucket.startTimeStamp
 
             if (previousDate == "" || previousDate != currentBucketDate) {
