@@ -148,6 +148,9 @@ dependencies {
 //    implementation applicationDependencies.firebaseCore
     implementation applicationDependencies.renderers
     implementation applicationDependencies.calendarIcons
+    implementation applicationDependencies.koin
+    implementation applicationDependencies.koin_core
+    implementation applicationDependencies.koin_viewModel
 
     // androidX dependencies
 //    implementation applicationDependencies.x_appCompact
@@ -183,8 +186,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:16.0.1'
 }
 
-kotlin {
-    experimental {
-        coroutines "enable"
-    }
-}
+//kotlin {
+//    experimental {
+//        coroutines "enable"
+//    }
+//}

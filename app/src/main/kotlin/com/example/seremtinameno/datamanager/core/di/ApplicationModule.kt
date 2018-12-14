@@ -15,9 +15,13 @@ import javax.inject.Singleton
 @Module
 class ApplicationModule(private val application: AndroidApplication) {
 
-    @Provides @Singleton fun provideApplicationContext(): Context = application
+    @Provides
+    @Singleton
+    fun provideApplicationContext(): Context = application
 
-    @Provides @Singleton fun provideRetrofit(): Retrofit {
+    @Provides
+    @Singleton
+    fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
                 .baseUrl("https://raw.githubusercontent.com/android10/Sample-Data/master/Android-CleanArchitecture-Kotlin/")
                 .client(createClient())

@@ -11,7 +11,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.net.Uri
 import android.os.Build
 import android.os.Process
 import android.provider.Settings
@@ -25,10 +24,6 @@ import antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
-import co.zsmb.materialdrawerkt.builders.drawer
-import co.zsmb.materialdrawerkt.builders.footer
-import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
-import co.zsmb.materialdrawerkt.draweritems.divider
 import com.example.seremtinameno.datamanager.core.AndroidApplication
 import com.example.seremtinameno.datamanager.R
 import com.example.seremtinameno.datamanager.core.permissions.PermissionProvider
@@ -47,6 +42,7 @@ import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.pixplicity.easyprefs.library.Prefs
 import timber.log.Timber
+import java.text.DateFormat
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -121,7 +117,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     private var usedMB = 0.0
 
-    @Inject
+//    @Inject
     lateinit var monthlyDataUsage:          DataUsageViewModel
 
     @Inject
@@ -261,7 +257,6 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     @TargetApi(Build.VERSION_CODES.N)
     private fun processMobileData() {
         var previousDate = ""
-//        var previousDate = 0L
 
         var totalUsage = 0L
 
@@ -269,10 +264,8 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
             val bucket = NetworkStats.Bucket()
             mobileData.getNextBucket(bucket)
             totalUsage += bucket.rxBytes
-//            val currentBucketDate = DateFormat.getDateInstance().format(bucket.startTimeStamp)
+
             val currentBucketDate = formatter.format(bucket.startTimeStamp)
-            val bucketEndDate = formatter.format(bucket.endTimeStamp)
-//            val currentBucketDate = bucket.startTimeStamp
 
             if (previousDate == "" || previousDate != currentBucketDate) {
                 mobileDataPerDay[currentBucketDate] = bucket.rxBytes
@@ -292,7 +285,6 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     @RequiresApi(Build.VERSION_CODES.N)
     private fun processWifiData() {
         var previousDate = ""
-//        var previousDate = 0L
 
         var totalUsage = 0L
 

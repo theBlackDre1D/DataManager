@@ -5,6 +5,7 @@ import com.example.seremtinameno.datamanager.core.di.ApplicationComponent
 import com.example.seremtinameno.datamanager.core.di.ApplicationModule
 import com.example.seremtinameno.datamanager.core.di.DaggerApplicationComponent
 import com.squareup.leakcanary.LeakCanary
+import org.koin.android.ext.android.startKoin
 
 
 class AndroidApplication : Application() {

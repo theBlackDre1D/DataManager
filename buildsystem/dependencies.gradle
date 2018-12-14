@@ -16,6 +16,7 @@ ext {
   //Third party libraries
   kotlin_coroutines_version = '1.0.1'
   dagger_version = '2.11'
+  koin_version = '1.0.2'
   javaxAnnotations_version = '1.0'
   javaxInject_version = '1'
   retrofit_version = '2.5.0'
@@ -54,6 +55,9 @@ ext {
   leakCanaryVersion = '1.5'
 
   mainApplication = [
+      koin_core:                  "org.koin:koin-core:$koin_version",
+      koin_viewModel:             "org.koin:koin-android-viewmodel:$koin_version",
+      koin:                       "org.koin:koin-android:$koin_version",
       kotlin:                     "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version",
       kotlinCoroutines:           "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_coroutines_version",
       kotlinCoroutinesAndroid:    "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutines_version",

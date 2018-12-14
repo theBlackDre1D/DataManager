@@ -82,13 +82,14 @@ abstract class BaseActivity : AppCompatActivity() {
 
     protected fun setupDrawer() {
         drawer = drawer {
-            sliderBackgroundColor = ColorParser.parse(this@BaseActivity, "dark_blue").toLong()
+            sliderBackgroundColor = ColorParser.parse(this@BaseActivity, "white").toLong()
             headerViewRes = R.layout.header
 
             accountHeader {
                 background = ColorParser.parse(application, "white")
                 profile("Michal", "user.email@gmail.com") {
                     icon = R.drawable.app_icon
+                    textColorRes = ColorParser.parse(application, "black")
                 }
             }
             primaryItem("Home") {

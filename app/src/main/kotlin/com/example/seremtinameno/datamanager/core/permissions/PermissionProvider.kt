@@ -28,7 +28,5 @@ class PermissionProvider
 
     interface Delegate {
         fun getActivity(): BaseActivity
-//        fun showToastMessage(message: String)
-//        fun permissionGranted()
     }
 }
