@@ -42,7 +42,6 @@ import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.pixplicity.easyprefs.library.Prefs
 import timber.log.Timber
-import java.text.DateFormat
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -117,7 +116,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     private var usedMB = 0.0
 
-//    @Inject
+    @Inject
     lateinit var monthlyDataUsage:          DataUsageViewModel
 
     @Inject

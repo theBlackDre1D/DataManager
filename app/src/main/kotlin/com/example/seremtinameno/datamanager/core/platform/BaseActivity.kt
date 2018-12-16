@@ -85,13 +85,24 @@ abstract class BaseActivity : AppCompatActivity() {
             sliderBackgroundColor = ColorParser.parse(this@BaseActivity, "grey_light").toLong()
             headerViewRes = R.layout.header
 
-//            accountHeader {
-//                background = ColorParser.parse(application, "white")
-//                profile("Michal", "user.email@gmail.com") {
-//                    icon = R.drawable.app_icon
-//                    textColor = ColorParser.parse(application, "black").toLong()
-//                }
-//            }
+            accountHeader {
+                background = R.drawable.header
+
+                profile("Michal", "user.email@gmail.com") {
+                    icon = R.drawable.profile_picture_placeholder
+                    textColor = ColorParser.parse(application, "black").toLong()
+                }
+
+                profile("Lukas", "lukas.shaggy@gmail.com") {
+                    icon = R.drawable.profile_picture_placeholder
+                    textColor = ColorParser.parse(application, "black").toLong()
+                }
+
+                profile("Vlado", "vladimir.vilhanovie@gmail.com") {
+                    icon = R.drawable.profile_picture_placeholder
+                    textColor = ColorParser.parse(application, "black").toLong()
+                }
+            }
             primaryItem("Home") {
                 icon = R.drawable.home_icon
 

@@ -10,6 +10,5 @@ class KoinApplication: Application() {
         super.onCreate()
 
         startKoin(this, listOf(applicationModules))
-
     }
 }
