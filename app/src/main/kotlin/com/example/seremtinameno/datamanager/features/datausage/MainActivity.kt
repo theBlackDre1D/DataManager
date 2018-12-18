@@ -18,6 +18,7 @@ import android.support.annotation.RequiresApi
 import android.support.v4.app.ActivityCompat
 import android.widget.TextView
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import antonkozyriatskyi.circularprogressindicator.CircularProgressIndicator
 import butterknife.BindView
@@ -35,7 +36,7 @@ import com.example.seremtinameno.datamanager.core.helpers.ColorParser
 import com.example.seremtinameno.datamanager.core.platform.BaseActivity
 import com.example.seremtinameno.datamanager.features.daily.DailyUseActivity
 import com.example.seremtinameno.datamanager.features.settings.RaiseDataLimitDialog
-import com.example.seremtinameno.datamanager.features.settings.SettingsActivity
+import com.example.seremtinameno.datamanager.features.testing.TestActivity
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
@@ -88,6 +89,9 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     @BindView(R.id.dataViews)
     lateinit var dataViews:                 LinearLayout
 
+    @BindView(R.id.threeLines)
+    lateinit var threeLines:                ImageView
+
     private lateinit var wifiData:          NetworkStats
 
     private lateinit var mobileData:        NetworkStats
@@ -98,17 +102,17 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     private var mobilePlanInMB:             Int = 0
 
-    private var mobileDataPerDay = HashMap<String, Long>()
+    private var mobileDataPerDay =          HashMap<String, Long>()
 
-    private var wifiDataPerDay = HashMap<String, Long>()
+    private var wifiDataPerDay =            HashMap<String, Long>()
 
-    private var precision = DecimalFormat("0.00")
+    private var precision =                 DecimalFormat("0.00")
 
-    private var mobilePlanSet = false
+    private var mobilePlanSet =             false
 
-    private var todayDate = ""
+    private var todayDate =                 ""
 
-    private val formatter = SimpleDateFormat(DATE_FORMAT)
+    private val formatter =                 SimpleDateFormat(DATE_FORMAT)
 
     private var usedMB = 0.0
 
@@ -118,14 +122,14 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     @Inject
     lateinit var permissionProvider:        PermissionProvider
 
-    @TargetApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setupDrawer()
 
-        injectUI(this)
-//        ButterKnife.bind(this)
+        ButterKnife.bind(this)
         appComponent.inject(this)
+        setupListeners()
         showLoading()
 
         initDates()
@@ -155,10 +159,9 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         calculateDataUsage(usedMB.toLong())
     }
 
-    @OnClick(R.id.testButton)
-    fun goToTest() {
-//        startActivity(IntroActivity.getCallingIntent(this))
-        startActivity(DailyUseActivity.getCallingIntent(this, hashMapOf("data" to mobileDataPerDay, "wifi" to wifiDataPerDay)))
+    private fun goToDailyUsage() {
+        startActivity(DailyUseActivity.getCallingIntent(this,
+                hashMapOf("data" to mobileDataPerDay, "wifi" to wifiDataPerDay)))
     }
 
     companion object {
@@ -175,7 +178,6 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     }
 
     private fun loadData() {
-
         monthlyDataUsage = viewModel(viewModelFactory) {
             observe(dataUsage, ::renderData)
             failure(failure, ::handleFailure)
@@ -183,12 +185,6 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
         val params = GetDataUsage.Params(this)
         monthlyDataUsage.loadDataUsage(params)
-
-    }
-
-    @OnClick(R.id.settings)
-    fun goToSettings() {
-        startActivity(SettingsActivity.getCallingIntent(this))
     }
 
     @TargetApi(Build.VERSION_CODES.N)
@@ -260,7 +256,6 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     @TargetApi(Build.VERSION_CODES.N)
     private fun processMobileData() {
         var previousDate = ""
-//        var previousDate = 0L
 
         var totalUsage = 0L
 
@@ -268,9 +263,8 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
             val bucket = NetworkStats.Bucket()
             mobileData.getNextBucket(bucket)
             totalUsage += bucket.rxBytes
-//            val currentBucketDate = DateFormat.getDateInstance().format(bucket.startTimeStamp)
+
             val currentBucketDate = formatter.format(bucket.startTimeStamp)
-//            val currentBucketDate = bucket.startTimeStamp
 
             if (previousDate == "" || previousDate != currentBucketDate) {
                 mobileDataPerDay[currentBucketDate] = bucket.rxBytes
@@ -290,7 +284,6 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     @RequiresApi(Build.VERSION_CODES.N)
     private fun processWifiData() {
         var previousDate = ""
-//        var previousDate = 0L
 
         var totalUsage = 0L
 
@@ -396,9 +389,10 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         company.axisDependency = YAxis.AxisDependency.LEFT
         company.valueTextColor = Color.WHITE
         company.valueTextSize = TEXT_SIZE
+        company.color = ColorParser.parse(this, "green")
 
         val data = BarData(company)
-        data.barWidth = 0.9f
+        data.barWidth = 0.7f
 
         graphWidget.data = data
 
@@ -419,8 +413,10 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     private fun checkForPermission(context: Context): Boolean {
-        val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
-        val mode = appOps.checkOpNoThrow(OPSTR_GET_USAGE_STATS, Process.myUid(), context.packageName)
+        val appOps = context.getSystemService(Context.APP_OPS_SERVICE)
+                as AppOpsManager
+        val mode = appOps.checkOpNoThrow(OPSTR_GET_USAGE_STATS, Process.myUid(),
+                context.packageName)
         return mode == MODE_ALLOWED
     }
 
@@ -435,10 +431,12 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
+                                            grantResults: IntArray) {
         when (requestCode) {
             PERMISSION_READ_STATE -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.isNotEmpty() &&
+                        grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Timber.d("Permission to read phone stats granted")
                     loadData()
                 } else {
@@ -450,8 +448,13 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         }
     }
 
+    @OnClick(R.id.text)
+    fun test() {
+        startActivity(TestActivity.getCallingIntent(this))
+    }
+
     override fun onBackPressed() {
-//        moveTaskToBack(true)
+        moveTaskToBack(true)
         finish()
     }
 
@@ -477,5 +480,19 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     override fun getDataLimit(): Double {
         return mobilePlanInMB.toDouble()
+    }
+
+    override fun onHomePressed() {
+        alreadyHere()
+    }
+
+    override fun onDailyPressed() {
+        goToDailyUsage()
+    }
+
+    override fun setupListeners() {
+        threeLines.setOnClickListener {
+            drawer.openDrawer()
+        }
     }
 }

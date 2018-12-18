@@ -3,6 +3,7 @@ package com.example.seremtinameno.datamanager.features.settings
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.Switch
 import butterknife.BindView
 import butterknife.OnClick
@@ -23,6 +24,9 @@ class SettingsActivity : BaseActivity() {
     @BindView(R.id.enableDataLimit)
     lateinit var dataLimitStatus:           Switch
 
+    @BindView(R.id.threeLines)
+    lateinit var threeLines:                ImageView
+
     private var changed = false
 
     private val appComponent: ApplicationComponent by lazy(mode = LazyThreadSafetyMode.NONE) {
@@ -35,6 +39,7 @@ class SettingsActivity : BaseActivity() {
 
         injectUI(this)
         appComponent.inject(this)
+        setupDrawer()
 
         initCurrentPrefs()
     }
@@ -69,6 +74,11 @@ class SettingsActivity : BaseActivity() {
         startActivity(SetDataLimitActivity.getCallingIntent(this, ACTIVITY_NAME))
     }
 
+    @OnClick(R.id.threeLines)
+    fun openDrawer() {
+        drawer.openDrawer()
+    }
+
     @OnClick(R.id.raiseDataLimit)
     fun raiseDataLimit() {
         //TODO: create dialog for this
@@ -93,5 +103,17 @@ class SettingsActivity : BaseActivity() {
 
     override fun hideLoading() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onHomePressed() {
+        startActivity(MainActivity.getCallingIntent(this))
+    }
+
+    override fun onDailyPressed() {
+        super.onBackPressed()
+    }
+
+    override fun onSettingsPressed() {
+        alreadyHere()
     }
 }

@@ -5,21 +5,21 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.os.Parcelable
 import android.support.annotation.RequiresApi
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentPagerAdapter
 import android.view.View
 import butterknife.BindView
+import butterknife.OnClick
 import com.example.seremtinameno.datamanager.R
 import com.example.seremtinameno.datamanager.core.AndroidApplication
 import com.example.seremtinameno.datamanager.core.di.ApplicationComponent
 import com.example.seremtinameno.datamanager.core.platform.BaseActivity
 import com.example.seremtinameno.datamanager.core.platform.BaseFragment
+import com.example.seremtinameno.datamanager.features.daily.models.Usage
 import com.example.seremtinameno.datamanager.features.datausage.MainActivity
 import com.github.florent37.hollyviewpager.HollyViewPager
 import com.github.florent37.hollyviewpager.HollyViewPagerConfigurator
-import java.io.Serializable
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -33,10 +33,10 @@ class DailyUseActivity : BaseActivity() {
     }
 
     @BindView(R.id.hollyViewPager)
-    lateinit var hollyViewPager: HollyViewPager
+    lateinit var hollyViewPager:    HollyViewPager
 
     @BindView(R.id.loading)
-    lateinit var loading: View
+    lateinit var loading:           View
 
     private lateinit var mobileData: HashMap<String, Long>
 
@@ -57,6 +57,8 @@ class DailyUseActivity : BaseActivity() {
 
         injectUI(this)
         appComponent.inject(this)
+        setupDrawer()
+
         getFromIntent()
         processToOneEntity()
         createOrderDates()
@@ -86,6 +88,12 @@ class DailyUseActivity : BaseActivity() {
         }
     }
 
+    @OnClick(R.id.threeLines)
+    fun openDrawer() {
+        drawer.openDrawer()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
     private fun processToOneEntity() {
         dataTogether = HashMap()
 
@@ -155,6 +163,11 @@ class DailyUseActivity : BaseActivity() {
         loading.visibility = View.GONE
     }
 
-    data class Usage(val data: Long?,
-                     var wifi: Long?): Serializable
+    override fun onHomePressed() {
+        super.onBackPressed()
+    }
+
+    override fun onDailyPressed() {
+        alreadyHere()
+    }
 }

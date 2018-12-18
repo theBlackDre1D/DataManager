@@ -1,29 +1,27 @@
-/**
- * Copyright (C) 2018 Fernando Cejas Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.example.seremtinameno.datamanager.core.platform
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
+import android.content.Intent
+import android.graphics.Typeface
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
 import butterknife.ButterKnife
+import co.zsmb.materialdrawerkt.builders.accountHeader
+import co.zsmb.materialdrawerkt.builders.drawer
+import co.zsmb.materialdrawerkt.builders.footer
+import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
+import co.zsmb.materialdrawerkt.draweritems.divider
+import co.zsmb.materialdrawerkt.draweritems.profile.profile
+import com.example.seremtinameno.datamanager.R
+import com.example.seremtinameno.datamanager.core.helpers.ColorParser
+import com.example.seremtinameno.datamanager.features.settings.SettingsActivity
+import com.mikepenz.materialdrawer.Drawer
 import es.dmoral.toasty.Toasty
 import javax.inject.Inject
 
@@ -35,13 +33,19 @@ import javax.inject.Inject
  */
 abstract class BaseActivity : AppCompatActivity() {
 
+    protected lateinit var drawer:          Drawer
+
+    protected lateinit var basicTextFont:   Typeface
+
+    protected lateinit var headlineFont:    Typeface
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        addFragment(savedInstanceState)
+        setupFonts()
     }
 
     override fun onBackPressed() {
@@ -76,6 +80,93 @@ abstract class BaseActivity : AppCompatActivity() {
         return vm
     }
 
+    protected fun setupDrawer() {
+        drawer = drawer {
+            sliderBackgroundColor = ColorParser.parse(this@BaseActivity, "grey_light").toLong()
+            headerViewRes = R.layout.header
+
+            accountHeader {
+                background = R.drawable.app_background_selector
+
+                profile("Michal", "user.email@gmail.com") {
+                    icon = R.drawable.profile_picture_placeholder
+                    textColor = ColorParser.parse(application, "black").toLong()
+                }
+
+                profile("Lukas", "lukas.shaggy@gmail.com") {
+                    icon = R.drawable.profile_picture_placeholder
+                    textColor = ColorParser.parse(application, "black").toLong()
+                }
+
+                profile("Vlado", "vladimir.vilhanovie@gmail.com") {
+                    icon = R.drawable.profile_picture_placeholder
+                    textColor = ColorParser.parse(application, "black").toLong()
+                }
+            }
+            primaryItem("Home") {
+                icon = R.drawable.home_icon
+
+                onClick { _ ->
+                    onHomePressed()
+                    false
+                }
+            }
+            primaryItem("Daily") {
+                icon = R.drawable.daily_icon
+
+                onClick { _ ->
+                    onDailyPressed()
+                    false
+                }
+            }
+            primaryItem("Settings") {
+                icon = R.drawable.settings_button_black
+                onClick { _ ->
+                    onSettingsPressed()
+                    false
+                }
+            }
+
+            divider {}
+
+            footer {
+                primaryItem("Source on GitHub") {
+                    icon = R.drawable.github_logo
+                    onClick { _ ->
+                        val browserIntent = Intent(Intent.ACTION_VIEW,
+                                Uri.parse("https://github.com/theBlackDre1D/" +
+                                        "DataManager/tree/devel"))
+                        startActivity(browserIntent)
+                        false
+                    }
+                }
+            }
+        }
+    }
+
+    protected open fun onHomePressed() {
+        showErrorToast(this, "Not implemented")
+    }
+    protected open fun onDailyPressed() {
+        showErrorToast(this, "Not implemented")
+    }
+
+    protected open fun onSettingsPressed() {
+        startActivity(SettingsActivity.getCallingIntent(this@BaseActivity))
+    }
+
+    protected open fun setupListeners() {
+        // nothing
+    }
+
+    protected fun alreadyHere() {
+        Toasty.info(this, "You are already there :)").show()
+    }
+
+    private fun setupFonts() {
+        basicTextFont = Typeface.createFromAsset(assets, "fonts/FTY STRATEGYCIDE NCV.ttf")
+        headlineFont = Typeface.createFromAsset(assets, "fonts/Machine Gunk.otf")
+    }
 
 //    abstract fun initUI()
     abstract fun fragment(): BaseFragment

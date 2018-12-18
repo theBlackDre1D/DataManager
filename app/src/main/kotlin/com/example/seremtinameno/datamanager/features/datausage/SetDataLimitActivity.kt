@@ -112,7 +112,7 @@ class SetDataLimitActivity : BaseActivity() {
 
             Prefs.putInt(MainActivity.DATA_LIMIT, inNumber)
 
-            Toasty.success(this, "Data limit set!", Toast.LENGTH_SHORT, true).show()
+            showSuccessToast(this, "Data limit set!")
             withDataLimit()
 
             if (comingFrom == SettingsActivity.ACTIVITY_NAME) {
@@ -141,5 +141,13 @@ class SetDataLimitActivity : BaseActivity() {
 
     override fun hideLoading() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onHomePressed() {
+        showErrorToast(this, "Not allowed here")
+    }
+
+    override fun onDailyPressed() {
+        showErrorToast(this, "Not allowed here")
     }
 }

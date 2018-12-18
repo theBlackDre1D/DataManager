@@ -6,27 +6,56 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".features.daily.DailyUseActivity"
-    android:background="@color/dark_blue"
+    android:background="@drawable/app_background_selector"
     >
 
-    <TextView
-        android:id="@+id/header"
+    <!--<TextView-->
+        <!--android:id="@+id/header"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="70dp"-->
+        <!--android:textColor="@color/white"-->
+        <!--android:text="@string/daily_usage"-->
+        <!--android:textStyle="bold"-->
+        <!--android:textSize="20sp"-->
+        <!--android:gravity="center"-->
+        <!--/>-->
+
+    <FrameLayout
+        android:id="@+id/top"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:textColor="@color/white"
-        android:text="@string/daily_usage"
-        android:textStyle="bold"
-        android:textSize="20sp"
-        android:gravity="center"
-        />
+        android:layout_height="wrap_content"
+        >
+
+        <TextView
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:gravity="center"
+            android:text="@string/daily_usage"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/threeLines"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/three_lines"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="10dp"
+            />
+
+    </FrameLayout>
 
     <com.github.florent37.hollyviewpager.HollyViewPager
         android:id="@+id/hollyViewPager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:hvp_headerHeight="150dp"
-        android:layout_below="@+id/header"
+        android:layout_below="@+id/top"
         />
+
+
 
     <include layout="@layout/loading" />
 

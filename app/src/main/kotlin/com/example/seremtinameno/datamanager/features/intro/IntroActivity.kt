@@ -66,6 +66,8 @@ class IntroActivity: MaterialIntroActivity() {
     }
 
     companion object {
+        const val FIRST_LAUNCH = "first_launch"
+
         fun getCallingIntent(context: Context): Intent {
             return Intent(context, IntroActivity::class.java)
         }

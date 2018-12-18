@@ -20,7 +20,7 @@ interface DataRepository {
     fun getData(applicationContext: Context): Either<Failure, HashMap<String, NetworkStats>>
 //    fun getNetworkStats(applicationContext: Context, startTime: Long, endTime: Long, networkType: Int): Either<Failure, HashMap<String, NetworkStats>>
 
-    class Data
+    class Data // DataRepositoryImplementation
     @Inject constructor(private val permissions: PermissionProvider): DataRepository {
         @RequiresApi(Build.VERSION_CODES.M)
         override fun getData(applicationContext: Context): Either<Failure, HashMap<String, NetworkStats>> {
@@ -47,13 +47,10 @@ interface DataRepository {
             val calendar = Calendar.getInstance()
             calendar.add(Calendar.DATE, 1)
             val tomorrow = calendar.timeInMillis
-//            val tomorrowDate = DateFormat.getDateInstance().format(tomorrow)
             calendar.timeInMillis = today
-//            val test = DateFormat.getDateInstance().format(calendar.timeInMillis)
 
             calendar.set(Calendar.DAY_OF_MONTH, 1)
             val firstDayInMonth = calendar.timeInMillis
-//            val firstDay = DateFormat.getDateInstance().format(firstDayInMonth)
 
             val data = networkStatsManager.queryDetails(ConnectivityManager.TYPE_MOBILE, subscriberID, firstDayInMonth, tomorrow)
             val wifi = networkStatsManager.queryDetails(ConnectivityManager.TYPE_WIFI, subscriberID, firstDayInMonth, tomorrow)

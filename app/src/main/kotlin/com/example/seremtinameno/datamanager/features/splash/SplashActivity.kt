@@ -18,12 +18,14 @@ class SplashActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        initCrashlytics()
-        initPrefs()
-
         try {
             val set = Prefs.getBoolean(SetDataLimitActivity.LIMIT, false)
             val asked = Prefs.getBoolean(SetDataLimitActivity.USER_ASKED, false)
+            val firstLaunch = Prefs.getBoolean(IntroActivity.FIRST_LAUNCH, true)
+
+            if (firstLaunch) {
+                startActivityForResult(IntroActivity.getCallingIntent(this), 1)
+            }
 
             if (asked) {
                 startActivity(MainActivity.getCallingIntent(this))
@@ -35,25 +37,10 @@ class SplashActivity : BaseActivity() {
         }
 
         finish()
-
     }
 
     companion object {
         const val ACTIVITY_NAME = "splash"
-    }
-
-    private fun initPrefs() {
-        Prefs.Builder()
-                .setContext(this)
-                .setMode(ContextWrapper.MODE_PRIVATE)
-                .setPrefsName(packageName)
-                .setUseDefaultSharedPreference(true)
-                .build()
-    }
-
-
-    private fun initCrashlytics() {
-//        Fabric.with(this, Crashlytics())
     }
 
     override fun fragment(): BaseFragment {
@@ -66,5 +53,13 @@ class SplashActivity : BaseActivity() {
 
     override fun hideLoading() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onHomePressed() {
+        // nothing
+    }
+
+    override fun onDailyPressed() {
+        // nothing
     }
 }
