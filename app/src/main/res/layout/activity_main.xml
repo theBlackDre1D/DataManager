@@ -4,13 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".features.datausage.MainActivity">
+    tools:context=".features.datausage.MainActivity"
+    android:background="@drawable/app_background_selector"
+    >
 
     <FrameLayout
         android:id="@+id/top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/dark_blue"
         >
 
         <TextView
@@ -41,7 +42,6 @@
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:background="@color/dark_blue"
         android:layout_below="@+id/top">
 
         <LinearLayout
@@ -247,9 +247,12 @@
 
             <Button
                 android:id="@+id/text"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:background="@drawable/rounded_button_color_border"
                 android:text="test"
+                android:textStyle="bold"
                 />
 
         </LinearLayout>

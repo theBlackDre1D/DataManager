@@ -20,7 +20,7 @@ interface DataRepository {
     fun getData(applicationContext: Context): Either<Failure, HashMap<String, NetworkStats>>
 //    fun getNetworkStats(applicationContext: Context, startTime: Long, endTime: Long, networkType: Int): Either<Failure, HashMap<String, NetworkStats>>
 
-    class Data
+    class Data // DataRepositoryImplementation
     @Inject constructor(private val permissions: PermissionProvider): DataRepository {
         @RequiresApi(Build.VERSION_CODES.M)
         override fun getData(applicationContext: Context): Either<Failure, HashMap<String, NetworkStats>> {

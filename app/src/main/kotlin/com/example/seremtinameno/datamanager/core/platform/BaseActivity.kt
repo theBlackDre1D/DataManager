@@ -86,7 +86,7 @@ abstract class BaseActivity : AppCompatActivity() {
             headerViewRes = R.layout.header
 
             accountHeader {
-                background = R.drawable.header
+                background = R.drawable.app_background_selector
 
                 profile("Michal", "user.email@gmail.com") {
                     icon = R.drawable.profile_picture_placeholder

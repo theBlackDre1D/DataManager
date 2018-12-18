@@ -18,9 +18,6 @@ class SplashActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        initCrashlytics()
-        initPrefs()
-
         try {
             val set = Prefs.getBoolean(SetDataLimitActivity.LIMIT, false)
             val asked = Prefs.getBoolean(SetDataLimitActivity.USER_ASKED, false)
@@ -44,20 +41,6 @@ class SplashActivity : BaseActivity() {
 
     companion object {
         const val ACTIVITY_NAME = "splash"
-    }
-
-    private fun initPrefs() {
-        Prefs.Builder()
-                .setContext(this)
-                .setMode(ContextWrapper.MODE_PRIVATE)
-                .setPrefsName(packageName)
-                .setUseDefaultSharedPreference(true)
-                .build()
-    }
-
-
-    private fun initCrashlytics() {
-        Fabric.with(this, Crashlytics())
     }
 
     override fun fragment(): BaseFragment {

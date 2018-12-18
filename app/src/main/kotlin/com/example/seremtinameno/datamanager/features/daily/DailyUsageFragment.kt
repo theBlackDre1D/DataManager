@@ -21,7 +21,6 @@ import com.github.ksoichiro.android.observablescrollview.ObservableScrollView
 import com.pixplicity.easyprefs.library.Prefs
 import java.text.DecimalFormat
 
-
 class DailyUsageFragment: Fragment(), MyProgressTextAdapter.View {
 
     @BindView(R.id.scrollView)

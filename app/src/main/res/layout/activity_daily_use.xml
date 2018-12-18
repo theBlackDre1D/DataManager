@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".features.daily.DailyUseActivity"
-    android:background="@color/dark_blue"
+    android:background="@drawable/app_background_selector"
     >
 
     <!--<TextView-->
@@ -24,7 +24,6 @@
         android:id="@+id/top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/dark_blue"
         >
 
         <TextView
