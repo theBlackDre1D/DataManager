@@ -37,6 +37,7 @@ import com.example.seremtinameno.datamanager.core.platform.BaseActivity
 import com.example.seremtinameno.datamanager.features.daily.DailyUseActivity
 import com.example.seremtinameno.datamanager.features.settings.RaiseDataLimitDialog
 import com.example.seremtinameno.datamanager.features.testing.TestActivity
+import com.example.seremtinameno.datamanager.features.testing.TestFragment
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
@@ -451,6 +452,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     @OnClick(R.id.text)
     fun test() {
         startActivity(TestActivity.getCallingIntent(this))
+//        TestFragment.newInstance()
     }
 
     override fun onBackPressed() {
