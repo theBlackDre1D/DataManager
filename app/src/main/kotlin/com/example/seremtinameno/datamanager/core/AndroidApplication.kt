@@ -50,6 +50,4 @@ class AndroidApplication : Application() {
     private fun initCrashlytics() {
         Fabric.with(this, Crashlytics())
     }
-
-
 }

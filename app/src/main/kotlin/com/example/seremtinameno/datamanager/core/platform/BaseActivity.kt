@@ -19,10 +19,12 @@ import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import co.zsmb.materialdrawerkt.draweritems.divider
 import co.zsmb.materialdrawerkt.draweritems.profile.profile
 import com.example.seremtinameno.datamanager.R
+import com.example.seremtinameno.datamanager.core.di.viewmodel.ViewModelFactory
 import com.example.seremtinameno.datamanager.core.helpers.ColorParser
 import com.example.seremtinameno.datamanager.features.settings.SettingsActivity
 import com.mikepenz.materialdrawer.Drawer
 import es.dmoral.toasty.Toasty
+import org.koin.android.ext.android.inject
 import javax.inject.Inject
 
 /**
@@ -39,8 +41,9 @@ abstract class BaseActivity : AppCompatActivity() {
 
     protected lateinit var headlineFont:    Typeface
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+//    @Inject
+//    lateinit var viewModelFactory: ViewModelFactory
+    val viewModelFactory: ViewModelFactory by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,7 +77,7 @@ abstract class BaseActivity : AppCompatActivity() {
         ButterKnife.bind(activity)
     }
 
-    inline fun <reified T : ViewModel> viewModel(factory: ViewModelProvider.Factory, body: T.() -> Unit): T {
+    inline fun <reified T : ViewModel> viewModel(factory: ViewModelFactory = viewModelFactory, body: T.() -> Unit): T {
         val vm = ViewModelProviders.of(this, factory)[T::class.java]
         vm.body()
         return vm

@@ -10,7 +10,7 @@ import javax.inject.Singleton
 
 @Singleton
 class PermissionProvider
-@Inject constructor(){
+@Inject constructor() {
 
     private lateinit var delegate: Delegate
 

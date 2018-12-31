@@ -42,6 +42,7 @@ import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.pixplicity.easyprefs.library.Prefs
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
@@ -56,9 +57,9 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
                                             MyProgressTextAdapter.View
 {
 
-    private val appComponent: ApplicationComponent by lazy(mode = LazyThreadSafetyMode.NONE) {
-        (application as AndroidApplication).appComponent
-    }
+//    private val appComponent: ApplicationComponent by lazy(mode = LazyThreadSafetyMode.NONE) {
+//        (application as AndroidApplication).appComponent
+//    }
 
     @BindView(R.id.dataUsage)
     lateinit var dataUsageWidget:           TextView
@@ -117,7 +118,6 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     private var usedMB = 0.0
 
-    @Inject
     lateinit var monthlyDataUsage:          DataUsageViewModel
 
     @Inject
@@ -129,7 +129,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         setupDrawer()
 
         ButterKnife.bind(this)
-        appComponent.inject(this)
+//        appComponent.inject(this)
         setupListeners()
         showLoading()
 
@@ -179,7 +179,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     }
 
     private fun loadData() {
-        monthlyDataUsage = viewModel(viewModelFactory) {
+        monthlyDataUsage = viewModel {
             observe(dataUsage, ::renderData)
             failure(failure, ::handleFailure)
         }

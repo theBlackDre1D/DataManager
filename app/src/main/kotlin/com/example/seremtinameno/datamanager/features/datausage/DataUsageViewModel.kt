@@ -6,7 +6,8 @@ import com.example.seremtinameno.datamanager.core.platform.BaseViewModel
 import javax.inject.Inject
 
 class DataUsageViewModel
-@Inject constructor(private val getDataUsage: GetDataUsage): BaseViewModel() {
+//@Inject constructor
+(private val getDataUsage: GetDataUsage): BaseViewModel() {
 
     var dataUsage: MutableLiveData<HashMap<String, NetworkStats>> = MutableLiveData()
 
