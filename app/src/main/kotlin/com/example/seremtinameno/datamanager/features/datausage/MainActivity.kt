@@ -118,10 +118,12 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     private var usedMB = 0.0
 
-    lateinit var monthlyDataUsage:          DataUsageViewModel
+    private lateinit var monthlyDataUsage:          DataUsageViewModel
 
-    @Inject
-    lateinit var permissionProvider:        PermissionProvider
+//    @Inject
+//    lateinit var permissionProvider:        PermissionProvider
+//    private val permissionProvider: PermissionProvider by inject()
+    private val permissionProvider =        PermissionProvider()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

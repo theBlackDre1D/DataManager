@@ -8,9 +8,10 @@ import com.example.seremtinameno.datamanager.core.platform.BaseActivity
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
+//@Singleton
 class PermissionProvider
-@Inject constructor() {
+//@Inject constructor()
+{
 
     private lateinit var delegate: Delegate
 
