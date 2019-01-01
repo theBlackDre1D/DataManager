@@ -31,7 +31,6 @@ import com.example.seremtinameno.datamanager.core.platform.BaseFragment
 import com.example.seremtinameno.datamanager.core.di.ApplicationComponent
 import com.example.seremtinameno.datamanager.core.exception.Failure
 import com.example.seremtinameno.datamanager.core.extension.failure
-import com.example.seremtinameno.datamanager.core.extension.observe
 import com.example.seremtinameno.datamanager.core.helpers.ColorParser
 import com.example.seremtinameno.datamanager.core.platform.BaseActivity
 import com.example.seremtinameno.datamanager.features.daily.DailyUseActivity
@@ -50,6 +49,8 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import android.arch.lifecycle.Observer
+import com.example.seremtinameno.datamanager.core.extension.observe
 
 
 class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsResultCallback,
@@ -57,9 +58,9 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
                                             MyProgressTextAdapter.View
 {
 
-//    private val appComponent: ApplicationComponent by lazy(mode = LazyThreadSafetyMode.NONE) {
-//        (application as AndroidApplication).appComponent
-//    }
+    private val appComponent: ApplicationComponent by lazy(mode = LazyThreadSafetyMode.NONE) {
+        (application as AndroidApplication).appComponent
+    }
 
     @BindView(R.id.dataUsage)
     lateinit var dataUsageWidget:           TextView
@@ -120,10 +121,10 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     private lateinit var monthlyDataUsage:          DataUsageViewModel
 
-//    @Inject
-//    lateinit var permissionProvider:        PermissionProvider
+    @Inject
+    lateinit var permissionProvider:        PermissionProvider
 //    private val permissionProvider: PermissionProvider by inject()
-    private val permissionProvider =        PermissionProvider()
+//    private val permissionProvider =        PermissionProvider()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -131,7 +132,7 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         setupDrawer()
 
         ButterKnife.bind(this)
-//        appComponent.inject(this)
+        appComponent.inject(this)
         setupListeners()
         showLoading()
 
@@ -185,6 +186,12 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
             observe(dataUsage, ::renderData)
             failure(failure, ::handleFailure)
         }
+//        monthlyDataUsage.dataUsage.observe(this,
+//                Observer<HashMap<String, NetworkStats>> {
+//                    if (it != null) {
+//
+//                    }
+//                })
 
         val params = GetDataUsage.Params(this)
         monthlyDataUsage.loadDataUsage(params)

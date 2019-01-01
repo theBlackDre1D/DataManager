@@ -6,7 +6,7 @@ import com.example.seremtinameno.datamanager.core.interactor.UseCase
 import javax.inject.Inject
 
 class GetDataUsage
-//@Inject constructor
+@Inject constructor
 (private val dataRepository: DataRepository
 ) : UseCase<HashMap<String, NetworkStats>, GetDataUsage.Params>()
 {

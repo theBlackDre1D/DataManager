@@ -15,7 +15,7 @@ ext {
 
   //Third party libraries
   kotlin_coroutines_version = '1.0.1'
-  dagger_version = '2.11'
+  dagger_version = '2.20'
   koin_version = '1.0.2'
   javaxAnnotations_version = '1.0'
   javaxInject_version = '1'

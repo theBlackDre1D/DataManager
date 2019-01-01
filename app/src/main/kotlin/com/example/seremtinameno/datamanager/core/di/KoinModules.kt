@@ -10,8 +10,8 @@ import org.koin.dsl.module.module
 
 
 val applicationModules = module(override=true) {
-    single<PermissionProvider> { get() }
     single { DataUsageViewModel( get() ) }
     factory<ViewModelProvider.Factory> { ViewModelFactory( get() ) }
-    single { GetDataUsage( get() )}
+    single { GetDataUsage( get() ) }
+    single { PermissionProvider() }
 }

@@ -41,9 +41,9 @@ abstract class BaseActivity : AppCompatActivity() {
 
     protected lateinit var headlineFont:    Typeface
 
-//    @Inject
-//    lateinit var viewModelFactory: ViewModelFactory
-    val viewModelFactory: ViewModelFactory by inject()
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+//    val viewModelFactory: ViewModelFactory by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
