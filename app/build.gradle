@@ -151,6 +151,7 @@ dependencies {
     implementation applicationDependencies.koin
     implementation applicationDependencies.koin_core
     implementation applicationDependencies.koin_viewModel
+    implementation applicationDependencies.anko_alert
 
     // androidX dependencies
 //    implementation applicationDependencies.x_appCompact
@@ -191,3 +192,4 @@ dependencies {
 //        coroutines "enable"
 //    }
 //}
+

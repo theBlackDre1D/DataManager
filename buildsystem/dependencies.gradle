@@ -80,6 +80,7 @@ ext {
       butterKnife:                "com.jakewharton:butterknife:$butterKnife_version",
       butterKnifeProcessor:       "com.jakewharton:butterknife-compiler:$butterKnife_version",
       anko_snackBar:              "org.jetbrains.anko:anko-design:$anko_version",
+      anko_alert:                 "org.jetbrains.anko:anko-commons:$anko_version",
       timber:                     "com.jakewharton.timber:timber:$timber_version",
       progressBar:                "com.wang.avi:library:$avLibrary_version",
       charts:                     "com.github.PhilJay:MPAndroidChart:$charts_version",

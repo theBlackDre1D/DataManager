@@ -36,12 +36,10 @@ import com.example.seremtinameno.datamanager.core.platform.BaseActivity
 import com.example.seremtinameno.datamanager.features.daily.DailyUseActivity
 import com.example.seremtinameno.datamanager.features.settings.RaiseDataLimitDialog
 import com.example.seremtinameno.datamanager.features.testing.TestActivity
-import com.example.seremtinameno.datamanager.features.testing.TestFragment
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.pixplicity.easyprefs.library.Prefs
-import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
@@ -49,7 +47,6 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
-import android.arch.lifecycle.Observer
 import com.example.seremtinameno.datamanager.core.extension.observe
 
 
@@ -129,6 +126,9 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+//        checkAndroidVersion()
+
         setupDrawer()
 
         ButterKnife.bind(this)
@@ -177,7 +177,9 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
         const val TEXT_SIZE = 15f
 
         fun getCallingIntent(context: Context): Intent {
-            return Intent(context, MainActivity::class.java)
+            val intent = Intent(context, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            return intent
         }
     }
 

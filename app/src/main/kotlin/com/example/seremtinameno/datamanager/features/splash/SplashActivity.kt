@@ -1,17 +1,15 @@
 package com.example.seremtinameno.datamanager.features.splash
 
-import android.content.ContextWrapper
+import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.support.v4.app.TaskStackBuilder
-import com.crashlytics.android.Crashlytics
+import com.example.seremtinameno.datamanager.KillActivity
 import com.example.seremtinameno.datamanager.core.platform.BaseActivity
 import com.example.seremtinameno.datamanager.core.platform.BaseFragment
 import com.example.seremtinameno.datamanager.features.datausage.MainActivity
 import com.example.seremtinameno.datamanager.features.datausage.SetDataLimitActivity
 import com.example.seremtinameno.datamanager.features.intro.IntroActivity
 import com.pixplicity.easyprefs.library.Prefs
-import io.fabric.sdk.android.Fabric
+
 
 class SplashActivity : BaseActivity() {
 
@@ -23,14 +21,20 @@ class SplashActivity : BaseActivity() {
             val asked = Prefs.getBoolean(SetDataLimitActivity.USER_ASKED, false)
             val firstLaunch = Prefs.getBoolean(IntroActivity.FIRST_LAUNCH, true)
 
-            if (firstLaunch) {
-                startActivityForResult(IntroActivity.getCallingIntent(this), 1)
-            }
-
-            if (asked) {
-                startActivity(MainActivity.getCallingIntent(this))
+            val androidVersion = android.os.Build.VERSION.SDK_INT
+            if (androidVersion < Build.VERSION_CODES.M) {
+                // application can't continue because Android at version lower than M doesn't have main feature
+                startActivity(KillActivity.getCallingIntent(this))
             } else {
-                startActivity(SetDataLimitActivity.getCallingIntent(this, ACTIVITY_NAME))
+                if (firstLaunch) {
+                    startActivityForResult(IntroActivity.getCallingIntent(this), 1)
+                }
+
+                if (asked) {
+                    startActivity(MainActivity.getCallingIntent(this))
+                } else {
+                    startActivity(SetDataLimitActivity.getCallingIntent(this, ACTIVITY_NAME))
+                }
             }
         } catch (error: Exception) {
             startActivity(SetDataLimitActivity.getCallingIntent(this, ACTIVITY_NAME))
