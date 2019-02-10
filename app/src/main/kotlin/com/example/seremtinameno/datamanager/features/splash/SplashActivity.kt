@@ -2,7 +2,7 @@ package com.example.seremtinameno.datamanager.features.splash
 
 import android.os.Build
 import android.os.Bundle
-import com.example.seremtinameno.datamanager.KillActivity
+import com.example.seremtinameno.datamanager.features.kill_application.KillActivity
 import com.example.seremtinameno.datamanager.core.platform.BaseActivity
 import com.example.seremtinameno.datamanager.core.platform.BaseFragment
 import com.example.seremtinameno.datamanager.features.datausage.MainActivity
@@ -17,15 +17,15 @@ class SplashActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         try {
-            val set = Prefs.getBoolean(SetDataLimitActivity.LIMIT, false)
-            val asked = Prefs.getBoolean(SetDataLimitActivity.USER_ASKED, false)
-            val firstLaunch = Prefs.getBoolean(IntroActivity.FIRST_LAUNCH, true)
-
             val androidVersion = android.os.Build.VERSION.SDK_INT
             if (androidVersion < Build.VERSION_CODES.M) {
                 // application can't continue because Android at version lower than M doesn't have main feature
                 startActivity(KillActivity.getCallingIntent(this))
             } else {
+                val set = Prefs.getBoolean(SetDataLimitActivity.LIMIT, false)
+                val asked = Prefs.getBoolean(SetDataLimitActivity.USER_ASKED, false)
+                val firstLaunch = Prefs.getBoolean(IntroActivity.FIRST_LAUNCH, true)
+
                 if (firstLaunch) {
                     startActivityForResult(IntroActivity.getCallingIntent(this), 1)
                 }

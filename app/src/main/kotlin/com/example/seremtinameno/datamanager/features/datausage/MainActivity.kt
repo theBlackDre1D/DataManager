@@ -120,8 +120,6 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
 
     @Inject
     lateinit var permissionProvider:        PermissionProvider
-//    private val permissionProvider: PermissionProvider by inject()
-//    private val permissionProvider =        PermissionProvider()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -188,12 +186,6 @@ class MainActivity : BaseActivity(),        ActivityCompat.OnRequestPermissionsR
             observe(dataUsage, ::renderData)
             failure(failure, ::handleFailure)
         }
-//        monthlyDataUsage.dataUsage.observe(this,
-//                Observer<HashMap<String, NetworkStats>> {
-//                    if (it != null) {
-//
-//                    }
-//                })
 
         val params = GetDataUsage.Params(this)
         monthlyDataUsage.loadDataUsage(params)
